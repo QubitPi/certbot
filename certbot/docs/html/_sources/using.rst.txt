@@ -205,19 +205,19 @@ use the DNS plugins on your system.
 
 Once installed, you can find documentation on how to use each plugin at:
 
-* `certbot-dns-cloudflare <https://certbot-dns-cloudflare.readthedocs.io>`_
-* `certbot-dns-digitalocean <https://certbot-dns-digitalocean.readthedocs.io>`_
-* `certbot-dns-dnsimple <https://certbot-dns-dnsimple.readthedocs.io>`_
-* `certbot-dns-dnsmadeeasy <https://certbot-dns-dnsmadeeasy.readthedocs.io>`_
-* `certbot-dns-gehirn <https://certbot-dns-gehirn.readthedocs.io>`_
-* `certbot-dns-google <https://certbot-dns-google.readthedocs.io>`_
-* `certbot-dns-linode <https://certbot-dns-linode.readthedocs.io>`_
-* `certbot-dns-luadns <https://certbot-dns-luadns.readthedocs.io>`_
-* `certbot-dns-nsone <https://certbot-dns-nsone.readthedocs.io>`_
-* `certbot-dns-ovh <https://certbot-dns-ovh.readthedocs.io>`_
-* `certbot-dns-rfc2136 <https://certbot-dns-rfc2136.readthedocs.io>`_
-* `certbot-dns-route53 <https://certbot-dns-route53.readthedocs.io>`_
-* `certbot-dns-sakuracloud <https://certbot-dns-sakuracloud.readthedocs.io>`_
+* `certbot-dns-cloudflare <https://qubitpi.github.io/certbot/certbot-dns-cloudflare/docs/html/>`_
+* `certbot-dns-digitalocean <https://qubitpi.github.io/certbot/certbot-dns-digitalocean/docs/html>`_
+* `certbot-dns-dnsimple <https://qubitpi.github.io/certbot/certbot-dns-dnsimple/docs/html>`_
+* `certbot-dns-dnsmadeeasy <https://qubitpi.github.io/certbot/certbot-dns-dnsmadeeasy/docs/html>`_
+* `certbot-dns-gehirn <https://qubitpi.github.io/certbot/certbot-dns-gehirn/docs/html>`_
+* `certbot-dns-google <https://qubitpi.github.io/certbot/certbot-dns-google/docs/html>`_
+* `certbot-dns-linode <https://qubitpi.github.io/certbot/certbot-dns-linode/docs/html>`_
+* `certbot-dns-luadns <https://qubitpi.github.io/certbot/certbot-dns-luadns/docs/html>`_
+* `certbot-dns-nsone <https://qubitpi.github.io/certbot/certbot-dns-nsone/docs/html>`_
+* `certbot-dns-ovh <https://qubitpi.github.io/certbot/certbot-dns-ovh/docs/html/>`_
+* `certbot-dns-rfc2136 <https://qubitpi.github.io/certbot/certbot-dns-rfc2136/docs/html/>`_
+* `certbot-dns-route53 <https://qubitpi.github.io/certbot/certbot-dns-route53/docs/html/>`_
+* `certbot-dns-sakuracloud <https://qubitpi.github.io/certbot/certbot-dns-sakuracloud/docs/html/>`_
 
 Manual
 ------
