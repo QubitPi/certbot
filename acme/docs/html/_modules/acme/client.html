@@ -1,0 +1,858 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>acme.client &mdash; acme-python 0 documentation</title>
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../../_static/doctools.js"></script>
+        <script src="../../_static/sphinx_highlight.js"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            acme-python
+          </a>
+              <div class="version">
+                0
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../api.html">API Documentation</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">acme-python</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">acme.client</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for acme.client</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;ACME client API.&quot;&quot;&quot;</span>
+<span class="kn">import</span> <span class="nn">base64</span>
+<span class="kn">import</span> <span class="nn">datetime</span>
+<span class="kn">from</span> <span class="nn">email.utils</span> <span class="kn">import</span> <span class="n">parsedate_tz</span>
+<span class="kn">import</span> <span class="nn">http.client</span> <span class="k">as</span> <span class="nn">http_client</span>
+<span class="kn">import</span> <span class="nn">logging</span>
+<span class="kn">import</span> <span class="nn">re</span>
+<span class="kn">import</span> <span class="nn">time</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">cast</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">List</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Mapping</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Optional</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Set</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Text</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Tuple</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Union</span>
+
+<span class="kn">import</span> <span class="nn">josepy</span> <span class="k">as</span> <span class="nn">jose</span>
+<span class="kn">import</span> <span class="nn">OpenSSL</span>
+<span class="kn">import</span> <span class="nn">requests</span>
+<span class="kn">from</span> <span class="nn">requests.adapters</span> <span class="kn">import</span> <span class="n">HTTPAdapter</span>
+<span class="kn">from</span> <span class="nn">requests.utils</span> <span class="kn">import</span> <span class="n">parse_header_links</span>
+
+<span class="kn">from</span> <span class="nn">acme</span> <span class="kn">import</span> <span class="n">challenges</span>
+<span class="kn">from</span> <span class="nn">acme</span> <span class="kn">import</span> <span class="n">crypto_util</span>
+<span class="kn">from</span> <span class="nn">acme</span> <span class="kn">import</span> <span class="n">errors</span>
+<span class="kn">from</span> <span class="nn">acme</span> <span class="kn">import</span> <span class="n">jws</span>
+<span class="kn">from</span> <span class="nn">acme</span> <span class="kn">import</span> <span class="n">messages</span>
+
+<span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+
+<span class="n">DEFAULT_NETWORK_TIMEOUT</span> <span class="o">=</span> <span class="mi">45</span>
+
+
+<div class="viewcode-block" id="ClientV2"><a class="viewcode-back" href="../../api/client.html#acme.client.ClientV2">[docs]</a><span class="k">class</span> <span class="nc">ClientV2</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;ACME client for a v2 API.</span>
+
+<span class="sd">    :ivar messages.Directory directory:</span>
+<span class="sd">    :ivar .ClientNetwork net: Client network.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">directory</span><span class="p">:</span> <span class="n">messages</span><span class="o">.</span><span class="n">Directory</span><span class="p">,</span> <span class="n">net</span><span class="p">:</span> <span class="s1">&#39;ClientNetwork&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialize.</span>
+
+<span class="sd">        :param .messages.Directory directory: Directory Resource</span>
+<span class="sd">        :param .ClientNetwork net: Client network.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">directory</span> <span class="o">=</span> <span class="n">directory</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">net</span> <span class="o">=</span> <span class="n">net</span>
+
+<div class="viewcode-block" id="ClientV2.new_account"><a class="viewcode-back" href="../../api/client.html#acme.client.ClientV2.new_account">[docs]</a>    <span class="k">def</span> <span class="nf">new_account</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">new_account</span><span class="p">:</span> <span class="n">messages</span><span class="o">.</span><span class="n">NewRegistration</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">messages</span><span class="o">.</span><span class="n">RegistrationResource</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Register.</span>
+
+<span class="sd">        :param .NewRegistration new_account:</span>
+
+<span class="sd">        :raises .ConflictError: in case the account already exists</span>
+
+<span class="sd">        :returns: Registration Resource.</span>
+<span class="sd">        :rtype: `.RegistrationResource`</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">response</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_post</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">directory</span><span class="p">[</span><span class="s1">&#39;newAccount&#39;</span><span class="p">],</span> <span class="n">new_account</span><span class="p">)</span>
+        <span class="c1"># if account already exists</span>
+        <span class="k">if</span> <span class="n">response</span><span class="o">.</span><span class="n">status_code</span> <span class="o">==</span> <span class="mi">200</span> <span class="ow">and</span> <span class="s1">&#39;Location&#39;</span> <span class="ow">in</span> <span class="n">response</span><span class="o">.</span><span class="n">headers</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">errors</span><span class="o">.</span><span class="n">ConflictError</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">headers</span><span class="p">[</span><span class="s1">&#39;Location&#39;</span><span class="p">])</span>
+        <span class="c1"># &quot;Instance of &#39;Field&#39; has no key/contact member&quot; bug:</span>
+        <span class="n">regr</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_regr_from_response</span><span class="p">(</span><span class="n">response</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">net</span><span class="o">.</span><span class="n">account</span> <span class="o">=</span> <span class="n">regr</span>
+        <span class="k">return</span> <span class="n">regr</span></div>
+
+<div class="viewcode-block" id="ClientV2.query_registration"><a class="viewcode-back" href="../../api/client.html#acme.client.ClientV2.query_registration">[docs]</a>    <span class="k">def</span> <span class="nf">query_registration</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">regr</span><span class="p">:</span> <span class="n">messages</span><span class="o">.</span><span class="n">RegistrationResource</span>
+                           <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">messages</span><span class="o">.</span><span class="n">RegistrationResource</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Query server about registration.</span>
+
+<span class="sd">        :param messages.RegistrationResource regr: Existing Registration</span>
+<span class="sd">            Resource.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">net</span><span class="o">.</span><span class="n">account</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_v2_account</span><span class="p">(</span><span class="n">regr</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">net</span><span class="o">.</span><span class="n">account</span></div>
+
+<div class="viewcode-block" id="ClientV2.update_registration"><a class="viewcode-back" href="../../api/client.html#acme.client.ClientV2.update_registration">[docs]</a>    <span class="k">def</span> <span class="nf">update_registration</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">regr</span><span class="p">:</span> <span class="n">messages</span><span class="o">.</span><span class="n">RegistrationResource</span><span class="p">,</span>
+                            <span class="n">update</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">messages</span><span class="o">.</span><span class="n">Registration</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+                            <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">messages</span><span class="o">.</span><span class="n">RegistrationResource</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Update registration.</span>
+
+<span class="sd">        :param messages.RegistrationResource regr: Registration Resource.</span>
+<span class="sd">        :param messages.Registration update: Updated body of the</span>
+<span class="sd">            resource. If not provided, body will be taken from `regr`.</span>
+
+<span class="sd">        :returns: Updated Registration Resource.</span>
+<span class="sd">        :rtype: `.RegistrationResource`</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># https://github.com/certbot/certbot/issues/6155</span>
+        <span class="n">regr</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_v2_account</span><span class="p">(</span><span class="n">regr</span><span class="p">)</span>
+
+        <span class="n">update</span> <span class="o">=</span> <span class="n">regr</span><span class="o">.</span><span class="n">body</span> <span class="k">if</span> <span class="n">update</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">update</span>
+        <span class="n">body</span> <span class="o">=</span> <span class="n">messages</span><span class="o">.</span><span class="n">UpdateRegistration</span><span class="p">(</span><span class="o">**</span><span class="nb">dict</span><span class="p">(</span><span class="n">update</span><span class="p">))</span>
+        <span class="n">updated_regr</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_send_recv_regr</span><span class="p">(</span><span class="n">regr</span><span class="p">,</span> <span class="n">body</span><span class="o">=</span><span class="n">body</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">net</span><span class="o">.</span><span class="n">account</span> <span class="o">=</span> <span class="n">updated_regr</span>
+        <span class="k">return</span> <span class="n">updated_regr</span></div>
+
+    <span class="k">def</span> <span class="nf">_get_v2_account</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">regr</span><span class="p">:</span> <span class="n">messages</span><span class="o">.</span><span class="n">RegistrationResource</span><span class="p">,</span> <span class="n">update_body</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
+                       <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">messages</span><span class="o">.</span><span class="n">RegistrationResource</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">net</span><span class="o">.</span><span class="n">account</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="n">only_existing_reg</span> <span class="o">=</span> <span class="n">regr</span><span class="o">.</span><span class="n">body</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">only_return_existing</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">response</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_post</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">directory</span><span class="p">[</span><span class="s1">&#39;newAccount&#39;</span><span class="p">],</span> <span class="n">only_existing_reg</span><span class="p">)</span>
+        <span class="n">updated_uri</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">headers</span><span class="p">[</span><span class="s1">&#39;Location&#39;</span><span class="p">]</span>
+        <span class="n">new_regr</span> <span class="o">=</span> <span class="n">regr</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">body</span><span class="o">=</span><span class="n">messages</span><span class="o">.</span><span class="n">Registration</span><span class="o">.</span><span class="n">from_json</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">json</span><span class="p">())</span>
+                               <span class="k">if</span> <span class="n">update_body</span> <span class="k">else</span> <span class="n">regr</span><span class="o">.</span><span class="n">body</span><span class="p">,</span>
+                               <span class="n">uri</span><span class="o">=</span><span class="n">updated_uri</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">net</span><span class="o">.</span><span class="n">account</span> <span class="o">=</span> <span class="n">new_regr</span>
+        <span class="k">return</span> <span class="n">new_regr</span>
+
+<div class="viewcode-block" id="ClientV2.new_order"><a class="viewcode-back" href="../../api/client.html#acme.client.ClientV2.new_order">[docs]</a>    <span class="k">def</span> <span class="nf">new_order</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">csr_pem</span><span class="p">:</span> <span class="nb">bytes</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">messages</span><span class="o">.</span><span class="n">OrderResource</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Request a new Order object from the server.</span>
+
+<span class="sd">        :param bytes csr_pem: A CSR in PEM format.</span>
+
+<span class="sd">        :returns: The newly created order.</span>
+<span class="sd">        :rtype: OrderResource</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">csr</span> <span class="o">=</span> <span class="n">OpenSSL</span><span class="o">.</span><span class="n">crypto</span><span class="o">.</span><span class="n">load_certificate_request</span><span class="p">(</span><span class="n">OpenSSL</span><span class="o">.</span><span class="n">crypto</span><span class="o">.</span><span class="n">FILETYPE_PEM</span><span class="p">,</span> <span class="n">csr_pem</span><span class="p">)</span>
+        <span class="c1"># pylint: disable=protected-access</span>
+        <span class="n">dnsNames</span> <span class="o">=</span> <span class="n">crypto_util</span><span class="o">.</span><span class="n">_pyopenssl_cert_or_req_all_names</span><span class="p">(</span><span class="n">csr</span><span class="p">)</span>
+        <span class="n">ipNames</span> <span class="o">=</span> <span class="n">crypto_util</span><span class="o">.</span><span class="n">_pyopenssl_cert_or_req_san_ip</span><span class="p">(</span><span class="n">csr</span><span class="p">)</span>
+        <span class="c1"># ipNames is now []string</span>
+        <span class="n">identifiers</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">dnsNames</span><span class="p">:</span>
+            <span class="n">identifiers</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">messages</span><span class="o">.</span><span class="n">Identifier</span><span class="p">(</span><span class="n">typ</span><span class="o">=</span><span class="n">messages</span><span class="o">.</span><span class="n">IDENTIFIER_FQDN</span><span class="p">,</span>
+                <span class="n">value</span><span class="o">=</span><span class="n">name</span><span class="p">))</span>
+        <span class="k">for</span> <span class="n">ips</span> <span class="ow">in</span> <span class="n">ipNames</span><span class="p">:</span>
+            <span class="n">identifiers</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">messages</span><span class="o">.</span><span class="n">Identifier</span><span class="p">(</span><span class="n">typ</span><span class="o">=</span><span class="n">messages</span><span class="o">.</span><span class="n">IDENTIFIER_IP</span><span class="p">,</span>
+                <span class="n">value</span><span class="o">=</span><span class="n">ips</span><span class="p">))</span>
+        <span class="n">order</span> <span class="o">=</span> <span class="n">messages</span><span class="o">.</span><span class="n">NewOrder</span><span class="p">(</span><span class="n">identifiers</span><span class="o">=</span><span class="n">identifiers</span><span class="p">)</span>
+        <span class="n">response</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_post</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">directory</span><span class="p">[</span><span class="s1">&#39;newOrder&#39;</span><span class="p">],</span> <span class="n">order</span><span class="p">)</span>
+        <span class="n">body</span> <span class="o">=</span> <span class="n">messages</span><span class="o">.</span><span class="n">Order</span><span class="o">.</span><span class="n">from_json</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">json</span><span class="p">())</span>
+        <span class="n">authorizations</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="c1"># pylint has trouble understanding our josepy based objects which use</span>
+        <span class="c1"># things like custom metaclass logic. body.authorizations should be a</span>
+        <span class="c1"># list of strings containing URLs so let&#39;s disable this check here.</span>
+        <span class="k">for</span> <span class="n">url</span> <span class="ow">in</span> <span class="n">body</span><span class="o">.</span><span class="n">authorizations</span><span class="p">:</span>  <span class="c1"># pylint: disable=not-an-iterable</span>
+            <span class="n">authorizations</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_authzr_from_response</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_post_as_get</span><span class="p">(</span><span class="n">url</span><span class="p">),</span> <span class="n">uri</span><span class="o">=</span><span class="n">url</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">messages</span><span class="o">.</span><span class="n">OrderResource</span><span class="p">(</span>
+            <span class="n">body</span><span class="o">=</span><span class="n">body</span><span class="p">,</span>
+            <span class="n">uri</span><span class="o">=</span><span class="n">response</span><span class="o">.</span><span class="n">headers</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;Location&#39;</span><span class="p">),</span>
+            <span class="n">authorizations</span><span class="o">=</span><span class="n">authorizations</span><span class="p">,</span>
+            <span class="n">csr_pem</span><span class="o">=</span><span class="n">csr_pem</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="ClientV2.poll"><a class="viewcode-back" href="../../api/client.html#acme.client.ClientV2.poll">[docs]</a>    <span class="k">def</span> <span class="nf">poll</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">authzr</span><span class="p">:</span> <span class="n">messages</span><span class="o">.</span><span class="n">AuthorizationResource</span>
+             <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">messages</span><span class="o">.</span><span class="n">AuthorizationResource</span><span class="p">,</span> <span class="n">requests</span><span class="o">.</span><span class="n">Response</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Poll Authorization Resource for status.</span>
+
+<span class="sd">        :param authzr: Authorization Resource</span>
+<span class="sd">        :type authzr: `.AuthorizationResource`</span>
+
+<span class="sd">        :returns: Updated Authorization Resource and HTTP response.</span>
+
+<span class="sd">        :rtype: (`.AuthorizationResource`, `requests.Response`)</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">response</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_post_as_get</span><span class="p">(</span><span class="n">authzr</span><span class="o">.</span><span class="n">uri</span><span class="p">)</span>
+        <span class="n">updated_authzr</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_authzr_from_response</span><span class="p">(</span>
+            <span class="n">response</span><span class="p">,</span> <span class="n">authzr</span><span class="o">.</span><span class="n">body</span><span class="o">.</span><span class="n">identifier</span><span class="p">,</span> <span class="n">authzr</span><span class="o">.</span><span class="n">uri</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">updated_authzr</span><span class="p">,</span> <span class="n">response</span></div>
+
+<div class="viewcode-block" id="ClientV2.poll_and_finalize"><a class="viewcode-back" href="../../api/client.html#acme.client.ClientV2.poll_and_finalize">[docs]</a>    <span class="k">def</span> <span class="nf">poll_and_finalize</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">orderr</span><span class="p">:</span> <span class="n">messages</span><span class="o">.</span><span class="n">OrderResource</span><span class="p">,</span>
+                          <span class="n">deadline</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">messages</span><span class="o">.</span><span class="n">OrderResource</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Poll authorizations and finalize the order.</span>
+
+<span class="sd">        If no deadline is provided, this method will timeout after 90</span>
+<span class="sd">        seconds.</span>
+
+<span class="sd">        :param messages.OrderResource orderr: order to finalize</span>
+<span class="sd">        :param datetime.datetime deadline: when to stop polling and timeout</span>
+
+<span class="sd">        :returns: finalized order</span>
+<span class="sd">        :rtype: messages.OrderResource</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">deadline</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">deadline</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span> <span class="o">+</span> <span class="n">datetime</span><span class="o">.</span><span class="n">timedelta</span><span class="p">(</span><span class="n">seconds</span><span class="o">=</span><span class="mi">90</span><span class="p">)</span>
+        <span class="n">orderr</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">poll_authorizations</span><span class="p">(</span><span class="n">orderr</span><span class="p">,</span> <span class="n">deadline</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">finalize_order</span><span class="p">(</span><span class="n">orderr</span><span class="p">,</span> <span class="n">deadline</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="ClientV2.poll_authorizations"><a class="viewcode-back" href="../../api/client.html#acme.client.ClientV2.poll_authorizations">[docs]</a>    <span class="k">def</span> <span class="nf">poll_authorizations</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">orderr</span><span class="p">:</span> <span class="n">messages</span><span class="o">.</span><span class="n">OrderResource</span><span class="p">,</span> <span class="n">deadline</span><span class="p">:</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span>
+                            <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">messages</span><span class="o">.</span><span class="n">OrderResource</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Poll Order Resource for status.&quot;&quot;&quot;</span>
+        <span class="n">responses</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">url</span> <span class="ow">in</span> <span class="n">orderr</span><span class="o">.</span><span class="n">body</span><span class="o">.</span><span class="n">authorizations</span><span class="p">:</span>
+            <span class="k">while</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span> <span class="o">&lt;</span> <span class="n">deadline</span><span class="p">:</span>
+                <span class="n">authzr</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_authzr_from_response</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_post_as_get</span><span class="p">(</span><span class="n">url</span><span class="p">),</span> <span class="n">uri</span><span class="o">=</span><span class="n">url</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">authzr</span><span class="o">.</span><span class="n">body</span><span class="o">.</span><span class="n">status</span> <span class="o">!=</span> <span class="n">messages</span><span class="o">.</span><span class="n">STATUS_PENDING</span><span class="p">:</span>  <span class="c1"># pylint: disable=no-member</span>
+                    <span class="n">responses</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">authzr</span><span class="p">)</span>
+                    <span class="k">break</span>
+                <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+        <span class="c1"># If we didn&#39;t get a response for every authorization, we fell through</span>
+        <span class="c1"># the bottom of the loop due to hitting the deadline.</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">responses</span><span class="p">)</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">orderr</span><span class="o">.</span><span class="n">body</span><span class="o">.</span><span class="n">authorizations</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="n">errors</span><span class="o">.</span><span class="n">TimeoutError</span><span class="p">()</span>
+        <span class="n">failed</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">authzr</span> <span class="ow">in</span> <span class="n">responses</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">authzr</span><span class="o">.</span><span class="n">body</span><span class="o">.</span><span class="n">status</span> <span class="o">!=</span> <span class="n">messages</span><span class="o">.</span><span class="n">STATUS_VALID</span><span class="p">:</span>
+                <span class="k">for</span> <span class="n">chall</span> <span class="ow">in</span> <span class="n">authzr</span><span class="o">.</span><span class="n">body</span><span class="o">.</span><span class="n">challenges</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">chall</span><span class="o">.</span><span class="n">error</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                        <span class="n">failed</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">authzr</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">failed</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">errors</span><span class="o">.</span><span class="n">ValidationError</span><span class="p">(</span><span class="n">failed</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">orderr</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">authorizations</span><span class="o">=</span><span class="n">responses</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="ClientV2.begin_finalization"><a class="viewcode-back" href="../../api/client.html#acme.client.ClientV2.begin_finalization">[docs]</a>    <span class="k">def</span> <span class="nf">begin_finalization</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">orderr</span><span class="p">:</span> <span class="n">messages</span><span class="o">.</span><span class="n">OrderResource</span>
+                           <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">messages</span><span class="o">.</span><span class="n">OrderResource</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Start the process of finalizing an order.</span>
+
+<span class="sd">        :param messages.OrderResource orderr: order to finalize</span>
+<span class="sd">        :param datetime.datetime deadline: when to stop polling and timeout</span>
+
+<span class="sd">        :returns: updated order</span>
+<span class="sd">        :rtype: messages.OrderResource</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">csr</span> <span class="o">=</span> <span class="n">OpenSSL</span><span class="o">.</span><span class="n">crypto</span><span class="o">.</span><span class="n">load_certificate_request</span><span class="p">(</span>
+            <span class="n">OpenSSL</span><span class="o">.</span><span class="n">crypto</span><span class="o">.</span><span class="n">FILETYPE_PEM</span><span class="p">,</span> <span class="n">orderr</span><span class="o">.</span><span class="n">csr_pem</span><span class="p">)</span>
+        <span class="n">wrapped_csr</span> <span class="o">=</span> <span class="n">messages</span><span class="o">.</span><span class="n">CertificateRequest</span><span class="p">(</span><span class="n">csr</span><span class="o">=</span><span class="n">jose</span><span class="o">.</span><span class="n">ComparableX509</span><span class="p">(</span><span class="n">csr</span><span class="p">))</span>
+        <span class="n">res</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_post</span><span class="p">(</span><span class="n">orderr</span><span class="o">.</span><span class="n">body</span><span class="o">.</span><span class="n">finalize</span><span class="p">,</span> <span class="n">wrapped_csr</span><span class="p">)</span>
+        <span class="n">orderr</span> <span class="o">=</span> <span class="n">orderr</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">body</span><span class="o">=</span><span class="n">messages</span><span class="o">.</span><span class="n">Order</span><span class="o">.</span><span class="n">from_json</span><span class="p">(</span><span class="n">res</span><span class="o">.</span><span class="n">json</span><span class="p">()))</span>
+        <span class="k">return</span> <span class="n">orderr</span></div>
+
+<div class="viewcode-block" id="ClientV2.poll_finalization"><a class="viewcode-back" href="../../api/client.html#acme.client.ClientV2.poll_finalization">[docs]</a>    <span class="k">def</span> <span class="nf">poll_finalization</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">orderr</span><span class="p">:</span> <span class="n">messages</span><span class="o">.</span><span class="n">OrderResource</span><span class="p">,</span>
+                          <span class="n">deadline</span><span class="p">:</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="p">,</span>
+                          <span class="n">fetch_alternative_chains</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
+                          <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">messages</span><span class="o">.</span><span class="n">OrderResource</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Poll an order that has been finalized for its status.</span>
+<span class="sd">        If it becomes valid, obtain the certificate.</span>
+
+<span class="sd">        :returns: finalized order (with certificate)</span>
+<span class="sd">        :rtype: messages.OrderResource</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">while</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span> <span class="o">&lt;</span> <span class="n">deadline</span><span class="p">:</span>
+            <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+            <span class="n">response</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_post_as_get</span><span class="p">(</span><span class="n">orderr</span><span class="o">.</span><span class="n">uri</span><span class="p">)</span>
+            <span class="n">body</span> <span class="o">=</span> <span class="n">messages</span><span class="o">.</span><span class="n">Order</span><span class="o">.</span><span class="n">from_json</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">json</span><span class="p">())</span>
+            <span class="k">if</span> <span class="n">body</span><span class="o">.</span><span class="n">status</span> <span class="o">==</span> <span class="n">messages</span><span class="o">.</span><span class="n">STATUS_INVALID</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">body</span><span class="o">.</span><span class="n">error</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="n">errors</span><span class="o">.</span><span class="n">IssuanceError</span><span class="p">(</span><span class="n">body</span><span class="o">.</span><span class="n">error</span><span class="p">)</span>
+                <span class="k">raise</span> <span class="n">errors</span><span class="o">.</span><span class="n">Error</span><span class="p">(</span>
+                    <span class="s2">&quot;The certificate order failed. No further information was provided &quot;</span>
+                    <span class="s2">&quot;by the server.&quot;</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">body</span><span class="o">.</span><span class="n">status</span> <span class="o">==</span> <span class="n">messages</span><span class="o">.</span><span class="n">STATUS_VALID</span> <span class="ow">and</span> <span class="n">body</span><span class="o">.</span><span class="n">certificate</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">certificate_response</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_post_as_get</span><span class="p">(</span><span class="n">body</span><span class="o">.</span><span class="n">certificate</span><span class="p">)</span>
+                <span class="n">orderr</span> <span class="o">=</span> <span class="n">orderr</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">body</span><span class="o">=</span><span class="n">body</span><span class="p">,</span> <span class="n">fullchain_pem</span><span class="o">=</span><span class="n">certificate_response</span><span class="o">.</span><span class="n">text</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">fetch_alternative_chains</span><span class="p">:</span>
+                    <span class="n">alt_chains_urls</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_links</span><span class="p">(</span><span class="n">certificate_response</span><span class="p">,</span> <span class="s1">&#39;alternate&#39;</span><span class="p">)</span>
+                    <span class="n">alt_chains</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_post_as_get</span><span class="p">(</span><span class="n">url</span><span class="p">)</span><span class="o">.</span><span class="n">text</span> <span class="k">for</span> <span class="n">url</span> <span class="ow">in</span> <span class="n">alt_chains_urls</span><span class="p">]</span>
+                    <span class="n">orderr</span> <span class="o">=</span> <span class="n">orderr</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">alternative_fullchains_pem</span><span class="o">=</span><span class="n">alt_chains</span><span class="p">)</span>
+                <span class="k">return</span> <span class="n">orderr</span>
+        <span class="k">raise</span> <span class="n">errors</span><span class="o">.</span><span class="n">TimeoutError</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="ClientV2.finalize_order"><a class="viewcode-back" href="../../api/client.html#acme.client.ClientV2.finalize_order">[docs]</a>    <span class="k">def</span> <span class="nf">finalize_order</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">orderr</span><span class="p">:</span> <span class="n">messages</span><span class="o">.</span><span class="n">OrderResource</span><span class="p">,</span> <span class="n">deadline</span><span class="p">:</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="p">,</span>
+                       <span class="n">fetch_alternative_chains</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">messages</span><span class="o">.</span><span class="n">OrderResource</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Finalize an order and obtain a certificate.</span>
+
+<span class="sd">        :param messages.OrderResource orderr: order to finalize</span>
+<span class="sd">        :param datetime.datetime deadline: when to stop polling and timeout</span>
+<span class="sd">        :param bool fetch_alternative_chains: whether to also fetch alternative</span>
+<span class="sd">            certificate chains</span>
+
+<span class="sd">        :returns: finalized order</span>
+<span class="sd">        :rtype: messages.OrderResource</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">begin_finalization</span><span class="p">(</span><span class="n">orderr</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">poll_finalization</span><span class="p">(</span><span class="n">orderr</span><span class="p">,</span> <span class="n">deadline</span><span class="p">,</span> <span class="n">fetch_alternative_chains</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="ClientV2.revoke"><a class="viewcode-back" href="../../api/client.html#acme.client.ClientV2.revoke">[docs]</a>    <span class="k">def</span> <span class="nf">revoke</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cert</span><span class="p">:</span> <span class="n">jose</span><span class="o">.</span><span class="n">ComparableX509</span><span class="p">,</span> <span class="n">rsn</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Revoke certificate.</span>
+
+<span class="sd">        :param .ComparableX509 cert: `OpenSSL.crypto.X509` wrapped in</span>
+<span class="sd">            `.ComparableX509`</span>
+
+<span class="sd">        :param int rsn: Reason code for certificate revocation.</span>
+
+<span class="sd">        :raises .ClientError: If revocation is unsuccessful.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_revoke</span><span class="p">(</span><span class="n">cert</span><span class="p">,</span> <span class="n">rsn</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">directory</span><span class="p">[</span><span class="s1">&#39;revokeCert&#39;</span><span class="p">])</span></div>
+
+<div class="viewcode-block" id="ClientV2.external_account_required"><a class="viewcode-back" href="../../api/client.html#acme.client.ClientV2.external_account_required">[docs]</a>    <span class="k">def</span> <span class="nf">external_account_required</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Checks if ACME server requires External Account Binding authentication.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">directory</span><span class="p">,</span> <span class="s1">&#39;meta&#39;</span><span class="p">)</span> <span class="ow">and</span> \
+               <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">directory</span><span class="o">.</span><span class="n">meta</span><span class="p">,</span> <span class="s1">&#39;external_account_required&#39;</span><span class="p">)</span> <span class="ow">and</span> \
+               <span class="bp">self</span><span class="o">.</span><span class="n">directory</span><span class="o">.</span><span class="n">meta</span><span class="o">.</span><span class="n">external_account_required</span></div>
+
+    <span class="k">def</span> <span class="nf">_post_as_get</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">requests</span><span class="o">.</span><span class="n">Response</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Send GET request using the POST-as-GET protocol.</span>
+<span class="sd">        :param args:</span>
+<span class="sd">        :param kwargs:</span>
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">new_args</span> <span class="o">=</span> <span class="n">args</span><span class="p">[:</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="p">(</span><span class="kc">None</span><span class="p">,)</span> <span class="o">+</span> <span class="n">args</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_post</span><span class="p">(</span><span class="o">*</span><span class="n">new_args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_get_links</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">response</span><span class="p">:</span> <span class="n">requests</span><span class="o">.</span><span class="n">Response</span><span class="p">,</span> <span class="n">relation_type</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Retrieves all Link URIs of relation_type from the response.</span>
+<span class="sd">        :param requests.Response response: The requests HTTP response.</span>
+<span class="sd">        :param str relation_type: The relation type to filter by.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Can&#39;t use response.links directly because it drops multiple links</span>
+        <span class="c1"># of the same relation type, which is possible in RFC8555 responses.</span>
+        <span class="k">if</span> <span class="s1">&#39;Link&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">response</span><span class="o">.</span><span class="n">headers</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">[]</span>
+        <span class="n">links</span> <span class="o">=</span> <span class="n">parse_header_links</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">headers</span><span class="p">[</span><span class="s1">&#39;Link&#39;</span><span class="p">])</span>
+        <span class="k">return</span> <span class="p">[</span><span class="n">l</span><span class="p">[</span><span class="s1">&#39;url&#39;</span><span class="p">]</span> <span class="k">for</span> <span class="n">l</span> <span class="ow">in</span> <span class="n">links</span>
+                <span class="k">if</span> <span class="s1">&#39;rel&#39;</span> <span class="ow">in</span> <span class="n">l</span> <span class="ow">and</span> <span class="s1">&#39;url&#39;</span> <span class="ow">in</span> <span class="n">l</span> <span class="ow">and</span> <span class="n">l</span><span class="p">[</span><span class="s1">&#39;rel&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="n">relation_type</span><span class="p">]</span>
+
+<div class="viewcode-block" id="ClientV2.get_directory"><a class="viewcode-back" href="../../api/client.html#acme.client.ClientV2.get_directory">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">get_directory</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">url</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">net</span><span class="p">:</span> <span class="s1">&#39;ClientNetwork&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">messages</span><span class="o">.</span><span class="n">Directory</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Retrieves the ACME directory (RFC 8555 section 7.1.1) from the ACME server.</span>
+<span class="sd">        :param str url: the URL where the ACME directory is available</span>
+<span class="sd">        :param ClientNetwork net: the ClientNetwork to use to make the request</span>
+
+<span class="sd">        :returns: the ACME directory object</span>
+<span class="sd">        :rtype: messages.Directory</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">messages</span><span class="o">.</span><span class="n">Directory</span><span class="o">.</span><span class="n">from_json</span><span class="p">(</span><span class="n">net</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">url</span><span class="p">)</span><span class="o">.</span><span class="n">json</span><span class="p">())</span></div>
+
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">_regr_from_response</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">response</span><span class="p">:</span> <span class="n">requests</span><span class="o">.</span><span class="n">Response</span><span class="p">,</span> <span class="n">uri</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                            <span class="n">terms_of_service</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+                            <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">messages</span><span class="o">.</span><span class="n">RegistrationResource</span><span class="p">:</span>
+        <span class="k">if</span> <span class="s1">&#39;terms-of-service&#39;</span> <span class="ow">in</span> <span class="n">response</span><span class="o">.</span><span class="n">links</span><span class="p">:</span>
+            <span class="n">terms_of_service</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">links</span><span class="p">[</span><span class="s1">&#39;terms-of-service&#39;</span><span class="p">][</span><span class="s1">&#39;url&#39;</span><span class="p">]</span>
+
+        <span class="k">return</span> <span class="n">messages</span><span class="o">.</span><span class="n">RegistrationResource</span><span class="p">(</span>
+            <span class="n">body</span><span class="o">=</span><span class="n">messages</span><span class="o">.</span><span class="n">Registration</span><span class="o">.</span><span class="n">from_json</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">json</span><span class="p">()),</span>
+            <span class="n">uri</span><span class="o">=</span><span class="n">response</span><span class="o">.</span><span class="n">headers</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;Location&#39;</span><span class="p">,</span> <span class="n">uri</span><span class="p">),</span>
+            <span class="n">terms_of_service</span><span class="o">=</span><span class="n">terms_of_service</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_send_recv_regr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">regr</span><span class="p">:</span> <span class="n">messages</span><span class="o">.</span><span class="n">RegistrationResource</span><span class="p">,</span>
+                        <span class="n">body</span><span class="p">:</span> <span class="n">messages</span><span class="o">.</span><span class="n">Registration</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">messages</span><span class="o">.</span><span class="n">RegistrationResource</span><span class="p">:</span>
+        <span class="n">response</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_post</span><span class="p">(</span><span class="n">regr</span><span class="o">.</span><span class="n">uri</span><span class="p">,</span> <span class="n">body</span><span class="p">)</span>
+
+        <span class="c1"># TODO: Boulder returns httplib.ACCEPTED</span>
+        <span class="c1">#assert response.status_code == httplib.OK</span>
+
+        <span class="c1"># TODO: Boulder does not set Location or Link on update</span>
+        <span class="c1"># (c.f. acme-spec #94)</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_regr_from_response</span><span class="p">(</span>
+            <span class="n">response</span><span class="p">,</span> <span class="n">uri</span><span class="o">=</span><span class="n">regr</span><span class="o">.</span><span class="n">uri</span><span class="p">,</span>
+            <span class="n">terms_of_service</span><span class="o">=</span><span class="n">regr</span><span class="o">.</span><span class="n">terms_of_service</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_post</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">requests</span><span class="o">.</span><span class="n">Response</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Wrapper around self.net.post that adds the newNonce URL.</span>
+
+<span class="sd">        This is used to retry the request in case of a badNonce error.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">kwargs</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="s1">&#39;new_nonce_url&#39;</span><span class="p">,</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">directory</span><span class="p">,</span> <span class="s1">&#39;newNonce&#39;</span><span class="p">))</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">net</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+<div class="viewcode-block" id="ClientV2.deactivate_registration"><a class="viewcode-back" href="../../api/client.html#acme.client.ClientV2.deactivate_registration">[docs]</a>    <span class="k">def</span> <span class="nf">deactivate_registration</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">regr</span><span class="p">:</span> <span class="n">messages</span><span class="o">.</span><span class="n">RegistrationResource</span>
+                                <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">messages</span><span class="o">.</span><span class="n">RegistrationResource</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Deactivate registration.</span>
+
+<span class="sd">        :param messages.RegistrationResource regr: The Registration Resource</span>
+<span class="sd">            to be deactivated.</span>
+
+<span class="sd">        :returns: The Registration resource that was deactivated.</span>
+<span class="sd">        :rtype: `.RegistrationResource`</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">update_registration</span><span class="p">(</span><span class="n">regr</span><span class="p">,</span> <span class="n">messages</span><span class="o">.</span><span class="n">Registration</span><span class="o">.</span><span class="n">from_json</span><span class="p">(</span>
+            <span class="p">{</span><span class="s2">&quot;status&quot;</span><span class="p">:</span> <span class="s2">&quot;deactivated&quot;</span><span class="p">,</span> <span class="s2">&quot;contact&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">}))</span></div>
+
+<div class="viewcode-block" id="ClientV2.deactivate_authorization"><a class="viewcode-back" href="../../api/client.html#acme.client.ClientV2.deactivate_authorization">[docs]</a>    <span class="k">def</span> <span class="nf">deactivate_authorization</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+                                 <span class="n">authzr</span><span class="p">:</span> <span class="n">messages</span><span class="o">.</span><span class="n">AuthorizationResource</span>
+                                 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">messages</span><span class="o">.</span><span class="n">AuthorizationResource</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Deactivate authorization.</span>
+
+<span class="sd">        :param messages.AuthorizationResource authzr: The Authorization resource</span>
+<span class="sd">            to be deactivated.</span>
+
+<span class="sd">        :returns: The Authorization resource that was deactivated.</span>
+<span class="sd">        :rtype: `.AuthorizationResource`</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">body</span> <span class="o">=</span> <span class="n">messages</span><span class="o">.</span><span class="n">UpdateAuthorization</span><span class="p">(</span><span class="n">status</span><span class="o">=</span><span class="s1">&#39;deactivated&#39;</span><span class="p">)</span>
+        <span class="n">response</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_post</span><span class="p">(</span><span class="n">authzr</span><span class="o">.</span><span class="n">uri</span><span class="p">,</span> <span class="n">body</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_authzr_from_response</span><span class="p">(</span><span class="n">response</span><span class="p">,</span>
+            <span class="n">authzr</span><span class="o">.</span><span class="n">body</span><span class="o">.</span><span class="n">identifier</span><span class="p">,</span> <span class="n">authzr</span><span class="o">.</span><span class="n">uri</span><span class="p">)</span></div>
+
+    <span class="k">def</span> <span class="nf">_authzr_from_response</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">response</span><span class="p">:</span> <span class="n">requests</span><span class="o">.</span><span class="n">Response</span><span class="p">,</span>
+                              <span class="n">identifier</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">messages</span><span class="o">.</span><span class="n">Identifier</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                              <span class="n">uri</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">messages</span><span class="o">.</span><span class="n">AuthorizationResource</span><span class="p">:</span>
+        <span class="n">authzr</span> <span class="o">=</span> <span class="n">messages</span><span class="o">.</span><span class="n">AuthorizationResource</span><span class="p">(</span>
+            <span class="n">body</span><span class="o">=</span><span class="n">messages</span><span class="o">.</span><span class="n">Authorization</span><span class="o">.</span><span class="n">from_json</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">json</span><span class="p">()),</span>
+            <span class="n">uri</span><span class="o">=</span><span class="n">response</span><span class="o">.</span><span class="n">headers</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;Location&#39;</span><span class="p">,</span> <span class="n">uri</span><span class="p">))</span>
+        <span class="k">if</span> <span class="n">identifier</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">authzr</span><span class="o">.</span><span class="n">body</span><span class="o">.</span><span class="n">identifier</span> <span class="o">!=</span> <span class="n">identifier</span><span class="p">:</span>  <span class="c1"># pylint: disable=no-member</span>
+            <span class="k">raise</span> <span class="n">errors</span><span class="o">.</span><span class="n">UnexpectedUpdate</span><span class="p">(</span><span class="n">authzr</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">authzr</span>
+
+<div class="viewcode-block" id="ClientV2.answer_challenge"><a class="viewcode-back" href="../../api/client.html#acme.client.ClientV2.answer_challenge">[docs]</a>    <span class="k">def</span> <span class="nf">answer_challenge</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">challb</span><span class="p">:</span> <span class="n">messages</span><span class="o">.</span><span class="n">ChallengeBody</span><span class="p">,</span>
+                         <span class="n">response</span><span class="p">:</span> <span class="n">challenges</span><span class="o">.</span><span class="n">ChallengeResponse</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">messages</span><span class="o">.</span><span class="n">ChallengeResource</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Answer challenge.</span>
+
+<span class="sd">        :param challb: Challenge Resource body.</span>
+<span class="sd">        :type challb: `.ChallengeBody`</span>
+
+<span class="sd">        :param response: Corresponding Challenge response</span>
+<span class="sd">        :type response: `.challenges.ChallengeResponse`</span>
+
+<span class="sd">        :returns: Challenge Resource with updated body.</span>
+<span class="sd">        :rtype: `.ChallengeResource`</span>
+
+<span class="sd">        :raises .UnexpectedUpdate:</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">resp</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_post</span><span class="p">(</span><span class="n">challb</span><span class="o">.</span><span class="n">uri</span><span class="p">,</span> <span class="n">response</span><span class="p">)</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">authzr_uri</span> <span class="o">=</span> <span class="n">resp</span><span class="o">.</span><span class="n">links</span><span class="p">[</span><span class="s1">&#39;up&#39;</span><span class="p">][</span><span class="s1">&#39;url&#39;</span><span class="p">]</span>
+        <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">errors</span><span class="o">.</span><span class="n">ClientError</span><span class="p">(</span><span class="s1">&#39;&quot;up&quot; Link header missing&#39;</span><span class="p">)</span>
+        <span class="n">challr</span> <span class="o">=</span> <span class="n">messages</span><span class="o">.</span><span class="n">ChallengeResource</span><span class="p">(</span>
+            <span class="n">authzr_uri</span><span class="o">=</span><span class="n">authzr_uri</span><span class="p">,</span>
+            <span class="n">body</span><span class="o">=</span><span class="n">messages</span><span class="o">.</span><span class="n">ChallengeBody</span><span class="o">.</span><span class="n">from_json</span><span class="p">(</span><span class="n">resp</span><span class="o">.</span><span class="n">json</span><span class="p">()))</span>
+        <span class="c1"># TODO: check that challr.uri == resp.headers[&#39;Location&#39;]?</span>
+        <span class="k">if</span> <span class="n">challr</span><span class="o">.</span><span class="n">uri</span> <span class="o">!=</span> <span class="n">challb</span><span class="o">.</span><span class="n">uri</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">errors</span><span class="o">.</span><span class="n">UnexpectedUpdate</span><span class="p">(</span><span class="n">challr</span><span class="o">.</span><span class="n">uri</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">challr</span></div>
+
+<div class="viewcode-block" id="ClientV2.retry_after"><a class="viewcode-back" href="../../api/client.html#acme.client.ClientV2.retry_after">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">retry_after</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">response</span><span class="p">:</span> <span class="n">requests</span><span class="o">.</span><span class="n">Response</span><span class="p">,</span> <span class="n">default</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Compute next `poll` time based on response ``Retry-After`` header.</span>
+
+<span class="sd">        Handles integers and various datestring formats per</span>
+<span class="sd">        https://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.37</span>
+
+<span class="sd">        :param requests.Response response: Response from `poll`.</span>
+<span class="sd">        :param int default: Default value (in seconds), used when</span>
+<span class="sd">            ``Retry-After`` header is not present or invalid.</span>
+
+<span class="sd">        :returns: Time point when next `poll` should be performed.</span>
+<span class="sd">        :rtype: `datetime.datetime`</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">retry_after</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">headers</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;Retry-After&#39;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">default</span><span class="p">))</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">seconds</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">retry_after</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+            <span class="c1"># The RFC 2822 parser handles all of RFC 2616&#39;s cases in modern</span>
+            <span class="c1"># environments (primarily HTTP 1.1+ but also py27+)</span>
+            <span class="n">when</span> <span class="o">=</span> <span class="n">parsedate_tz</span><span class="p">(</span><span class="n">retry_after</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">when</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="n">tz_secs</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">timedelta</span><span class="p">(</span><span class="n">when</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="k">if</span> <span class="n">when</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="mi">0</span><span class="p">)</span>
+                    <span class="k">return</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="p">(</span><span class="o">*</span><span class="n">when</span><span class="p">[:</span><span class="mi">7</span><span class="p">])</span> <span class="o">-</span> <span class="n">tz_secs</span>
+                <span class="k">except</span> <span class="p">(</span><span class="ne">ValueError</span><span class="p">,</span> <span class="ne">OverflowError</span><span class="p">):</span>
+                    <span class="k">pass</span>
+            <span class="n">seconds</span> <span class="o">=</span> <span class="n">default</span>
+
+        <span class="k">return</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span> <span class="o">+</span> <span class="n">datetime</span><span class="o">.</span><span class="n">timedelta</span><span class="p">(</span><span class="n">seconds</span><span class="o">=</span><span class="n">seconds</span><span class="p">)</span></div>
+
+    <span class="k">def</span> <span class="nf">_revoke</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cert</span><span class="p">:</span> <span class="n">jose</span><span class="o">.</span><span class="n">ComparableX509</span><span class="p">,</span> <span class="n">rsn</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">url</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Revoke certificate.</span>
+
+<span class="sd">        :param .ComparableX509 cert: `OpenSSL.crypto.X509` wrapped in</span>
+<span class="sd">            `.ComparableX509`</span>
+
+<span class="sd">        :param int rsn: Reason code for certificate revocation.</span>
+
+<span class="sd">        :param str url: ACME URL to post to</span>
+
+<span class="sd">        :raises .ClientError: If revocation is unsuccessful.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">response</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_post</span><span class="p">(</span><span class="n">url</span><span class="p">,</span>
+                              <span class="n">messages</span><span class="o">.</span><span class="n">Revocation</span><span class="p">(</span>
+                                <span class="n">certificate</span><span class="o">=</span><span class="n">cert</span><span class="p">,</span>
+                                <span class="n">reason</span><span class="o">=</span><span class="n">rsn</span><span class="p">))</span>
+        <span class="k">if</span> <span class="n">response</span><span class="o">.</span><span class="n">status_code</span> <span class="o">!=</span> <span class="n">http_client</span><span class="o">.</span><span class="n">OK</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">errors</span><span class="o">.</span><span class="n">ClientError</span><span class="p">(</span>
+                <span class="s1">&#39;Successful revocation must return HTTP OK status&#39;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="ClientNetwork"><a class="viewcode-back" href="../../api/client.html#acme.client.ClientNetwork">[docs]</a><span class="k">class</span> <span class="nc">ClientNetwork</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Wrapper around requests that signs POSTs for authentication.</span>
+
+<span class="sd">    Also adds user agent, and handles Content-Type.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">JSON_CONTENT_TYPE</span> <span class="o">=</span> <span class="s1">&#39;application/json&#39;</span>
+    <span class="n">JOSE_CONTENT_TYPE</span> <span class="o">=</span> <span class="s1">&#39;application/jose+json&#39;</span>
+    <span class="n">JSON_ERROR_CONTENT_TYPE</span> <span class="o">=</span> <span class="s1">&#39;application/problem+json&#39;</span>
+    <span class="n">REPLAY_NONCE_HEADER</span> <span class="o">=</span> <span class="s1">&#39;Replay-Nonce&#39;</span>
+
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Initialize.</span>
+
+<span class="sd">    :param josepy.JWK key: Account private key</span>
+<span class="sd">    :param messages.RegistrationResource account: Account object. Required if you are</span>
+<span class="sd">            planning to use .post() for anything other than creating a new account;</span>
+<span class="sd">            may be set later after registering.</span>
+<span class="sd">    :param josepy.JWASignature alg: Algorithm to use in signing JWS.</span>
+<span class="sd">    :param bool verify_ssl: Whether to verify certificates on SSL connections.</span>
+<span class="sd">    :param str user_agent: String to send as User-Agent header.</span>
+<span class="sd">    :param int timeout: Timeout for requests.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">:</span> <span class="n">jose</span><span class="o">.</span><span class="n">JWK</span><span class="p">,</span> <span class="n">account</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">messages</span><span class="o">.</span><span class="n">RegistrationResource</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                 <span class="n">alg</span><span class="p">:</span> <span class="n">jose</span><span class="o">.</span><span class="n">JWASignature</span> <span class="o">=</span> <span class="n">jose</span><span class="o">.</span><span class="n">RS256</span><span class="p">,</span> <span class="n">verify_ssl</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+                 <span class="n">user_agent</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;acme-python&#39;</span><span class="p">,</span> <span class="n">timeout</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">DEFAULT_NETWORK_TIMEOUT</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">key</span> <span class="o">=</span> <span class="n">key</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">account</span> <span class="o">=</span> <span class="n">account</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">alg</span> <span class="o">=</span> <span class="n">alg</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">verify_ssl</span> <span class="o">=</span> <span class="n">verify_ssl</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_nonces</span><span class="p">:</span> <span class="n">Set</span><span class="p">[</span><span class="n">Text</span><span class="p">]</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">user_agent</span> <span class="o">=</span> <span class="n">user_agent</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">session</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">Session</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_default_timeout</span> <span class="o">=</span> <span class="n">timeout</span>
+        <span class="n">adapter</span> <span class="o">=</span> <span class="n">HTTPAdapter</span><span class="p">()</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">mount</span><span class="p">(</span><span class="s2">&quot;http://&quot;</span><span class="p">,</span> <span class="n">adapter</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">mount</span><span class="p">(</span><span class="s2">&quot;https://&quot;</span><span class="p">,</span> <span class="n">adapter</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="fm">__del__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="c1"># Try to close the session, but don&#39;t show exceptions to the</span>
+        <span class="c1"># user if the call to close() fails. See #4840.</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+        <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>  <span class="c1"># pylint: disable=broad-except</span>
+            <span class="k">pass</span>
+
+    <span class="k">def</span> <span class="nf">_wrap_in_jws</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obj</span><span class="p">:</span> <span class="n">jose</span><span class="o">.</span><span class="n">JSONDeSerializable</span><span class="p">,</span> <span class="n">nonce</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">url</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Wrap `JSONDeSerializable` object in JWS.</span>
+
+<span class="sd">        .. todo:: Implement ``acmePath``.</span>
+
+<span class="sd">        :param josepy.JSONDeSerializable obj:</span>
+<span class="sd">        :param str url: The URL to which this object will be POSTed</span>
+<span class="sd">        :param str nonce:</span>
+<span class="sd">        :rtype: str</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">jobj</span> <span class="o">=</span> <span class="n">obj</span><span class="o">.</span><span class="n">json_dumps</span><span class="p">(</span><span class="n">indent</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="n">encode</span><span class="p">()</span> <span class="k">if</span> <span class="n">obj</span> <span class="k">else</span> <span class="sa">b</span><span class="s1">&#39;&#39;</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;JWS payload:</span><span class="se">\n</span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">jobj</span><span class="p">)</span>
+        <span class="n">kwargs</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">&quot;alg&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">alg</span><span class="p">,</span>
+            <span class="s2">&quot;nonce&quot;</span><span class="p">:</span> <span class="n">nonce</span><span class="p">,</span>
+            <span class="s2">&quot;url&quot;</span><span class="p">:</span> <span class="n">url</span>
+        <span class="p">}</span>
+        <span class="c1"># newAccount and revokeCert work without the kid</span>
+        <span class="c1"># newAccount must not have kid</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">account</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;kid&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">account</span><span class="p">[</span><span class="s2">&quot;uri&quot;</span><span class="p">]</span>
+        <span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;key&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">key</span>
+        <span class="k">return</span> <span class="n">jws</span><span class="o">.</span><span class="n">JWS</span><span class="o">.</span><span class="n">sign</span><span class="p">(</span><span class="n">jobj</span><span class="p">,</span> <span class="o">**</span><span class="n">cast</span><span class="p">(</span><span class="n">Mapping</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">],</span> <span class="n">kwargs</span><span class="p">))</span><span class="o">.</span><span class="n">json_dumps</span><span class="p">(</span><span class="n">indent</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">_check_response</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">response</span><span class="p">:</span> <span class="n">requests</span><span class="o">.</span><span class="n">Response</span><span class="p">,</span>
+                        <span class="n">content_type</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">requests</span><span class="o">.</span><span class="n">Response</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Check response content and its type.</span>
+
+<span class="sd">        .. note::</span>
+<span class="sd">           Checking is not strict: wrong server response ``Content-Type``</span>
+<span class="sd">           HTTP header is ignored if response is an expected JSON object</span>
+<span class="sd">           (c.f. Boulder #56).</span>
+
+<span class="sd">        :param str content_type: Expected Content-Type response header.</span>
+<span class="sd">            If JSON is expected and not present in server response, this</span>
+<span class="sd">            function will raise an error. Otherwise, wrong Content-Type</span>
+<span class="sd">            is ignored, but logged.</span>
+
+<span class="sd">        :raises .messages.Error: If server response body</span>
+<span class="sd">            carries HTTP Problem (https://datatracker.ietf.org/doc/html/rfc7807).</span>
+<span class="sd">        :raises .ClientError: In case of other networking errors.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">response_ct</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">headers</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;Content-Type&#39;</span><span class="p">)</span>
+        <span class="c1"># Strip parameters from the media-type (rfc2616#section-3.7)</span>
+        <span class="k">if</span> <span class="n">response_ct</span><span class="p">:</span>
+            <span class="n">response_ct</span> <span class="o">=</span> <span class="n">response_ct</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;;&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="c1"># TODO: response.json() is called twice, once here, and</span>
+            <span class="c1"># once in _get and _post clients</span>
+            <span class="n">jobj</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">json</span><span class="p">()</span>
+        <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+            <span class="n">jobj</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="k">if</span> <span class="n">response</span><span class="o">.</span><span class="n">status_code</span> <span class="o">==</span> <span class="mi">409</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">errors</span><span class="o">.</span><span class="n">ConflictError</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">headers</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;Location&#39;</span><span class="p">,</span> <span class="s1">&#39;UNKNOWN-LOCATION&#39;</span><span class="p">))</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">response</span><span class="o">.</span><span class="n">ok</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">jobj</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">response_ct</span> <span class="o">!=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">JSON_ERROR_CONTENT_TYPE</span><span class="p">:</span>
+                    <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
+                        <span class="s1">&#39;Ignoring wrong Content-Type (</span><span class="si">%r</span><span class="s1">) for JSON Error&#39;</span><span class="p">,</span>
+                        <span class="n">response_ct</span><span class="p">)</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="n">messages</span><span class="o">.</span><span class="n">Error</span><span class="o">.</span><span class="n">from_json</span><span class="p">(</span><span class="n">jobj</span><span class="p">)</span>
+                <span class="k">except</span> <span class="n">jose</span><span class="o">.</span><span class="n">DeserializationError</span> <span class="k">as</span> <span class="n">error</span><span class="p">:</span>
+                    <span class="c1"># Couldn&#39;t deserialize JSON object</span>
+                    <span class="k">raise</span> <span class="n">errors</span><span class="o">.</span><span class="n">ClientError</span><span class="p">((</span><span class="n">response</span><span class="p">,</span> <span class="n">error</span><span class="p">))</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="c1"># response is not JSON object</span>
+                <span class="k">raise</span> <span class="n">errors</span><span class="o">.</span><span class="n">ClientError</span><span class="p">(</span><span class="n">response</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">jobj</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">response_ct</span> <span class="o">!=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">JSON_CONTENT_TYPE</span><span class="p">:</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
+                    <span class="s1">&#39;Ignoring wrong Content-Type (</span><span class="si">%r</span><span class="s1">) for JSON decodable &#39;</span>
+                    <span class="s1">&#39;response&#39;</span><span class="p">,</span> <span class="n">response_ct</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">content_type</span> <span class="o">==</span> <span class="bp">cls</span><span class="o">.</span><span class="n">JSON_CONTENT_TYPE</span> <span class="ow">and</span> <span class="n">jobj</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="n">errors</span><span class="o">.</span><span class="n">ClientError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Unexpected response Content-Type: </span><span class="si">{</span><span class="n">response_ct</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">response</span>
+
+    <span class="k">def</span> <span class="nf">_send_request</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">method</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">url</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">requests</span><span class="o">.</span><span class="n">Response</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Send HTTP request.</span>
+
+<span class="sd">        Makes sure that `verify_ssl` is respected. Logs request and</span>
+<span class="sd">        response (with headers). For allowed parameters please see</span>
+<span class="sd">        `requests.request`.</span>
+
+<span class="sd">        :param str method: method for the new `requests.Request` object</span>
+<span class="sd">        :param str url: URL for the new `requests.Request` object</span>
+
+<span class="sd">        :raises requests.exceptions.RequestException: in case of any problems</span>
+
+<span class="sd">        :returns: HTTP Response</span>
+<span class="sd">        :rtype: `requests.Response`</span>
+
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">method</span> <span class="o">==</span> <span class="s2">&quot;POST&quot;</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Sending POST request to </span><span class="si">%s</span><span class="s1">:</span><span class="se">\n</span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span>
+                          <span class="n">url</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">])</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Sending </span><span class="si">%s</span><span class="s1"> request to </span><span class="si">%s</span><span class="s1">.&#39;</span><span class="p">,</span> <span class="n">method</span><span class="p">,</span> <span class="n">url</span><span class="p">)</span>
+        <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;verify&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">verify_ssl</span>
+        <span class="n">kwargs</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="s1">&#39;headers&#39;</span><span class="p">,</span> <span class="p">{})</span>
+        <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;headers&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="s1">&#39;User-Agent&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">user_agent</span><span class="p">)</span>
+        <span class="n">kwargs</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="s1">&#39;timeout&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_default_timeout</span><span class="p">)</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">response</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">request</span><span class="p">(</span><span class="n">method</span><span class="p">,</span> <span class="n">url</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="k">except</span> <span class="n">requests</span><span class="o">.</span><span class="n">exceptions</span><span class="o">.</span><span class="n">RequestException</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="c1"># pylint: disable=pointless-string-statement</span>
+<span class="w">            </span><span class="sd">&quot;&quot;&quot;Requests response parsing</span>
+
+<span class="sd">            The requests library emits exceptions with a lot of extra text.</span>
+<span class="sd">            We parse them with a regexp to raise a more readable exceptions.</span>
+
+<span class="sd">            Example:</span>
+<span class="sd">            HTTPSConnectionPool(host=&#39;acme-v01.api.letsencrypt.org&#39;,</span>
+<span class="sd">            port=443): Max retries exceeded with url: /directory</span>
+<span class="sd">            (Caused by NewConnectionError(&#39;</span>
+<span class="sd">            &lt;requests.packages.urllib3.connection.VerifiedHTTPSConnection</span>
+<span class="sd">            object at 0x108356c50&gt;: Failed to establish a new connection:</span>
+<span class="sd">            [Errno 65] No route to host&#39;,))&quot;&quot;&quot;</span>
+
+            <span class="c1"># pylint: disable=line-too-long</span>
+            <span class="n">err_regex</span> <span class="o">=</span> <span class="sa">r</span><span class="s2">&quot;.*host=&#39;(\S*)&#39;.*Max retries exceeded with url\: (\/\w*).*(\[Errno \d+\])([A-Za-z ]*)&quot;</span>
+            <span class="n">m</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="n">err_regex</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">))</span>
+            <span class="k">if</span> <span class="n">m</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">raise</span>  <span class="c1"># pragma: no cover</span>
+            <span class="n">host</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="n">_err_no</span><span class="p">,</span> <span class="n">err_msg</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">groups</span><span class="p">()</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Requesting </span><span class="si">{</span><span class="n">host</span><span class="si">}{</span><span class="n">path</span><span class="si">}</span><span class="s2">:</span><span class="si">{</span><span class="n">err_msg</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+        <span class="c1"># If an Accept header was sent in the request, the response may not be</span>
+        <span class="c1"># UTF-8 encoded. In this case, we don&#39;t set response.encoding and log</span>
+        <span class="c1"># the base64 response instead of raw bytes to keep binary data out of the logs.</span>
+        <span class="n">debug_content</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">bytes</span><span class="p">,</span> <span class="nb">str</span><span class="p">]</span>
+        <span class="k">if</span> <span class="s2">&quot;Accept&quot;</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;headers&quot;</span><span class="p">]:</span>
+            <span class="n">debug_content</span> <span class="o">=</span> <span class="n">base64</span><span class="o">.</span><span class="n">b64encode</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">content</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># We set response.encoding so response.text knows the response is</span>
+            <span class="c1"># UTF-8 encoded instead of trying to guess the encoding that was</span>
+            <span class="c1"># used which is error prone. This setting affects all future</span>
+            <span class="c1"># accesses of .text made on the returned response object as well.</span>
+            <span class="n">response</span><span class="o">.</span><span class="n">encoding</span> <span class="o">=</span> <span class="s2">&quot;utf-8&quot;</span>
+            <span class="n">debug_content</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">text</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Received response:</span><span class="se">\n</span><span class="s1">HTTP </span><span class="si">%d</span><span class="se">\n</span><span class="si">%s</span><span class="se">\n\n</span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span>
+                     <span class="n">response</span><span class="o">.</span><span class="n">status_code</span><span class="p">,</span>
+                     <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">{0}</span><span class="s2">: </span><span class="si">{1}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span>
+                                <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">response</span><span class="o">.</span><span class="n">headers</span><span class="o">.</span><span class="n">items</span><span class="p">()),</span>
+                     <span class="n">debug_content</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">response</span>
+
+<div class="viewcode-block" id="ClientNetwork.head"><a class="viewcode-back" href="../../api/client.html#acme.client.ClientNetwork.head">[docs]</a>    <span class="k">def</span> <span class="nf">head</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">requests</span><span class="o">.</span><span class="n">Response</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Send HEAD request without checking the response.</span>
+
+<span class="sd">        Note, that `_check_response` is not called, as it is expected</span>
+<span class="sd">        that status code other than successfully 2xx will be returned, or</span>
+<span class="sd">        messages2.Error will be raised by the server.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_send_request</span><span class="p">(</span><span class="s1">&#39;HEAD&#39;</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="ClientNetwork.get"><a class="viewcode-back" href="../../api/client.html#acme.client.ClientNetwork.get">[docs]</a>    <span class="k">def</span> <span class="nf">get</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">url</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">content_type</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">JSON_CONTENT_TYPE</span><span class="p">,</span>
+            <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">requests</span><span class="o">.</span><span class="n">Response</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Send GET request and check response.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_check_response</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_send_request</span><span class="p">(</span><span class="s1">&#39;GET&#39;</span><span class="p">,</span> <span class="n">url</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">),</span> <span class="n">content_type</span><span class="o">=</span><span class="n">content_type</span><span class="p">)</span></div>
+
+    <span class="k">def</span> <span class="nf">_add_nonce</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">response</span><span class="p">:</span> <span class="n">requests</span><span class="o">.</span><span class="n">Response</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">REPLAY_NONCE_HEADER</span> <span class="ow">in</span> <span class="n">response</span><span class="o">.</span><span class="n">headers</span><span class="p">:</span>
+            <span class="n">nonce</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">headers</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">REPLAY_NONCE_HEADER</span><span class="p">]</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">decoded_nonce</span> <span class="o">=</span> <span class="n">jws</span><span class="o">.</span><span class="n">Header</span><span class="o">.</span><span class="n">_fields</span><span class="p">[</span><span class="s1">&#39;nonce&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="n">nonce</span><span class="p">)</span>
+            <span class="k">except</span> <span class="n">jose</span><span class="o">.</span><span class="n">DeserializationError</span> <span class="k">as</span> <span class="n">error</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="n">errors</span><span class="o">.</span><span class="n">BadNonce</span><span class="p">(</span><span class="n">nonce</span><span class="p">,</span> <span class="n">error</span><span class="p">)</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Storing nonce: </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">nonce</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_nonces</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">decoded_nonce</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">errors</span><span class="o">.</span><span class="n">MissingNonce</span><span class="p">(</span><span class="n">response</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_get_nonce</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">url</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">new_nonce_url</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_nonces</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Requesting fresh nonce&#39;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">new_nonce_url</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">response</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="n">url</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="c1"># request a new nonce from the acme newNonce endpoint</span>
+                <span class="n">response</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_check_response</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="n">new_nonce_url</span><span class="p">),</span> <span class="n">content_type</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_add_nonce</span><span class="p">(</span><span class="n">response</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_nonces</span><span class="o">.</span><span class="n">pop</span><span class="p">()</span>
+
+<div class="viewcode-block" id="ClientNetwork.post"><a class="viewcode-back" href="../../api/client.html#acme.client.ClientNetwork.post">[docs]</a>    <span class="k">def</span> <span class="nf">post</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">requests</span><span class="o">.</span><span class="n">Response</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;POST object wrapped in `.JWS` and check response.</span>
+
+<span class="sd">        If the server responded with a badNonce error, the request will</span>
+<span class="sd">        be retried once.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_post_once</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="k">except</span> <span class="n">messages</span><span class="o">.</span><span class="n">Error</span> <span class="k">as</span> <span class="n">error</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">error</span><span class="o">.</span><span class="n">code</span> <span class="o">==</span> <span class="s1">&#39;badNonce&#39;</span><span class="p">:</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Retrying request after error:</span><span class="se">\n</span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">error</span><span class="p">)</span>
+                <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_post_once</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+            <span class="k">raise</span></div>
+
+    <span class="k">def</span> <span class="nf">_post_once</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">url</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">obj</span><span class="p">:</span> <span class="n">jose</span><span class="o">.</span><span class="n">JSONDeSerializable</span><span class="p">,</span>
+                   <span class="n">content_type</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">JOSE_CONTENT_TYPE</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">requests</span><span class="o">.</span><span class="n">Response</span><span class="p">:</span>
+        <span class="n">new_nonce_url</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;new_nonce_url&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_wrap_in_jws</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_nonce</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">new_nonce_url</span><span class="p">),</span> <span class="n">url</span><span class="p">)</span>
+        <span class="n">kwargs</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="s1">&#39;headers&#39;</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;Content-Type&#39;</span><span class="p">:</span> <span class="n">content_type</span><span class="p">})</span>
+        <span class="n">response</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_send_request</span><span class="p">(</span><span class="s1">&#39;POST&#39;</span><span class="p">,</span> <span class="n">url</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">data</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="n">response</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_check_response</span><span class="p">(</span><span class="n">response</span><span class="p">,</span> <span class="n">content_type</span><span class="o">=</span><span class="n">content_type</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_add_nonce</span><span class="p">(</span><span class="n">response</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">response</span></div>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2015, Let&#39;s Encrypt Project.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

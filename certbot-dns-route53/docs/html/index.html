@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Welcome to certbot-dns-route53’s documentation! &mdash; certbot-dns-route53 0 documentation</title>
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/sphinx_highlight.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="API Documentation" href="api.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="#" class="icon icon-home">
+            certbot-dns-route53
+          </a>
+              <div class="version">
+                0
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="api.html">API Documentation</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="#">certbot-dns-route53</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="#" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Welcome to certbot-dns-route53’s documentation!</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/index.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="welcome-to-certbot-dns-route53-s-documentation">
+<h1>Welcome to certbot-dns-route53’s documentation!<a class="headerlink" href="#welcome-to-certbot-dns-route53-s-documentation" title="Permalink to this heading">¶</a></h1>
+<div class="toctree-wrapper compound">
+</div>
+<span class="target" id="module-certbot_dns_route53"></span><p>The <code class="xref py py-obj docutils literal notranslate"><span class="pre">dns_route53</span></code> plugin automates the process of
+completing a <code class="docutils literal notranslate"><span class="pre">dns-01</span></code> challenge (<a class="reference external" href="https://acme-python.readthedocs.io/en/latest/api/challenges.html#acme.challenges.DNS01" title="(in acme-python v0)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">DNS01</span></code></a>) by creating, and
+subsequently removing, TXT records using the Amazon Web Services Route 53 API.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The plugin is not installed by default. It can be installed by heading to
+<a class="reference external" href="https://certbot.eff.org/instructions#wildcard">certbot.eff.org</a>, choosing your system and
+selecting the Wildcard tab.</p>
+</div>
+<section id="credentials">
+<h2>Credentials<a class="headerlink" href="#credentials" title="Permalink to this heading">¶</a></h2>
+<p>Use of this plugin requires a configuration file containing Amazon Web Sevices
+API credentials for an account with the following permissions:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">route53:ListHostedZones</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">route53:GetChange</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">route53:ChangeResourceRecordSets</span></code></p></li>
+</ul>
+<p>These permissions can be captured in an AWS policy like the one below. Amazon
+provides <a class="reference external" href="https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/access-control-overview.html">information about managing access</a> and <a class="reference external" href="https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/r53-api-permissions-ref.html">information about
+the required permissions</a></p>
+<div class="literal-block-wrapper docutils container" id="sample-aws-policy-json">
+<div class="code-block-caption"><span class="caption-text">Example AWS policy file:</span><a class="headerlink" href="#sample-aws-policy-json" title="Permalink to this code">¶</a></div>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;Version&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;2012-10-17&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;Id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;certbot-dns-route53 sample policy&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;Statement&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">        </span><span class="p">{</span>
+<span class="w">            </span><span class="nt">&quot;Effect&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Allow&quot;</span><span class="p">,</span>
+<span class="w">            </span><span class="nt">&quot;Action&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">                </span><span class="s2">&quot;route53:ListHostedZones&quot;</span><span class="p">,</span>
+<span class="w">                </span><span class="s2">&quot;route53:GetChange&quot;</span>
+<span class="w">            </span><span class="p">],</span>
+<span class="w">            </span><span class="nt">&quot;Resource&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">                </span><span class="s2">&quot;*&quot;</span>
+<span class="w">            </span><span class="p">]</span>
+<span class="w">        </span><span class="p">},</span>
+<span class="w">        </span><span class="p">{</span>
+<span class="w">            </span><span class="nt">&quot;Effect&quot;</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Allow&quot;</span><span class="p">,</span>
+<span class="w">            </span><span class="nt">&quot;Action&quot;</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">                </span><span class="s2">&quot;route53:ChangeResourceRecordSets&quot;</span>
+<span class="w">            </span><span class="p">],</span>
+<span class="w">            </span><span class="nt">&quot;Resource&quot;</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">                </span><span class="s2">&quot;arn:aws:route53:::hostedzone/YOURHOSTEDZONEID&quot;</span>
+<span class="w">            </span><span class="p">]</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">    </span><span class="p">]</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div>
+<p>The <a class="reference external" href="https://docs.aws.amazon.com/general/latest/gr/aws-sec-cred-types.html#access-keys-and-secret-access-keys">access keys</a> for an account
+with these permissions must be supplied in one of the following ways, which are
+discussed in more detail in the Boto3 library’s documentation about <a class="reference external" href="https://boto3.readthedocs.io/en/latest/guide/configuration.html#best-practices-for-configuring-credentials">configuring
+credentials</a>.</p>
+<ul class="simple">
+<li><p>Using the <code class="docutils literal notranslate"><span class="pre">AWS_ACCESS_KEY_ID</span></code> and <code class="docutils literal notranslate"><span class="pre">AWS_SECRET_ACCESS_KEY</span></code> environment
+variables.</p></li>
+<li><p>Using a credentials configuration file at the default location,
+<code class="docutils literal notranslate"><span class="pre">~/.aws/config</span></code>.</p></li>
+<li><p>Using a credentials configuration file at a path supplied using the
+<code class="docutils literal notranslate"><span class="pre">AWS_CONFIG_FILE</span></code> environment variable.</p></li>
+</ul>
+<div class="literal-block-wrapper docutils container" id="config-ini">
+<div class="code-block-caption"><span class="caption-text">Example credentials config file:</span><a class="headerlink" href="#config-ini" title="Permalink to this code">¶</a></div>
+<div class="highlight-ini notranslate"><div class="highlight"><pre><span></span><span class="k">[default]</span>
+<span class="na">aws_access_key_id</span><span class="o">=</span><span class="s">AKIAIOSFODNN7EXAMPLE</span>
+<span class="na">aws_secret_access_key</span><span class="o">=</span><span class="s">wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY</span>
+</pre></div>
+</div>
+</div>
+<div class="admonition caution">
+<p class="admonition-title">Caution</p>
+<p>You should protect these API credentials as you would a password. Users who
+can read this file can use these credentials to issue some types of API calls
+on your behalf, limited by the permissions assigned to the account. Users who
+can cause Certbot to run using these credentials can complete a <code class="docutils literal notranslate"><span class="pre">dns-01</span></code>
+challenge to acquire new certificates or revoke existing certificates for
+domains these credentials are authorized to manage.</p>
+</div>
+</section>
+<section id="examples">
+<h2>Examples<a class="headerlink" href="#examples" title="Permalink to this heading">¶</a></h2>
+<div class="literal-block-wrapper docutils container" id="id1">
+<div class="code-block-caption"><span class="caption-text">To acquire a certificate for <code class="docutils literal notranslate"><span class="pre">example.com</span></code></span><a class="headerlink" href="#id1" title="Permalink to this code">¶</a></div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>certbot<span class="w"> </span>certonly<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--dns-route53<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-d<span class="w"> </span>example.com
+</pre></div>
+</div>
+</div>
+<div class="literal-block-wrapper docutils container" id="id2">
+<div class="code-block-caption"><span class="caption-text">To acquire a single certificate for both <code class="docutils literal notranslate"><span class="pre">example.com</span></code> and
+<code class="docutils literal notranslate"><span class="pre">www.example.com</span></code></span><a class="headerlink" href="#id2" title="Permalink to this code">¶</a></div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>certbot<span class="w"> </span>certonly<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--dns-route53<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-d<span class="w"> </span>example.com<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-d<span class="w"> </span>www.example.com
+</pre></div>
+</div>
+</div>
+<div class="literal-block-wrapper docutils container" id="id3">
+<div class="code-block-caption"><span class="caption-text">To acquire a certificate for <code class="docutils literal notranslate"><span class="pre">example.com</span></code>, waiting 30 seconds
+for DNS propagation</span><a class="headerlink" href="#id3" title="Permalink to this code">¶</a></div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>certbot<span class="w"> </span>certonly<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--dns-route53<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--dns-route53-propagation-seconds<span class="w"> </span><span class="m">30</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-d<span class="w"> </span>example.com
+</pre></div>
+</div>
+</div>
+</section>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="api.html">API Documentation</a></li>
+</ul>
+</div>
+</section>
+<section id="indices-and-tables">
+<h1>Indices and tables<a class="headerlink" href="#indices-and-tables" title="Permalink to this heading">¶</a></h1>
+<ul class="simple">
+<li><p><a class="reference internal" href="genindex.html"><span class="std std-ref">Index</span></a></p></li>
+<li><p><a class="reference internal" href="py-modindex.html"><span class="std std-ref">Module Index</span></a></p></li>
+<li><p><a class="reference internal" href="search.html"><span class="std std-ref">Search Page</span></a></p></li>
+</ul>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="api.html" class="btn btn-neutral float-right" title="API Documentation" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2017, Certbot Project.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

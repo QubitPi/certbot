@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Errors &mdash; acme-python 0 documentation</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/sphinx_highlight.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Fields" href="fields.html" />
+    <link rel="prev" title="Client" href="client.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            acme-python
+          </a>
+              <div class="version">
+                0
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="../api.html">API Documentation</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="challenges.html">Challenges</a></li>
+<li class="toctree-l2"><a class="reference internal" href="client.html">Client</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Errors</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#acme.errors.Error"><code class="docutils literal notranslate"><span class="pre">Error</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#acme.errors.DependencyError"><code class="docutils literal notranslate"><span class="pre">DependencyError</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#acme.errors.SchemaValidationError"><code class="docutils literal notranslate"><span class="pre">SchemaValidationError</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#acme.errors.ClientError"><code class="docutils literal notranslate"><span class="pre">ClientError</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#acme.errors.UnexpectedUpdate"><code class="docutils literal notranslate"><span class="pre">UnexpectedUpdate</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#acme.errors.NonceError"><code class="docutils literal notranslate"><span class="pre">NonceError</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#acme.errors.BadNonce"><code class="docutils literal notranslate"><span class="pre">BadNonce</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#acme.errors.MissingNonce"><code class="docutils literal notranslate"><span class="pre">MissingNonce</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#acme.errors.PollError"><code class="docutils literal notranslate"><span class="pre">PollError</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#acme.errors.PollError.timeout"><code class="docutils literal notranslate"><span class="pre">PollError.timeout</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#acme.errors.ValidationError"><code class="docutils literal notranslate"><span class="pre">ValidationError</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#acme.errors.TimeoutError"><code class="docutils literal notranslate"><span class="pre">TimeoutError</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#acme.errors.IssuanceError"><code class="docutils literal notranslate"><span class="pre">IssuanceError</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#acme.errors.ConflictError"><code class="docutils literal notranslate"><span class="pre">ConflictError</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#acme.errors.WildcardUnsupportedError"><code class="docutils literal notranslate"><span class="pre">WildcardUnsupportedError</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="fields.html">Fields</a></li>
+<li class="toctree-l2"><a class="reference internal" href="jose.html">JOSE</a></li>
+<li class="toctree-l2"><a class="reference internal" href="messages.html">Messages</a></li>
+<li class="toctree-l2"><a class="reference internal" href="standalone.html">Standalone</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">acme-python</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../api.html">API Documentation</a></li>
+      <li class="breadcrumb-item active">Errors</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/api/errors.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="module-acme.errors">
+<span id="errors"></span><h1>Errors<a class="headerlink" href="#module-acme.errors" title="Permalink to this heading">¶</a></h1>
+<p>ACME errors.</p>
+<dl class="py exception">
+<dt class="sig sig-object py" id="acme.errors.Error">
+<em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">acme.errors.</span></span><span class="sig-name descname"><span class="pre">Error</span></span><a class="reference internal" href="../_modules/acme/errors.html#Error"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#acme.errors.Error" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generic ACME error.</p>
+</dd></dl>
+
+<dl class="py exception">
+<dt class="sig sig-object py" id="acme.errors.DependencyError">
+<em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">acme.errors.</span></span><span class="sig-name descname"><span class="pre">DependencyError</span></span><a class="reference internal" href="../_modules/acme/errors.html#DependencyError"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#acme.errors.DependencyError" title="Permalink to this definition">¶</a></dt>
+<dd><p>Dependency error</p>
+</dd></dl>
+
+<dl class="py exception">
+<dt class="sig sig-object py" id="acme.errors.SchemaValidationError">
+<em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">acme.errors.</span></span><span class="sig-name descname"><span class="pre">SchemaValidationError</span></span><a class="reference internal" href="../_modules/acme/errors.html#SchemaValidationError"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#acme.errors.SchemaValidationError" title="Permalink to this definition">¶</a></dt>
+<dd><p>JSON schema ACME object validation error.</p>
+</dd></dl>
+
+<dl class="py exception">
+<dt class="sig sig-object py" id="acme.errors.ClientError">
+<em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">acme.errors.</span></span><span class="sig-name descname"><span class="pre">ClientError</span></span><a class="reference internal" href="../_modules/acme/errors.html#ClientError"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#acme.errors.ClientError" title="Permalink to this definition">¶</a></dt>
+<dd><p>Network error.</p>
+</dd></dl>
+
+<dl class="py exception">
+<dt class="sig sig-object py" id="acme.errors.UnexpectedUpdate">
+<em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">acme.errors.</span></span><span class="sig-name descname"><span class="pre">UnexpectedUpdate</span></span><a class="reference internal" href="../_modules/acme/errors.html#UnexpectedUpdate"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#acme.errors.UnexpectedUpdate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Unexpected update error.</p>
+</dd></dl>
+
+<dl class="py exception">
+<dt class="sig sig-object py" id="acme.errors.NonceError">
+<em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">acme.errors.</span></span><span class="sig-name descname"><span class="pre">NonceError</span></span><a class="reference internal" href="../_modules/acme/errors.html#NonceError"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#acme.errors.NonceError" title="Permalink to this definition">¶</a></dt>
+<dd><p>Server response nonce error.</p>
+</dd></dl>
+
+<dl class="py exception">
+<dt class="sig sig-object py" id="acme.errors.BadNonce">
+<em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">acme.errors.</span></span><span class="sig-name descname"><span class="pre">BadNonce</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">nonce</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">error</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#Exception" title="(in Python v3.11)"><span class="pre">Exception</span></a></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.11)"><span class="pre">Any</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/acme/errors.html#BadNonce"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#acme.errors.BadNonce" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bad nonce error.</p>
+</dd></dl>
+
+<dl class="py exception">
+<dt class="sig sig-object py" id="acme.errors.MissingNonce">
+<em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">acme.errors.</span></span><span class="sig-name descname"><span class="pre">MissingNonce</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">response</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Response</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.11)"><span class="pre">Any</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/acme/errors.html#MissingNonce"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#acme.errors.MissingNonce" title="Permalink to this definition">¶</a></dt>
+<dd><p>Missing nonce error.</p>
+<p>According to the specification an “ACME server MUST include an
+Replay-Nonce header field in each successful response to a POST it
+provides to a client (…)”.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Variables<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>~.response</strong> (<em>requests.Response</em>) – HTTP Response</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py exception">
+<dt class="sig sig-object py" id="acme.errors.PollError">
+<em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">acme.errors.</span></span><span class="sig-name descname"><span class="pre">PollError</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">exhausted</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Set" title="(in Python v3.11)"><span class="pre">Set</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="messages.html#acme.messages.AuthorizationResource" title="acme.messages.AuthorizationResource"><span class="pre">messages.AuthorizationResource</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">updated</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Mapping" title="(in Python v3.11)"><span class="pre">Mapping</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="messages.html#acme.messages.AuthorizationResource" title="acme.messages.AuthorizationResource"><span class="pre">messages.AuthorizationResource</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="messages.html#acme.messages.AuthorizationResource" title="acme.messages.AuthorizationResource"><span class="pre">messages.AuthorizationResource</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/acme/errors.html#PollError"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#acme.errors.PollError" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generic error when polling for authorization fails.</p>
+<p>This might be caused by either timeout (<code class="xref py py-obj docutils literal notranslate"><span class="pre">exhausted</span></code> will be non-empty)
+or by some authorization being invalid.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Variables<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>exhausted</strong> – Set of <a class="reference internal" href="messages.html#acme.messages.AuthorizationResource" title="acme.messages.AuthorizationResource"><code class="xref py py-obj docutils literal notranslate"><span class="pre">AuthorizationResource</span></code></a> that didn’t finish
+within max allowed attempts.</p></li>
+<li><p><strong>updated</strong> – Mapping from original <a class="reference internal" href="messages.html#acme.messages.AuthorizationResource" title="acme.messages.AuthorizationResource"><code class="xref py py-obj docutils literal notranslate"><span class="pre">AuthorizationResource</span></code></a>
+to the most recently updated one</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py property">
+<dt class="sig sig-object py" id="acme.errors.PollError.timeout">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">timeout</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><span class="pre">bool</span></a></em><a class="headerlink" href="#acme.errors.PollError.timeout" title="Permalink to this definition">¶</a></dt>
+<dd><p>Was the error caused by timeout?</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py exception">
+<dt class="sig sig-object py" id="acme.errors.ValidationError">
+<em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">acme.errors.</span></span><span class="sig-name descname"><span class="pre">ValidationError</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">failed_authzrs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.List" title="(in Python v3.11)"><span class="pre">List</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="messages.html#acme.messages.AuthorizationResource" title="acme.messages.AuthorizationResource"><span class="pre">messages.AuthorizationResource</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/acme/errors.html#ValidationError"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#acme.errors.ValidationError" title="Permalink to this definition">¶</a></dt>
+<dd><p>Error for authorization failures. Contains a list of authorization
+resources, each of which is invalid and should have an error field.</p>
+</dd></dl>
+
+<dl class="py exception">
+<dt class="sig sig-object py" id="acme.errors.TimeoutError">
+<em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">acme.errors.</span></span><span class="sig-name descname"><span class="pre">TimeoutError</span></span><a class="reference internal" href="../_modules/acme/errors.html#TimeoutError"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#acme.errors.TimeoutError" title="Permalink to this definition">¶</a></dt>
+<dd><p>Error for when polling an authorization or an order times out.</p>
+</dd></dl>
+
+<dl class="py exception">
+<dt class="sig sig-object py" id="acme.errors.IssuanceError">
+<em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">acme.errors.</span></span><span class="sig-name descname"><span class="pre">IssuanceError</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">error</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="messages.html#acme.messages.Error" title="acme.messages.Error"><span class="pre">messages.Error</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/acme/errors.html#IssuanceError"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#acme.errors.IssuanceError" title="Permalink to this definition">¶</a></dt>
+<dd><p>Error sent by the server after requesting issuance of a certificate.</p>
+</dd></dl>
+
+<dl class="py exception">
+<dt class="sig sig-object py" id="acme.errors.ConflictError">
+<em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">acme.errors.</span></span><span class="sig-name descname"><span class="pre">ConflictError</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">location</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/acme/errors.html#ConflictError"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#acme.errors.ConflictError" title="Permalink to this definition">¶</a></dt>
+<dd><p>Error for when the server returns a 409 (Conflict) HTTP status.</p>
+<p>In the version of ACME implemented by Boulder, this is used to find an
+account if you only have the private key, but don’t know the account URL.</p>
+<p>Also used in V2 of the ACME client for the same purpose.</p>
+</dd></dl>
+
+<dl class="py exception">
+<dt class="sig sig-object py" id="acme.errors.WildcardUnsupportedError">
+<em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">acme.errors.</span></span><span class="sig-name descname"><span class="pre">WildcardUnsupportedError</span></span><a class="reference internal" href="../_modules/acme/errors.html#WildcardUnsupportedError"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#acme.errors.WildcardUnsupportedError" title="Permalink to this definition">¶</a></dt>
+<dd><p>Error for when a wildcard is requested but is unsupported by ACME CA.</p>
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="client.html" class="btn btn-neutral float-left" title="Client" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="fields.html" class="btn btn-neutral float-right" title="Fields" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2015, Let&#39;s Encrypt Project.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

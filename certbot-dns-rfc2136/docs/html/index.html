@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Welcome to certbot-dns-rfc2136’s documentation! &mdash; certbot-dns-rfc2136 0 documentation</title>
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/sphinx_highlight.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="API Documentation" href="api.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="#" class="icon icon-home">
+            certbot-dns-rfc2136
+          </a>
+              <div class="version">
+                0
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="api.html">API Documentation</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="#">certbot-dns-rfc2136</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="#" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Welcome to certbot-dns-rfc2136’s documentation!</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/index.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="welcome-to-certbot-dns-rfc2136-s-documentation">
+<h1>Welcome to certbot-dns-rfc2136’s documentation!<a class="headerlink" href="#welcome-to-certbot-dns-rfc2136-s-documentation" title="Permalink to this heading">¶</a></h1>
+<div class="toctree-wrapper compound">
+</div>
+<span class="target" id="module-certbot_dns_rfc2136"></span><p>The <code class="xref py py-obj docutils literal notranslate"><span class="pre">dns_rfc2136</span></code> plugin automates the process of
+completing a <code class="docutils literal notranslate"><span class="pre">dns-01</span></code> challenge (<a class="reference external" href="https://acme-python.readthedocs.io/en/latest/api/challenges.html#acme.challenges.DNS01" title="(in acme-python v0)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">DNS01</span></code></a>) by creating, and
+subsequently removing, TXT records using RFC 2136 Dynamic Updates.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The plugin is not installed by default. It can be installed by heading to
+<a class="reference external" href="https://certbot.eff.org/instructions#wildcard">certbot.eff.org</a>, choosing your system and
+selecting the Wildcard tab.</p>
+</div>
+<section id="named-arguments">
+<h2>Named Arguments<a class="headerlink" href="#named-arguments" title="Permalink to this heading">¶</a></h2>
+<table class="docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">--dns-rfc2136-credentials</span></code></p></td>
+<td><p>RFC 2136 <a class="reference internal" href="#credentials">credentials</a> INI file.
+(Required)</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">--dns-rfc2136-propagation-seconds</span></code></p></td>
+<td><p>The number of seconds to wait for DNS
+to propagate before asking the ACME
+server to verify the DNS record.
+(Default: 60)</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="credentials">
+<h2>Credentials<a class="headerlink" href="#credentials" title="Permalink to this heading">¶</a></h2>
+<p>Use of this plugin requires a configuration file containing the target DNS
+server and optional port that supports RFC 2136 Dynamic Updates, the name
+of the TSIG key, the TSIG key secret itself, the algorithm used if it’s
+different to HMAC-MD5, and optionally whether to sign the initial SOA query.</p>
+<div class="literal-block-wrapper docutils container" id="credentials-ini">
+<div class="code-block-caption"><span class="caption-text">Example credentials file:</span><a class="headerlink" href="#credentials-ini" title="Permalink to this code">¶</a></div>
+<div class="highlight-ini notranslate"><div class="highlight"><pre><span></span><span class="c1"># Target DNS server (IPv4 or IPv6 address, not a hostname)</span>
+<span class="na">dns_rfc2136_server</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">192.0.2.1</span>
+<span class="c1"># Target DNS port</span>
+<span class="na">dns_rfc2136_port</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">53</span>
+<span class="c1"># TSIG key name</span>
+<span class="na">dns_rfc2136_name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">keyname.</span>
+<span class="c1"># TSIG key secret</span>
+<span class="na">dns_rfc2136_secret</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">4q4wM/2I180UXoMyN4INVhJNi8V9BCV+jMw2mXgZw/CSuxUT8C7NKKFs AmKd7ak51vWKgSl12ib86oQRPkpDjg==</span>
+<span class="c1"># TSIG key algorithm</span>
+<span class="na">dns_rfc2136_algorithm</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">HMAC-SHA512</span>
+<span class="c1"># TSIG sign SOA query (optional, default: false)</span>
+<span class="na">dns_rfc2136_sign_query</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">false</span>
+</pre></div>
+</div>
+</div>
+<p>The path to this file can be provided interactively or using the
+<code class="docutils literal notranslate"><span class="pre">--dns-rfc2136-credentials</span></code> command-line argument. Certbot records the
+path to this file for use during renewal, but does not store the file’s contents.</p>
+<div class="admonition caution">
+<p class="admonition-title">Caution</p>
+<p>You should protect this TSIG key material as it can be used to potentially
+add, update, or delete any record in the target DNS server. Users who can
+read this file can use these credentials to issue arbitrary API calls on
+your behalf. Users who can cause Certbot to run using these credentials can
+complete a <code class="docutils literal notranslate"><span class="pre">dns-01</span></code> challenge to acquire new certificates or revoke
+existing certificates for associated domains, even if those domains aren’t
+being managed by this server.</p>
+</div>
+<p>Certbot will emit a warning if it detects that the credentials file can be
+accessed by other users on your system. The warning reads “Unsafe permissions
+on credentials configuration file”, followed by the path to the credentials
+file. This warning will be emitted each time Certbot uses the credentials file,
+including for renewal, and cannot be silenced except by addressing the issue
+(e.g., by using a command like <code class="docutils literal notranslate"><span class="pre">chmod</span> <span class="pre">600</span></code> to restrict access to the file).</p>
+</section>
+<section id="examples">
+<h2>Examples<a class="headerlink" href="#examples" title="Permalink to this heading">¶</a></h2>
+<div class="literal-block-wrapper docutils container" id="id1">
+<div class="code-block-caption"><span class="caption-text">To acquire a certificate for <code class="docutils literal notranslate"><span class="pre">example.com</span></code></span><a class="headerlink" href="#id1" title="Permalink to this code">¶</a></div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>certbot<span class="w"> </span>certonly<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--dns-rfc2136<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--dns-rfc2136-credentials<span class="w"> </span>~/.secrets/certbot/rfc2136.ini<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-d<span class="w"> </span>example.com
+</pre></div>
+</div>
+</div>
+<div class="literal-block-wrapper docutils container" id="id2">
+<div class="code-block-caption"><span class="caption-text">To acquire a single certificate for both <code class="docutils literal notranslate"><span class="pre">example.com</span></code> and
+<code class="docutils literal notranslate"><span class="pre">www.example.com</span></code></span><a class="headerlink" href="#id2" title="Permalink to this code">¶</a></div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>certbot<span class="w"> </span>certonly<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--dns-rfc2136<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--dns-rfc2136-credentials<span class="w"> </span>~/.secrets/certbot/rfc2136.ini<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-d<span class="w"> </span>example.com<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-d<span class="w"> </span>www.example.com
+</pre></div>
+</div>
+</div>
+<div class="literal-block-wrapper docutils container" id="id3">
+<div class="code-block-caption"><span class="caption-text">To acquire a certificate for <code class="docutils literal notranslate"><span class="pre">example.com</span></code>, waiting 30 seconds
+for DNS propagation</span><a class="headerlink" href="#id3" title="Permalink to this code">¶</a></div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>certbot<span class="w"> </span>certonly<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--dns-rfc2136<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--dns-rfc2136-credentials<span class="w"> </span>~/.secrets/certbot/rfc2136.ini<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--dns-rfc2136-propagation-seconds<span class="w"> </span><span class="m">30</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-d<span class="w"> </span>example.com
+</pre></div>
+</div>
+</div>
+<section id="sample-bind-configuration">
+<h3>Sample BIND configuration<a class="headerlink" href="#sample-bind-configuration" title="Permalink to this heading">¶</a></h3>
+<p>Here’s a sample BIND configuration for Certbot to use. You will need to
+generate a new TSIG key, include it in the BIND configuration and grant it
+permission to issue updates on the target DNS zone.</p>
+<div class="literal-block-wrapper docutils container" id="id4">
+<div class="code-block-caption"><span class="caption-text">Generate a new SHA512 TSIG key</span><a class="headerlink" href="#id4" title="Permalink to this code">¶</a></div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>tsig-keygen<span class="w"> </span>-a<span class="w"> </span>HMAC-SHA512<span class="w"> </span>keyname.
+</pre></div>
+</div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Prior to BIND version 9.10.0, you will need to use <code class="docutils literal notranslate"><span class="pre">dnssec-keygen</span></code> to generate
+TSIG keys. Try and use the most secure algorithm supported by your DNS server.</p>
+</div>
+<div class="literal-block-wrapper docutils container" id="id5">
+<div class="code-block-caption"><span class="caption-text">Sample BIND configuration</span><a class="headerlink" href="#id5" title="Permalink to this code">¶</a></div>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>key &quot;keyname.&quot; {
+  algorithm hmac-sha512;
+  secret &quot;4q4wM/2I180UXoMyN4INVhJNi8V9BCV+jMw2mXgZw/CSuxUT8C7NKKFs AmKd7ak51vWKgSl12ib86oQRPkpDjg==&quot;;
+};
+
+zone &quot;example.com.&quot; IN {
+  type master;
+  file &quot;named.example.com&quot;;
+  update-policy {
+    grant keyname. name _acme-challenge.example.com. txt;
+  };
+};
+</pre></div>
+</div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This configuration limits the scope of the TSIG key to just be able to
+add and remove TXT records for one specific host for the purpose of
+completing the <code class="docutils literal notranslate"><span class="pre">dns-01</span></code> challenge. If your version of BIND doesn’t
+support the <code class="docutils literal notranslate"><span class="pre">update-policy</span></code> directive, then you can use the less-secure
+<code class="docutils literal notranslate"><span class="pre">allow-update</span></code> directive instead. <a class="reference external" href="https://bind9.readthedocs.io/en/latest/reference.html#dynamic-update-policies">See the BIND documentation</a>
+for details.</p>
+</div>
+</section>
+<section id="special-considerations-for-multiple-views-in-bind">
+<h3>Special considerations for multiple views in BIND<a class="headerlink" href="#special-considerations-for-multiple-views-in-bind" title="Permalink to this heading">¶</a></h3>
+<p>If your BIND configuration leverages multiple views, Certbot may fail with an
+<code class="docutils literal notranslate"><span class="pre">Unable</span> <span class="pre">to</span> <span class="pre">determine</span> <span class="pre">base</span> <span class="pre">domain</span> <span class="pre">for</span> <span class="pre">_acme-challenge.example.com</span></code> error.
+This error occurs when Certbot isn’t able to communicate with an authorative
+nameserver for the zone, one that answers with the AA (Authorative Answer) flag
+set in the response.</p>
+<p>A common multiple view configuration with two views, external and internal,
+can cause this error.  If the zone is only present in the external view, and
+the <a class="reference internal" href="#credentials">credentials</a> <code class="docutils literal notranslate"><span class="pre">dns_rfc2136_server</span></code> setting is set (e.g. 127.0.0.1) so the
+DNS server’s <code class="docutils literal notranslate"><span class="pre">match-clients</span></code> view option causes the DNS server to route
+Certbot’s query to the internal view; the internal view doesn’t contain the
+zone, so the response won’t have the AA flag set.</p>
+<p>One solution is to logically place the zone into the view Certbot is sending
+queries to, with an
+<a class="reference external" href="https://bind9.readthedocs.io/en/latest/reference.html#multiple-views">in-view</a>
+zone option.  The zone will be then visible in both zones with exactly the same content.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Order matters in BIND views: the <code class="docutils literal notranslate"><span class="pre">in-view</span></code> zone option must refer to a
+view defined preceeding it.  It cannot refer to a view defined later in the configuration file.</p>
+</div>
+<div class="literal-block-wrapper docutils container" id="id6">
+<div class="code-block-caption"><span class="caption-text">Split-view BIND configuration</span><a class="headerlink" href="#id6" title="Permalink to this code">¶</a></div>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>key &quot;keyname.&quot; {
+  algorithm hmac-sha512;
+  secret &quot;4q4wM/2I180UXoMyN4INVhJNi8V9BCV+jMw2mXgZw/CSuxUT8C7NKKFs AmKd7ak51vWKgSl12ib86oQRPkpDjg==&quot;;
+};
+
+// adjust internal-addresses to suit your needs
+acl internal-address { 127.0.0.0/8; 10.0.0.0/8; 192.168.0.0/16; 172.16.0.0/12; };
+
+view &quot;external&quot; {
+  match-clients { !internal-addresses; any; };
+
+  zone &quot;example.com.&quot; IN {
+    type master;
+    file &quot;named.example.com&quot;;
+    update-policy {
+      grant keyname. name _acme-challenge.example.com. txt;
+    };
+  };
+};
+
+view &quot;internal&quot; {
+  zone &quot;example.com.&quot; IN {
+    in-view external;
+  };
+};
+</pre></div>
+</div>
+</div>
+<p>Another solution is to add <code class="xref py py-obj docutils literal notranslate"><span class="pre">dns_rfc2136_sign_query</span> <span class="pre">=</span> <span class="pre">true</span></code> to the configuration file and then
+add the key to the <code class="xref py py-obj docutils literal notranslate"><span class="pre">match-clients</span></code> list within the external zone view. All queries signed with
+this key should then be directed to this view, regardless of source IP.</p>
+<div class="literal-block-wrapper docutils container" id="id7">
+<div class="code-block-caption"><span class="caption-text">Split-view BIND configuration with key-based ACLs</span><a class="headerlink" href="#id7" title="Permalink to this code">¶</a></div>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>key &quot;keyname.&quot; {
+  algorithm hmac-sha512;
+  secret &quot;4q4wM/2I180UXoMyN4INVhJNi8V9BCV+jMw2mXgZw/CSuxUT8C7NKKFs AmKd7ak51vWKgSl12ib86oQRPkpDjg==&quot;;
+};
+
+// adjust internal-addresses to suit your needs
+acl internal-address { 127.0.0.0/8; 10.0.0.0/8; 192.168.0.0/16; 172.16.0.0/12; };
+
+acl certbot-keys { key keyname.; }
+
+view &quot;external&quot; {
+  match-clients { acl certbot-keys; !internal-addresses; any; };
+
+  zone &quot;example.com.&quot; IN {
+    type master;
+    file &quot;named.example.com&quot;;
+    update-policy {
+      grant keyname. name _acme-challenge.example.com. txt;
+    };
+  };
+};
+</pre></div>
+</div>
+</div>
+</section>
+</section>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="api.html">API Documentation</a></li>
+</ul>
+</div>
+</section>
+<section id="indices-and-tables">
+<h1>Indices and tables<a class="headerlink" href="#indices-and-tables" title="Permalink to this heading">¶</a></h1>
+<ul class="simple">
+<li><p><a class="reference internal" href="genindex.html"><span class="std std-ref">Index</span></a></p></li>
+<li><p><a class="reference internal" href="py-modindex.html"><span class="std std-ref">Module Index</span></a></p></li>
+<li><p><a class="reference internal" href="search.html"><span class="std std-ref">Search Page</span></a></p></li>
+</ul>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="api.html" class="btn btn-neutral float-right" title="API Documentation" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2017, Certbot Project.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

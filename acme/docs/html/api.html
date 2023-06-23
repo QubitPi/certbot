@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>API Documentation &mdash; acme-python 0 documentation</title>
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/sphinx_highlight.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Challenges" href="api/challenges.html" />
+    <link rel="prev" title="Welcome to acme-python’s documentation!" href="index.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            acme-python
+          </a>
+              <div class="version">
+                0
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">API Documentation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="api/challenges.html">Challenges</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/client.html">Client</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/errors.html">Errors</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/fields.html">Fields</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/jose.html">JOSE</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/messages.html">Messages</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/standalone.html">Standalone</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">acme-python</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">API Documentation</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/api.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="api-documentation">
+<h1>API Documentation<a class="headerlink" href="#api-documentation" title="Permalink to this heading">¶</a></h1>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="api/challenges.html">Challenges</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="api/challenges.html#acme.challenges.Challenge"><code class="docutils literal notranslate"><span class="pre">Challenge</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="api/challenges.html#acme.challenges.Challenge.TYPES"><code class="docutils literal notranslate"><span class="pre">Challenge.TYPES</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="api/challenges.html#acme.challenges.Challenge.from_json"><code class="docutils literal notranslate"><span class="pre">Challenge.from_json()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="api/challenges.html#acme.challenges.ChallengeResponse"><code class="docutils literal notranslate"><span class="pre">ChallengeResponse</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="api/challenges.html#acme.challenges.ChallengeResponse.TYPES"><code class="docutils literal notranslate"><span class="pre">ChallengeResponse.TYPES</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="api/challenges.html#acme.challenges.ChallengeResponse.to_partial_json"><code class="docutils literal notranslate"><span class="pre">ChallengeResponse.to_partial_json()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="api/challenges.html#acme.challenges.UnrecognizedChallenge"><code class="docutils literal notranslate"><span class="pre">UnrecognizedChallenge</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="api/challenges.html#acme.challenges.UnrecognizedChallenge.to_partial_json"><code class="docutils literal notranslate"><span class="pre">UnrecognizedChallenge.to_partial_json()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="api/challenges.html#acme.challenges.UnrecognizedChallenge.from_json"><code class="docutils literal notranslate"><span class="pre">UnrecognizedChallenge.from_json()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="api/challenges.html#acme.challenges.KeyAuthorizationChallengeResponse"><code class="docutils literal notranslate"><span class="pre">KeyAuthorizationChallengeResponse</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="api/challenges.html#acme.challenges.KeyAuthorizationChallengeResponse.verify"><code class="docutils literal notranslate"><span class="pre">KeyAuthorizationChallengeResponse.verify()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="api/challenges.html#acme.challenges.KeyAuthorizationChallengeResponse.to_partial_json"><code class="docutils literal notranslate"><span class="pre">KeyAuthorizationChallengeResponse.to_partial_json()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="api/challenges.html#acme.challenges.KeyAuthorizationChallenge"><code class="docutils literal notranslate"><span class="pre">KeyAuthorizationChallenge</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="api/challenges.html#acme.challenges.KeyAuthorizationChallenge.typ"><code class="docutils literal notranslate"><span class="pre">KeyAuthorizationChallenge.typ</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="api/challenges.html#acme.challenges.KeyAuthorizationChallenge.key_authorization"><code class="docutils literal notranslate"><span class="pre">KeyAuthorizationChallenge.key_authorization()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="api/challenges.html#acme.challenges.KeyAuthorizationChallenge.response"><code class="docutils literal notranslate"><span class="pre">KeyAuthorizationChallenge.response()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="api/challenges.html#acme.challenges.KeyAuthorizationChallenge.validation"><code class="docutils literal notranslate"><span class="pre">KeyAuthorizationChallenge.validation()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="api/challenges.html#acme.challenges.KeyAuthorizationChallenge.response_and_validation"><code class="docutils literal notranslate"><span class="pre">KeyAuthorizationChallenge.response_and_validation()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="api/challenges.html#acme.challenges.DNS01Response"><code class="docutils literal notranslate"><span class="pre">DNS01Response</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="api/challenges.html#acme.challenges.DNS01Response.typ"><code class="docutils literal notranslate"><span class="pre">DNS01Response.typ</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="api/challenges.html#acme.challenges.DNS01Response.simple_verify"><code class="docutils literal notranslate"><span class="pre">DNS01Response.simple_verify()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="api/challenges.html#acme.challenges.DNS01"><code class="docutils literal notranslate"><span class="pre">DNS01</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="api/challenges.html#acme.challenges.DNS01.response_cls"><code class="docutils literal notranslate"><span class="pre">DNS01.response_cls</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="api/challenges.html#acme.challenges.DNS01.typ"><code class="docutils literal notranslate"><span class="pre">DNS01.typ</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="api/challenges.html#acme.challenges.DNS01.LABEL"><code class="docutils literal notranslate"><span class="pre">DNS01.LABEL</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="api/challenges.html#acme.challenges.DNS01.validation"><code class="docutils literal notranslate"><span class="pre">DNS01.validation()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="api/challenges.html#acme.challenges.DNS01.validation_domain_name"><code class="docutils literal notranslate"><span class="pre">DNS01.validation_domain_name()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="api/challenges.html#acme.challenges.HTTP01Response"><code class="docutils literal notranslate"><span class="pre">HTTP01Response</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="api/challenges.html#acme.challenges.HTTP01Response.typ"><code class="docutils literal notranslate"><span class="pre">HTTP01Response.typ</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="api/challenges.html#acme.challenges.HTTP01Response.PORT"><code class="docutils literal notranslate"><span class="pre">HTTP01Response.PORT</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="api/challenges.html#acme.challenges.HTTP01Response.WHITESPACE_CUTSET"><code class="docutils literal notranslate"><span class="pre">HTTP01Response.WHITESPACE_CUTSET</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="api/challenges.html#acme.challenges.HTTP01Response.simple_verify"><code class="docutils literal notranslate"><span class="pre">HTTP01Response.simple_verify()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="api/challenges.html#acme.challenges.HTTP01"><code class="docutils literal notranslate"><span class="pre">HTTP01</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="api/challenges.html#acme.challenges.HTTP01.response_cls"><code class="docutils literal notranslate"><span class="pre">HTTP01.response_cls</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="api/challenges.html#acme.challenges.HTTP01.typ"><code class="docutils literal notranslate"><span class="pre">HTTP01.typ</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="api/challenges.html#acme.challenges.HTTP01.URI_ROOT_PATH"><code class="docutils literal notranslate"><span class="pre">HTTP01.URI_ROOT_PATH</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="api/challenges.html#acme.challenges.HTTP01.path"><code class="docutils literal notranslate"><span class="pre">HTTP01.path</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="api/challenges.html#acme.challenges.HTTP01.uri"><code class="docutils literal notranslate"><span class="pre">HTTP01.uri()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="api/challenges.html#acme.challenges.HTTP01.validation"><code class="docutils literal notranslate"><span class="pre">HTTP01.validation()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="api/challenges.html#acme.challenges.TLSALPN01Response"><code class="docutils literal notranslate"><span class="pre">TLSALPN01Response</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="api/challenges.html#acme.challenges.TLSALPN01Response.typ"><code class="docutils literal notranslate"><span class="pre">TLSALPN01Response.typ</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="api/challenges.html#acme.challenges.TLSALPN01Response.PORT"><code class="docutils literal notranslate"><span class="pre">TLSALPN01Response.PORT</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="api/challenges.html#acme.challenges.TLSALPN01Response.h"><code class="docutils literal notranslate"><span class="pre">TLSALPN01Response.h</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="api/challenges.html#acme.challenges.TLSALPN01Response.gen_cert"><code class="docutils literal notranslate"><span class="pre">TLSALPN01Response.gen_cert()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="api/challenges.html#acme.challenges.TLSALPN01Response.probe_cert"><code class="docutils literal notranslate"><span class="pre">TLSALPN01Response.probe_cert()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="api/challenges.html#acme.challenges.TLSALPN01Response.verify_cert"><code class="docutils literal notranslate"><span class="pre">TLSALPN01Response.verify_cert()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="api/challenges.html#acme.challenges.TLSALPN01Response.simple_verify"><code class="docutils literal notranslate"><span class="pre">TLSALPN01Response.simple_verify()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="api/challenges.html#acme.challenges.TLSALPN01"><code class="docutils literal notranslate"><span class="pre">TLSALPN01</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="api/challenges.html#acme.challenges.TLSALPN01.response_cls"><code class="docutils literal notranslate"><span class="pre">TLSALPN01.response_cls</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="api/challenges.html#acme.challenges.TLSALPN01.typ"><code class="docutils literal notranslate"><span class="pre">TLSALPN01.typ</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="api/challenges.html#acme.challenges.TLSALPN01.validation"><code class="docutils literal notranslate"><span class="pre">TLSALPN01.validation()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="api/challenges.html#acme.challenges.TLSALPN01.is_supported"><code class="docutils literal notranslate"><span class="pre">TLSALPN01.is_supported()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="api/challenges.html#acme.challenges.DNS"><code class="docutils literal notranslate"><span class="pre">DNS</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="api/challenges.html#acme.challenges.DNS.typ"><code class="docutils literal notranslate"><span class="pre">DNS.typ</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="api/challenges.html#acme.challenges.DNS.LABEL"><code class="docutils literal notranslate"><span class="pre">DNS.LABEL</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="api/challenges.html#acme.challenges.DNS.gen_validation"><code class="docutils literal notranslate"><span class="pre">DNS.gen_validation()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="api/challenges.html#acme.challenges.DNS.check_validation"><code class="docutils literal notranslate"><span class="pre">DNS.check_validation()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="api/challenges.html#acme.challenges.DNS.gen_response"><code class="docutils literal notranslate"><span class="pre">DNS.gen_response()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="api/challenges.html#acme.challenges.DNS.validation_domain_name"><code class="docutils literal notranslate"><span class="pre">DNS.validation_domain_name()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="api/challenges.html#acme.challenges.DNSResponse"><code class="docutils literal notranslate"><span class="pre">DNSResponse</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="api/challenges.html#acme.challenges.DNSResponse.typ"><code class="docutils literal notranslate"><span class="pre">DNSResponse.typ</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="api/challenges.html#acme.challenges.DNSResponse.check_validation"><code class="docutils literal notranslate"><span class="pre">DNSResponse.check_validation()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="api/client.html">Client</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="api/client.html#acme.client.ClientV2"><code class="docutils literal notranslate"><span class="pre">ClientV2</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="api/client.html#acme.client.ClientV2.new_account"><code class="docutils literal notranslate"><span class="pre">ClientV2.new_account()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="api/client.html#acme.client.ClientV2.query_registration"><code class="docutils literal notranslate"><span class="pre">ClientV2.query_registration()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="api/client.html#acme.client.ClientV2.update_registration"><code class="docutils literal notranslate"><span class="pre">ClientV2.update_registration()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="api/client.html#acme.client.ClientV2.new_order"><code class="docutils literal notranslate"><span class="pre">ClientV2.new_order()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="api/client.html#acme.client.ClientV2.poll"><code class="docutils literal notranslate"><span class="pre">ClientV2.poll()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="api/client.html#acme.client.ClientV2.poll_and_finalize"><code class="docutils literal notranslate"><span class="pre">ClientV2.poll_and_finalize()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="api/client.html#acme.client.ClientV2.poll_authorizations"><code class="docutils literal notranslate"><span class="pre">ClientV2.poll_authorizations()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="api/client.html#acme.client.ClientV2.begin_finalization"><code class="docutils literal notranslate"><span class="pre">ClientV2.begin_finalization()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="api/client.html#acme.client.ClientV2.poll_finalization"><code class="docutils literal notranslate"><span class="pre">ClientV2.poll_finalization()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="api/client.html#acme.client.ClientV2.finalize_order"><code class="docutils literal notranslate"><span class="pre">ClientV2.finalize_order()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="api/client.html#acme.client.ClientV2.revoke"><code class="docutils literal notranslate"><span class="pre">ClientV2.revoke()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="api/client.html#acme.client.ClientV2.external_account_required"><code class="docutils literal notranslate"><span class="pre">ClientV2.external_account_required()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="api/client.html#acme.client.ClientV2.get_directory"><code class="docutils literal notranslate"><span class="pre">ClientV2.get_directory()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="api/client.html#acme.client.ClientV2.deactivate_registration"><code class="docutils literal notranslate"><span class="pre">ClientV2.deactivate_registration()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="api/client.html#acme.client.ClientV2.deactivate_authorization"><code class="docutils literal notranslate"><span class="pre">ClientV2.deactivate_authorization()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="api/client.html#acme.client.ClientV2.answer_challenge"><code class="docutils literal notranslate"><span class="pre">ClientV2.answer_challenge()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="api/client.html#acme.client.ClientV2.retry_after"><code class="docutils literal notranslate"><span class="pre">ClientV2.retry_after()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="api/client.html#acme.client.ClientNetwork"><code class="docutils literal notranslate"><span class="pre">ClientNetwork</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="api/client.html#acme.client.ClientNetwork.REPLAY_NONCE_HEADER"><code class="docutils literal notranslate"><span class="pre">ClientNetwork.REPLAY_NONCE_HEADER</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="api/client.html#acme.client.ClientNetwork.head"><code class="docutils literal notranslate"><span class="pre">ClientNetwork.head()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="api/client.html#acme.client.ClientNetwork.get"><code class="docutils literal notranslate"><span class="pre">ClientNetwork.get()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="api/client.html#acme.client.ClientNetwork.post"><code class="docutils literal notranslate"><span class="pre">ClientNetwork.post()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="api/errors.html">Errors</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="api/errors.html#acme.errors.Error"><code class="docutils literal notranslate"><span class="pre">Error</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/errors.html#acme.errors.DependencyError"><code class="docutils literal notranslate"><span class="pre">DependencyError</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/errors.html#acme.errors.SchemaValidationError"><code class="docutils literal notranslate"><span class="pre">SchemaValidationError</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/errors.html#acme.errors.ClientError"><code class="docutils literal notranslate"><span class="pre">ClientError</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/errors.html#acme.errors.UnexpectedUpdate"><code class="docutils literal notranslate"><span class="pre">UnexpectedUpdate</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/errors.html#acme.errors.NonceError"><code class="docutils literal notranslate"><span class="pre">NonceError</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/errors.html#acme.errors.BadNonce"><code class="docutils literal notranslate"><span class="pre">BadNonce</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/errors.html#acme.errors.MissingNonce"><code class="docutils literal notranslate"><span class="pre">MissingNonce</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/errors.html#acme.errors.PollError"><code class="docutils literal notranslate"><span class="pre">PollError</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="api/errors.html#acme.errors.PollError.timeout"><code class="docutils literal notranslate"><span class="pre">PollError.timeout</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="api/errors.html#acme.errors.ValidationError"><code class="docutils literal notranslate"><span class="pre">ValidationError</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/errors.html#acme.errors.TimeoutError"><code class="docutils literal notranslate"><span class="pre">TimeoutError</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/errors.html#acme.errors.IssuanceError"><code class="docutils literal notranslate"><span class="pre">IssuanceError</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/errors.html#acme.errors.ConflictError"><code class="docutils literal notranslate"><span class="pre">ConflictError</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/errors.html#acme.errors.WildcardUnsupportedError"><code class="docutils literal notranslate"><span class="pre">WildcardUnsupportedError</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="api/fields.html">Fields</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="api/fields.html#acme.fields.Fixed"><code class="docutils literal notranslate"><span class="pre">Fixed</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="api/fields.html#acme.fields.Fixed.decode"><code class="docutils literal notranslate"><span class="pre">Fixed.decode()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="api/fields.html#acme.fields.Fixed.encode"><code class="docutils literal notranslate"><span class="pre">Fixed.encode()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="api/fields.html#acme.fields.RFC3339Field"><code class="docutils literal notranslate"><span class="pre">RFC3339Field</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="api/fields.html#acme.fields.RFC3339Field.default_encoder"><code class="docutils literal notranslate"><span class="pre">RFC3339Field.default_encoder()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="api/fields.html#acme.fields.RFC3339Field.default_decoder"><code class="docutils literal notranslate"><span class="pre">RFC3339Field.default_decoder()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="api/fields.html#acme.fields.fixed"><code class="docutils literal notranslate"><span class="pre">fixed()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/fields.html#acme.fields.rfc3339"><code class="docutils literal notranslate"><span class="pre">rfc3339()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="api/jose.html">JOSE</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api/messages.html">Messages</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="api/messages.html#acme.messages.is_acme_error"><code class="docutils literal notranslate"><span class="pre">is_acme_error()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/messages.html#acme.messages.IdentifierType"><code class="docutils literal notranslate"><span class="pre">IdentifierType</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/messages.html#acme.messages.Identifier"><code class="docutils literal notranslate"><span class="pre">Identifier</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/messages.html#acme.messages.Error"><code class="docutils literal notranslate"><span class="pre">Error</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="api/messages.html#acme.messages.Error.with_code"><code class="docutils literal notranslate"><span class="pre">Error.with_code()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="api/messages.html#acme.messages.Error.description"><code class="docutils literal notranslate"><span class="pre">Error.description</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="api/messages.html#acme.messages.Error.code"><code class="docutils literal notranslate"><span class="pre">Error.code</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="api/messages.html#acme.messages.Status"><code class="docutils literal notranslate"><span class="pre">Status</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/messages.html#acme.messages.Directory"><code class="docutils literal notranslate"><span class="pre">Directory</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="api/messages.html#acme.messages.Directory.Meta"><code class="docutils literal notranslate"><span class="pre">Directory.Meta</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="api/messages.html#acme.messages.Directory.Meta.terms_of_service"><code class="docutils literal notranslate"><span class="pre">Directory.Meta.terms_of_service</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="api/messages.html#acme.messages.Directory.to_partial_json"><code class="docutils literal notranslate"><span class="pre">Directory.to_partial_json()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="api/messages.html#acme.messages.Directory.from_json"><code class="docutils literal notranslate"><span class="pre">Directory.from_json()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="api/messages.html#acme.messages.Resource"><code class="docutils literal notranslate"><span class="pre">Resource</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/messages.html#acme.messages.ResourceWithURI"><code class="docutils literal notranslate"><span class="pre">ResourceWithURI</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/messages.html#acme.messages.ResourceBody"><code class="docutils literal notranslate"><span class="pre">ResourceBody</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/messages.html#acme.messages.ExternalAccountBinding"><code class="docutils literal notranslate"><span class="pre">ExternalAccountBinding</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="api/messages.html#acme.messages.ExternalAccountBinding.from_data"><code class="docutils literal notranslate"><span class="pre">ExternalAccountBinding.from_data()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="api/messages.html#acme.messages.Registration"><code class="docutils literal notranslate"><span class="pre">Registration</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="api/messages.html#acme.messages.Registration.from_data"><code class="docutils literal notranslate"><span class="pre">Registration.from_data()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="api/messages.html#acme.messages.Registration.to_partial_json"><code class="docutils literal notranslate"><span class="pre">Registration.to_partial_json()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="api/messages.html#acme.messages.Registration.fields_to_partial_json"><code class="docutils literal notranslate"><span class="pre">Registration.fields_to_partial_json()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="api/messages.html#acme.messages.Registration.phones"><code class="docutils literal notranslate"><span class="pre">Registration.phones</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="api/messages.html#acme.messages.Registration.emails"><code class="docutils literal notranslate"><span class="pre">Registration.emails</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="api/messages.html#acme.messages.NewRegistration"><code class="docutils literal notranslate"><span class="pre">NewRegistration</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/messages.html#acme.messages.UpdateRegistration"><code class="docutils literal notranslate"><span class="pre">UpdateRegistration</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/messages.html#acme.messages.RegistrationResource"><code class="docutils literal notranslate"><span class="pre">RegistrationResource</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/messages.html#acme.messages.ChallengeBody"><code class="docutils literal notranslate"><span class="pre">ChallengeBody</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="api/messages.html#acme.messages.ChallengeBody.encode"><code class="docutils literal notranslate"><span class="pre">ChallengeBody.encode()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="api/messages.html#acme.messages.ChallengeBody.to_partial_json"><code class="docutils literal notranslate"><span class="pre">ChallengeBody.to_partial_json()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="api/messages.html#acme.messages.ChallengeBody.fields_from_json"><code class="docutils literal notranslate"><span class="pre">ChallengeBody.fields_from_json()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="api/messages.html#acme.messages.ChallengeBody.uri"><code class="docutils literal notranslate"><span class="pre">ChallengeBody.uri</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="api/messages.html#acme.messages.ChallengeResource"><code class="docutils literal notranslate"><span class="pre">ChallengeResource</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="api/messages.html#acme.messages.ChallengeResource.uri"><code class="docutils literal notranslate"><span class="pre">ChallengeResource.uri</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="api/messages.html#acme.messages.Authorization"><code class="docutils literal notranslate"><span class="pre">Authorization</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/messages.html#acme.messages.NewAuthorization"><code class="docutils literal notranslate"><span class="pre">NewAuthorization</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/messages.html#acme.messages.UpdateAuthorization"><code class="docutils literal notranslate"><span class="pre">UpdateAuthorization</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/messages.html#acme.messages.AuthorizationResource"><code class="docutils literal notranslate"><span class="pre">AuthorizationResource</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/messages.html#acme.messages.CertificateRequest"><code class="docutils literal notranslate"><span class="pre">CertificateRequest</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/messages.html#acme.messages.CertificateResource"><code class="docutils literal notranslate"><span class="pre">CertificateResource</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/messages.html#acme.messages.Revocation"><code class="docutils literal notranslate"><span class="pre">Revocation</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/messages.html#acme.messages.Order"><code class="docutils literal notranslate"><span class="pre">Order</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/messages.html#acme.messages.OrderResource"><code class="docutils literal notranslate"><span class="pre">OrderResource</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/messages.html#acme.messages.NewOrder"><code class="docutils literal notranslate"><span class="pre">NewOrder</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="api/standalone.html">Standalone</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="api/standalone.html#acme.standalone.TLSServer"><code class="docutils literal notranslate"><span class="pre">TLSServer</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="api/standalone.html#acme.standalone.TLSServer.server_bind"><code class="docutils literal notranslate"><span class="pre">TLSServer.server_bind()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="api/standalone.html#acme.standalone.ACMEServerMixin"><code class="docutils literal notranslate"><span class="pre">ACMEServerMixin</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/standalone.html#acme.standalone.BaseDualNetworkedServers"><code class="docutils literal notranslate"><span class="pre">BaseDualNetworkedServers</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="api/standalone.html#acme.standalone.BaseDualNetworkedServers.serve_forever"><code class="docutils literal notranslate"><span class="pre">BaseDualNetworkedServers.serve_forever()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="api/standalone.html#acme.standalone.BaseDualNetworkedServers.getsocknames"><code class="docutils literal notranslate"><span class="pre">BaseDualNetworkedServers.getsocknames()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="api/standalone.html#acme.standalone.BaseDualNetworkedServers.shutdown_and_server_close"><code class="docutils literal notranslate"><span class="pre">BaseDualNetworkedServers.shutdown_and_server_close()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="api/standalone.html#acme.standalone.TLSALPN01Server"><code class="docutils literal notranslate"><span class="pre">TLSALPN01Server</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/standalone.html#acme.standalone.HTTPServer"><code class="docutils literal notranslate"><span class="pre">HTTPServer</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/standalone.html#acme.standalone.HTTP01Server"><code class="docutils literal notranslate"><span class="pre">HTTP01Server</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/standalone.html#acme.standalone.HTTP01DualNetworkedServers"><code class="docutils literal notranslate"><span class="pre">HTTP01DualNetworkedServers</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/standalone.html#acme.standalone.HTTP01RequestHandler"><code class="docutils literal notranslate"><span class="pre">HTTP01RequestHandler</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="api/standalone.html#acme.standalone.HTTP01RequestHandler.HTTP01Resource"><code class="docutils literal notranslate"><span class="pre">HTTP01RequestHandler.HTTP01Resource</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="api/standalone.html#acme.standalone.HTTP01RequestHandler.HTTP01Resource.chall"><code class="docutils literal notranslate"><span class="pre">HTTP01RequestHandler.HTTP01Resource.chall</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/standalone.html#acme.standalone.HTTP01RequestHandler.HTTP01Resource.response"><code class="docutils literal notranslate"><span class="pre">HTTP01RequestHandler.HTTP01Resource.response</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/standalone.html#acme.standalone.HTTP01RequestHandler.HTTP01Resource.validation"><code class="docutils literal notranslate"><span class="pre">HTTP01RequestHandler.HTTP01Resource.validation</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="api/standalone.html#acme.standalone.HTTP01RequestHandler.timeout"><code class="docutils literal notranslate"><span class="pre">HTTP01RequestHandler.timeout</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="api/standalone.html#acme.standalone.HTTP01RequestHandler.log_message"><code class="docutils literal notranslate"><span class="pre">HTTP01RequestHandler.log_message()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="api/standalone.html#acme.standalone.HTTP01RequestHandler.handle"><code class="docutils literal notranslate"><span class="pre">HTTP01RequestHandler.handle()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="api/standalone.html#acme.standalone.HTTP01RequestHandler.handle_index"><code class="docutils literal notranslate"><span class="pre">HTTP01RequestHandler.handle_index()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="api/standalone.html#acme.standalone.HTTP01RequestHandler.handle_404"><code class="docutils literal notranslate"><span class="pre">HTTP01RequestHandler.handle_404()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="api/standalone.html#acme.standalone.HTTP01RequestHandler.handle_simple_http_resource"><code class="docutils literal notranslate"><span class="pre">HTTP01RequestHandler.handle_simple_http_resource()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="api/standalone.html#acme.standalone.HTTP01RequestHandler.partial_init"><code class="docutils literal notranslate"><span class="pre">HTTP01RequestHandler.partial_init()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="index.html" class="btn btn-neutral float-left" title="Welcome to acme-python’s documentation!" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="api/challenges.html" class="btn btn-neutral float-right" title="Challenges" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2015, Let&#39;s Encrypt Project.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

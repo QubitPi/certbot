@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>certbot.compat package &mdash; Certbot 2.7.0.dev0 documentation</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+    <link rel="canonical" href="https://QubitPi.github.io/certbot/api/certbot.compat.html" />
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/sphinx_highlight.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="certbot.compat.filesystem module" href="certbot.compat.filesystem.html" />
+    <link rel="prev" title="certbot package" href="certbot.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            Certbot
+          </a>
+              <div class="version">
+                2.7
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../intro.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../what.html">What is a Certificate?</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../install.html">Get Certbot</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../using.html">User Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../contributing.html">Developer Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../packaging.html">Packaging Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../compatibility.html">Backwards Compatibility</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../resources.html">Resources</a></li>
+</ul>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="../api.html">API Documentation</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="certbot.html">certbot package</a><ul class="current">
+<li class="toctree-l3 current"><a class="reference internal" href="certbot.html#subpackages">Subpackages</a><ul class="current">
+<li class="toctree-l4 current"><a class="current reference internal" href="#">certbot.compat package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="certbot.display.html">certbot.display package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="certbot.plugins.html">certbot.plugins package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="certbot.tests.html">certbot.tests package</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="certbot.html#submodules">Submodules</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Certbot</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../api.html">API Documentation</a></li>
+          <li class="breadcrumb-item"><a href="certbot.html">certbot package</a></li>
+      <li class="breadcrumb-item active">certbot.compat package</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/api/certbot.compat.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="module-certbot.compat">
+<span id="certbot-compat-package"></span><h1>certbot.compat package<a class="headerlink" href="#module-certbot.compat" title="Permalink to this heading">¶</a></h1>
+<p>Compatibility layer to run certbot both on Linux and Windows.</p>
+<p>This package contains all logic that needs to be implemented specifically for Linux and for Windows.
+Then the rest of certbot code relies on this module to be platform agnostic.</p>
+<section id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this heading">¶</a></h2>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="certbot.compat.filesystem.html">certbot.compat.filesystem module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="certbot.compat.filesystem.html#certbot.compat.filesystem.chmod"><code class="docutils literal notranslate"><span class="pre">chmod()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="certbot.compat.filesystem.html#certbot.compat.filesystem.umask"><code class="docutils literal notranslate"><span class="pre">umask()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="certbot.compat.filesystem.html#certbot.compat.filesystem.temp_umask"><code class="docutils literal notranslate"><span class="pre">temp_umask()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="certbot.compat.filesystem.html#certbot.compat.filesystem.copy_ownership_and_apply_mode"><code class="docutils literal notranslate"><span class="pre">copy_ownership_and_apply_mode()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="certbot.compat.filesystem.html#certbot.compat.filesystem.copy_ownership_and_mode"><code class="docutils literal notranslate"><span class="pre">copy_ownership_and_mode()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="certbot.compat.filesystem.html#certbot.compat.filesystem.check_mode"><code class="docutils literal notranslate"><span class="pre">check_mode()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="certbot.compat.filesystem.html#certbot.compat.filesystem.check_owner"><code class="docutils literal notranslate"><span class="pre">check_owner()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="certbot.compat.filesystem.html#certbot.compat.filesystem.check_permissions"><code class="docutils literal notranslate"><span class="pre">check_permissions()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="certbot.compat.filesystem.html#certbot.compat.filesystem.open"><code class="docutils literal notranslate"><span class="pre">open()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="certbot.compat.filesystem.html#certbot.compat.filesystem.makedirs"><code class="docutils literal notranslate"><span class="pre">makedirs()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="certbot.compat.filesystem.html#certbot.compat.filesystem.mkdir"><code class="docutils literal notranslate"><span class="pre">mkdir()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="certbot.compat.filesystem.html#certbot.compat.filesystem.replace"><code class="docutils literal notranslate"><span class="pre">replace()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="certbot.compat.filesystem.html#certbot.compat.filesystem.realpath"><code class="docutils literal notranslate"><span class="pre">realpath()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="certbot.compat.filesystem.html#certbot.compat.filesystem.readlink"><code class="docutils literal notranslate"><span class="pre">readlink()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="certbot.compat.filesystem.html#certbot.compat.filesystem.is_executable"><code class="docutils literal notranslate"><span class="pre">is_executable()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="certbot.compat.filesystem.html#certbot.compat.filesystem.has_world_permissions"><code class="docutils literal notranslate"><span class="pre">has_world_permissions()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="certbot.compat.filesystem.html#certbot.compat.filesystem.compute_private_key_mode"><code class="docutils literal notranslate"><span class="pre">compute_private_key_mode()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="certbot.compat.filesystem.html#certbot.compat.filesystem.has_same_ownership"><code class="docutils literal notranslate"><span class="pre">has_same_ownership()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="certbot.compat.filesystem.html#certbot.compat.filesystem.has_min_permissions"><code class="docutils literal notranslate"><span class="pre">has_min_permissions()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="certbot.compat.misc.html">certbot.compat.misc module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="certbot.compat.misc.html#certbot.compat.misc.raise_for_non_administrative_windows_rights"><code class="docutils literal notranslate"><span class="pre">raise_for_non_administrative_windows_rights()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="certbot.compat.misc.html#certbot.compat.misc.prepare_virtual_console"><code class="docutils literal notranslate"><span class="pre">prepare_virtual_console()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="certbot.compat.misc.html#certbot.compat.misc.readline_with_timeout"><code class="docutils literal notranslate"><span class="pre">readline_with_timeout()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="certbot.compat.misc.html#certbot.compat.misc.get_default_folder"><code class="docutils literal notranslate"><span class="pre">get_default_folder()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="certbot.compat.misc.html#certbot.compat.misc.underscores_for_unsupported_characters_in_path"><code class="docutils literal notranslate"><span class="pre">underscores_for_unsupported_characters_in_path()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="certbot.compat.misc.html#certbot.compat.misc.execute_command_status"><code class="docutils literal notranslate"><span class="pre">execute_command_status()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="certbot.compat.os.html">certbot.compat.os module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="certbot.compat.os.html#certbot.compat.os.access"><code class="docutils literal notranslate"><span class="pre">access()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="certbot.compat.os.html#certbot.compat.os.chmod"><code class="docutils literal notranslate"><span class="pre">chmod()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="certbot.compat.os.html#certbot.compat.os.chown"><code class="docutils literal notranslate"><span class="pre">chown()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="certbot.compat.os.html#certbot.compat.os.fstat"><code class="docutils literal notranslate"><span class="pre">fstat()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="certbot.compat.os.html#certbot.compat.os.mkdir"><code class="docutils literal notranslate"><span class="pre">mkdir()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="certbot.compat.os.html#certbot.compat.os.open"><code class="docutils literal notranslate"><span class="pre">open()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="certbot.compat.os.html#certbot.compat.os.rename"><code class="docutils literal notranslate"><span class="pre">rename()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="certbot.compat.os.html#certbot.compat.os.replace"><code class="docutils literal notranslate"><span class="pre">replace()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="certbot.compat.os.html#certbot.compat.os.stat"><code class="docutils literal notranslate"><span class="pre">stat()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="certbot.compat.os.html#certbot.compat.os.umask"><code class="docutils literal notranslate"><span class="pre">umask()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="certbot.compat.os.html#certbot.compat.os.makedirs"><code class="docutils literal notranslate"><span class="pre">makedirs()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</div>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="certbot.compat.filesystem.html" class="btn btn-neutral float-right" title="certbot.compat.filesystem module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="certbot.html" class="btn btn-neutral" title="certbot package" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+    <span class="copyright">
+    &copy; Copyright 2014-2018 - The Certbot software and documentation are licensed under the Apache 2.0 license as described at <a href="https://eff.org/cb-license">https://eff.org/cb-license</a>.
+    </span>
+    <br>
+    <br>
+    <span class="status">
+        <a href="https://letsencrypt.status.io/">Let's Encrypt Status</a>
+    </span>
+
+    </p>
+  </div>
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

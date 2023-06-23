@@ -1,0 +1,767 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>certbot.crypto_util &mdash; Certbot 2.7.0.dev0 documentation</title>
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+    <link rel="canonical" href="https://QubitPi.github.io/certbot/_modules/certbot/crypto_util.html" />
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../../_static/doctools.js"></script>
+        <script src="../../_static/sphinx_highlight.js"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            Certbot
+          </a>
+              <div class="version">
+                2.7
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../intro.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../what.html">What is a Certificate?</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../install.html">Get Certbot</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../using.html">User Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../contributing.html">Developer Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../packaging.html">Packaging Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../compatibility.html">Backwards Compatibility</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../resources.html">Resources</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../api.html">API Documentation</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">Certbot</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">certbot.crypto_util</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for certbot.crypto_util</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;Certbot client crypto utility functions.</span>
+
+<span class="sd">.. todo:: Make the transition to use PSS rather than PKCS1_v1_5 when the server</span>
+<span class="sd">    is capable of handling the signatures.</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">import</span> <span class="nn">datetime</span>
+<span class="kn">import</span> <span class="nn">hashlib</span>
+<span class="kn">import</span> <span class="nn">logging</span>
+<span class="kn">import</span> <span class="nn">re</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Callable</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">List</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Optional</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Set</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Tuple</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">TYPE_CHECKING</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Union</span>
+
+<span class="kn">from</span> <span class="nn">cryptography</span> <span class="kn">import</span> <span class="n">x509</span>
+<span class="kn">from</span> <span class="nn">cryptography.exceptions</span> <span class="kn">import</span> <span class="n">InvalidSignature</span>
+<span class="kn">from</span> <span class="nn">cryptography.exceptions</span> <span class="kn">import</span> <span class="n">UnsupportedAlgorithm</span>
+<span class="kn">from</span> <span class="nn">cryptography.hazmat.backends</span> <span class="kn">import</span> <span class="n">default_backend</span>
+<span class="kn">from</span> <span class="nn">cryptography.hazmat.primitives</span> <span class="kn">import</span> <span class="n">hashes</span>
+<span class="kn">from</span> <span class="nn">cryptography.hazmat.primitives.asymmetric</span> <span class="kn">import</span> <span class="n">ec</span>
+<span class="kn">from</span> <span class="nn">cryptography.hazmat.primitives.asymmetric.dsa</span> <span class="kn">import</span> <span class="n">DSAPublicKey</span>
+<span class="kn">from</span> <span class="nn">cryptography.hazmat.primitives.asymmetric.ec</span> <span class="kn">import</span> <span class="n">ECDSA</span>
+<span class="kn">from</span> <span class="nn">cryptography.hazmat.primitives.asymmetric.ec</span> <span class="kn">import</span> <span class="n">EllipticCurvePublicKey</span>
+<span class="kn">from</span> <span class="nn">cryptography.hazmat.primitives.asymmetric.padding</span> <span class="kn">import</span> <span class="n">PKCS1v15</span>
+<span class="kn">from</span> <span class="nn">cryptography.hazmat.primitives.asymmetric.rsa</span> <span class="kn">import</span> <span class="n">RSAPublicKey</span>
+<span class="kn">from</span> <span class="nn">cryptography.hazmat.primitives.serialization</span> <span class="kn">import</span> <span class="n">Encoding</span>
+<span class="kn">from</span> <span class="nn">cryptography.hazmat.primitives.serialization</span> <span class="kn">import</span> <span class="n">NoEncryption</span>
+<span class="kn">from</span> <span class="nn">cryptography.hazmat.primitives.serialization</span> <span class="kn">import</span> <span class="n">PrivateFormat</span>
+<span class="kn">import</span> <span class="nn">josepy</span>
+<span class="kn">from</span> <span class="nn">OpenSSL</span> <span class="kn">import</span> <span class="n">crypto</span>
+<span class="kn">from</span> <span class="nn">OpenSSL</span> <span class="kn">import</span> <span class="n">SSL</span>
+<span class="kn">import</span> <span class="nn">pyrfc3339</span>
+
+<span class="kn">from</span> <span class="nn">acme</span> <span class="kn">import</span> <span class="n">crypto_util</span> <span class="k">as</span> <span class="n">acme_crypto_util</span>
+<span class="kn">from</span> <span class="nn">certbot</span> <span class="kn">import</span> <span class="n">errors</span>
+<span class="kn">from</span> <span class="nn">certbot</span> <span class="kn">import</span> <span class="n">interfaces</span>
+<span class="kn">from</span> <span class="nn">certbot</span> <span class="kn">import</span> <span class="n">util</span>
+<span class="kn">from</span> <span class="nn">certbot.compat</span> <span class="kn">import</span> <span class="n">os</span>
+
+<span class="c1"># Cryptography ed448 and ed25519 modules do not exist on oldest tests</span>
+<span class="k">if</span> <span class="n">TYPE_CHECKING</span><span class="p">:</span>
+    <span class="kn">from</span> <span class="nn">cryptography.hazmat.primitives.asymmetric.ed448</span> <span class="kn">import</span> <span class="n">Ed448PublicKey</span>
+    <span class="kn">from</span> <span class="nn">cryptography.hazmat.primitives.asymmetric.ed25519</span> <span class="kn">import</span> <span class="n">Ed25519PublicKey</span>
+    <span class="kn">from</span> <span class="nn">cryptography.hazmat.primitives.asymmetric.x448</span> <span class="kn">import</span> <span class="n">X448PublicKey</span>
+    <span class="kn">from</span> <span class="nn">cryptography.hazmat.primitives.asymmetric.x25519</span> <span class="kn">import</span> <span class="n">X25519PublicKey</span>
+
+<span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+
+
+<span class="c1"># High level functions</span>
+
+<div class="viewcode-block" id="generate_key"><a class="viewcode-back" href="../../api/certbot.crypto_util.html#certbot.crypto_util.generate_key">[docs]</a><span class="k">def</span> <span class="nf">generate_key</span><span class="p">(</span><span class="n">key_size</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">key_dir</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">key_type</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;rsa&quot;</span><span class="p">,</span>
+                 <span class="n">elliptic_curve</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;secp256r1&quot;</span><span class="p">,</span> <span class="n">keyname</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;key-certbot.pem&quot;</span><span class="p">,</span>
+                 <span class="n">strict_permissions</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">util</span><span class="o">.</span><span class="n">Key</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Initializes and saves a privkey.</span>
+
+<span class="sd">    Inits key and saves it in PEM format on the filesystem.</span>
+
+<span class="sd">    .. note:: keyname is the attempted filename, it may be different if a file</span>
+<span class="sd">        already exists at the path.</span>
+
+<span class="sd">    :param int key_size: key size in bits if key size is rsa.</span>
+<span class="sd">    :param str key_dir: Optional key save directory.</span>
+<span class="sd">    :param str key_type: Key Type [rsa, ecdsa]</span>
+<span class="sd">    :param str elliptic_curve: Name of the elliptic curve if key type is ecdsa.</span>
+<span class="sd">    :param str keyname: Filename of key</span>
+<span class="sd">    :param bool strict_permissions: If true and key_dir exists, an exception is raised if</span>
+<span class="sd">        the directory doesn&#39;t have 0700 permissions or isn&#39;t owned by the current user.</span>
+
+<span class="sd">    :returns: Key</span>
+<span class="sd">    :rtype: :class:`certbot.util.Key`</span>
+
+<span class="sd">    :raises ValueError: If unable to generate the key given key_size.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">key_pem</span> <span class="o">=</span> <span class="n">make_key</span><span class="p">(</span>
+            <span class="n">bits</span><span class="o">=</span><span class="n">key_size</span><span class="p">,</span> <span class="n">elliptic_curve</span><span class="o">=</span><span class="n">elliptic_curve</span> <span class="ow">or</span> <span class="s2">&quot;secp256r1&quot;</span><span class="p">,</span> <span class="n">key_type</span><span class="o">=</span><span class="n">key_type</span><span class="p">,</span>
+        <span class="p">)</span>
+    <span class="k">except</span> <span class="ne">ValueError</span> <span class="k">as</span> <span class="n">err</span><span class="p">:</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">exc_info</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;Encountered error while making key: </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">err</span><span class="p">))</span>
+        <span class="k">raise</span> <span class="n">err</span>
+
+    <span class="c1"># Save file</span>
+    <span class="n">key_path</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="k">if</span> <span class="n">key_dir</span><span class="p">:</span>
+        <span class="n">util</span><span class="o">.</span><span class="n">make_or_verify_dir</span><span class="p">(</span><span class="n">key_dir</span><span class="p">,</span> <span class="mo">0o700</span><span class="p">,</span> <span class="n">strict_permissions</span><span class="p">)</span>
+        <span class="n">key_f</span><span class="p">,</span> <span class="n">key_path</span> <span class="o">=</span> <span class="n">util</span><span class="o">.</span><span class="n">unique_file</span><span class="p">(</span>
+            <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">key_dir</span><span class="p">,</span> <span class="n">keyname</span><span class="p">),</span> <span class="mo">0o600</span><span class="p">,</span> <span class="s2">&quot;wb&quot;</span><span class="p">)</span>
+        <span class="k">with</span> <span class="n">key_f</span><span class="p">:</span>
+            <span class="n">key_f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">key_pem</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">key_type</span> <span class="o">==</span> <span class="s1">&#39;rsa&#39;</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Generating RSA key (</span><span class="si">%d</span><span class="s2"> bits): </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">key_size</span><span class="p">,</span> <span class="n">key_path</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Generating ECDSA key (</span><span class="si">%d</span><span class="s2"> bits): </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">key_size</span><span class="p">,</span> <span class="n">key_path</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">util</span><span class="o">.</span><span class="n">Key</span><span class="p">(</span><span class="n">key_path</span><span class="p">,</span> <span class="n">key_pem</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="generate_csr"><a class="viewcode-back" href="../../api/certbot.crypto_util.html#certbot.crypto_util.generate_csr">[docs]</a><span class="k">def</span> <span class="nf">generate_csr</span><span class="p">(</span><span class="n">privkey</span><span class="p">:</span> <span class="n">util</span><span class="o">.</span><span class="n">Key</span><span class="p">,</span> <span class="n">names</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">Set</span><span class="p">[</span><span class="nb">str</span><span class="p">]],</span> <span class="n">path</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span>
+                 <span class="n">must_staple</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">strict_permissions</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">util</span><span class="o">.</span><span class="n">CSR</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Initialize a CSR with the given private key.</span>
+
+<span class="sd">    :param privkey: Key to include in the CSR</span>
+<span class="sd">    :type privkey: :class:`certbot.util.Key`</span>
+<span class="sd">    :param set names: `str` names to include in the CSR</span>
+<span class="sd">    :param str path: Optional certificate save directory.</span>
+<span class="sd">    :param bool must_staple: If true, include the TLS Feature extension &quot;OCSP Must-Staple&quot;</span>
+<span class="sd">    :param bool strict_permissions: If true and path exists, an exception is raised if</span>
+<span class="sd">        the directory doesn&#39;t have 0755 permissions or isn&#39;t owned by the current user.</span>
+
+<span class="sd">    :returns: CSR</span>
+<span class="sd">    :rtype: :class:`certbot.util.CSR`</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">csr_pem</span> <span class="o">=</span> <span class="n">acme_crypto_util</span><span class="o">.</span><span class="n">make_csr</span><span class="p">(</span>
+        <span class="n">privkey</span><span class="o">.</span><span class="n">pem</span><span class="p">,</span> <span class="n">names</span><span class="p">,</span> <span class="n">must_staple</span><span class="o">=</span><span class="n">must_staple</span><span class="p">)</span>
+
+    <span class="c1"># Save CSR, if requested</span>
+    <span class="n">csr_filename</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="k">if</span> <span class="n">path</span><span class="p">:</span>
+        <span class="n">util</span><span class="o">.</span><span class="n">make_or_verify_dir</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="mo">0o755</span><span class="p">,</span> <span class="n">strict_permissions</span><span class="p">)</span>
+        <span class="n">csr_f</span><span class="p">,</span> <span class="n">csr_filename</span> <span class="o">=</span> <span class="n">util</span><span class="o">.</span><span class="n">unique_file</span><span class="p">(</span>
+            <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="s2">&quot;csr-certbot.pem&quot;</span><span class="p">),</span> <span class="mo">0o644</span><span class="p">,</span> <span class="s2">&quot;wb&quot;</span><span class="p">)</span>
+        <span class="k">with</span> <span class="n">csr_f</span><span class="p">:</span>
+            <span class="n">csr_f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">csr_pem</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Creating CSR: </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">csr_filename</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">util</span><span class="o">.</span><span class="n">CSR</span><span class="p">(</span><span class="n">csr_filename</span><span class="p">,</span> <span class="n">csr_pem</span><span class="p">,</span> <span class="s2">&quot;pem&quot;</span><span class="p">)</span></div>
+
+
+<span class="c1"># WARNING: the csr and private key file are possible attack vectors for TOCTOU</span>
+<span class="c1"># We should either...</span>
+<span class="c1"># A. Do more checks to verify that the CSR is trusted/valid</span>
+<span class="c1"># B. Audit the parsing code for vulnerabilities</span>
+
+<div class="viewcode-block" id="valid_csr"><a class="viewcode-back" href="../../api/certbot.crypto_util.html#certbot.crypto_util.valid_csr">[docs]</a><span class="k">def</span> <span class="nf">valid_csr</span><span class="p">(</span><span class="n">csr</span><span class="p">:</span> <span class="nb">bytes</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Validate CSR.</span>
+
+<span class="sd">    Check if `csr` is a valid CSR for the given domains.</span>
+
+<span class="sd">    :param bytes csr: CSR in PEM.</span>
+
+<span class="sd">    :returns: Validity of CSR.</span>
+<span class="sd">    :rtype: bool</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">req</span> <span class="o">=</span> <span class="n">crypto</span><span class="o">.</span><span class="n">load_certificate_request</span><span class="p">(</span>
+            <span class="n">crypto</span><span class="o">.</span><span class="n">FILETYPE_PEM</span><span class="p">,</span> <span class="n">csr</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">req</span><span class="o">.</span><span class="n">verify</span><span class="p">(</span><span class="n">req</span><span class="o">.</span><span class="n">get_pubkey</span><span class="p">())</span>
+    <span class="k">except</span> <span class="n">crypto</span><span class="o">.</span><span class="n">Error</span><span class="p">:</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">exc_info</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="k">return</span> <span class="kc">False</span></div>
+
+
+<div class="viewcode-block" id="csr_matches_pubkey"><a class="viewcode-back" href="../../api/certbot.crypto_util.html#certbot.crypto_util.csr_matches_pubkey">[docs]</a><span class="k">def</span> <span class="nf">csr_matches_pubkey</span><span class="p">(</span><span class="n">csr</span><span class="p">:</span> <span class="nb">bytes</span><span class="p">,</span> <span class="n">privkey</span><span class="p">:</span> <span class="nb">bytes</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Does private key correspond to the subject public key in the CSR?</span>
+
+<span class="sd">    :param bytes csr: CSR in PEM.</span>
+<span class="sd">    :param bytes privkey: Private key file contents (PEM)</span>
+
+<span class="sd">    :returns: Correspondence of private key to CSR subject public key.</span>
+<span class="sd">    :rtype: bool</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">req</span> <span class="o">=</span> <span class="n">crypto</span><span class="o">.</span><span class="n">load_certificate_request</span><span class="p">(</span>
+        <span class="n">crypto</span><span class="o">.</span><span class="n">FILETYPE_PEM</span><span class="p">,</span> <span class="n">csr</span><span class="p">)</span>
+    <span class="n">pkey</span> <span class="o">=</span> <span class="n">crypto</span><span class="o">.</span><span class="n">load_privatekey</span><span class="p">(</span><span class="n">crypto</span><span class="o">.</span><span class="n">FILETYPE_PEM</span><span class="p">,</span> <span class="n">privkey</span><span class="p">)</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">req</span><span class="o">.</span><span class="n">verify</span><span class="p">(</span><span class="n">pkey</span><span class="p">)</span>
+    <span class="k">except</span> <span class="n">crypto</span><span class="o">.</span><span class="n">Error</span><span class="p">:</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">exc_info</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="k">return</span> <span class="kc">False</span></div>
+
+
+<div class="viewcode-block" id="import_csr_file"><a class="viewcode-back" href="../../api/certbot.crypto_util.html#certbot.crypto_util.import_csr_file">[docs]</a><span class="k">def</span> <span class="nf">import_csr_file</span><span class="p">(</span><span class="n">csrfile</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="nb">bytes</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">util</span><span class="o">.</span><span class="n">CSR</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Import a CSR file, which can be either PEM or DER.</span>
+
+<span class="sd">    :param str csrfile: CSR filename</span>
+<span class="sd">    :param bytes data: contents of the CSR file</span>
+
+<span class="sd">    :returns: (`crypto.FILETYPE_PEM`,</span>
+<span class="sd">               util.CSR object representing the CSR,</span>
+<span class="sd">               list of domains requested in the CSR)</span>
+<span class="sd">    :rtype: tuple</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">PEM</span> <span class="o">=</span> <span class="n">crypto</span><span class="o">.</span><span class="n">FILETYPE_PEM</span>
+    <span class="n">load</span> <span class="o">=</span> <span class="n">crypto</span><span class="o">.</span><span class="n">load_certificate_request</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="c1"># Try to parse as DER first, then fall back to PEM.</span>
+        <span class="n">csr</span> <span class="o">=</span> <span class="n">load</span><span class="p">(</span><span class="n">crypto</span><span class="o">.</span><span class="n">FILETYPE_ASN1</span><span class="p">,</span> <span class="n">data</span><span class="p">)</span>
+    <span class="k">except</span> <span class="n">crypto</span><span class="o">.</span><span class="n">Error</span><span class="p">:</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">csr</span> <span class="o">=</span> <span class="n">load</span><span class="p">(</span><span class="n">PEM</span><span class="p">,</span> <span class="n">data</span><span class="p">)</span>
+        <span class="k">except</span> <span class="n">crypto</span><span class="o">.</span><span class="n">Error</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">errors</span><span class="o">.</span><span class="n">Error</span><span class="p">(</span><span class="s2">&quot;Failed to parse CSR file: </span><span class="si">{0}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">csrfile</span><span class="p">))</span>
+
+    <span class="n">domains</span> <span class="o">=</span> <span class="n">_get_names_from_loaded_cert_or_req</span><span class="p">(</span><span class="n">csr</span><span class="p">)</span>
+    <span class="c1"># Internally we always use PEM, so re-encode as PEM before returning.</span>
+    <span class="n">data_pem</span> <span class="o">=</span> <span class="n">crypto</span><span class="o">.</span><span class="n">dump_certificate_request</span><span class="p">(</span><span class="n">PEM</span><span class="p">,</span> <span class="n">csr</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">PEM</span><span class="p">,</span> <span class="n">util</span><span class="o">.</span><span class="n">CSR</span><span class="p">(</span><span class="n">file</span><span class="o">=</span><span class="n">csrfile</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">data_pem</span><span class="p">,</span> <span class="n">form</span><span class="o">=</span><span class="s2">&quot;pem&quot;</span><span class="p">),</span> <span class="n">domains</span></div>
+
+
+<div class="viewcode-block" id="make_key"><a class="viewcode-back" href="../../api/certbot.crypto_util.html#certbot.crypto_util.make_key">[docs]</a><span class="k">def</span> <span class="nf">make_key</span><span class="p">(</span><span class="n">bits</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1024</span><span class="p">,</span> <span class="n">key_type</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;rsa&quot;</span><span class="p">,</span>
+             <span class="n">elliptic_curve</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bytes</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Generate PEM encoded RSA|EC key.</span>
+
+<span class="sd">    :param int bits: Number of bits if key_type=rsa. At least 1024 for RSA.</span>
+<span class="sd">    :param str key_type: The type of key to generate, but be rsa or ecdsa</span>
+<span class="sd">    :param str elliptic_curve: The elliptic curve to use.</span>
+
+<span class="sd">    :returns: new RSA or ECDSA key in PEM form with specified number of bits</span>
+<span class="sd">              or of type ec_curve when key_type ecdsa is used.</span>
+<span class="sd">    :rtype: str</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">key_type</span> <span class="o">==</span> <span class="s1">&#39;rsa&#39;</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">bits</span> <span class="o">&lt;</span> <span class="mi">1024</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">errors</span><span class="o">.</span><span class="n">Error</span><span class="p">(</span><span class="s2">&quot;Unsupported RSA key length: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">bits</span><span class="p">))</span>
+
+        <span class="n">key</span> <span class="o">=</span> <span class="n">crypto</span><span class="o">.</span><span class="n">PKey</span><span class="p">()</span>
+        <span class="n">key</span><span class="o">.</span><span class="n">generate_key</span><span class="p">(</span><span class="n">crypto</span><span class="o">.</span><span class="n">TYPE_RSA</span><span class="p">,</span> <span class="n">bits</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">key_type</span> <span class="o">==</span> <span class="s1">&#39;ecdsa&#39;</span><span class="p">:</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">elliptic_curve</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">errors</span><span class="o">.</span><span class="n">Error</span><span class="p">(</span><span class="s2">&quot;When key_type == ecdsa, elliptic_curve must be set.&quot;</span><span class="p">)</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">name</span> <span class="o">=</span> <span class="n">elliptic_curve</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">name</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;SECP256R1&#39;</span><span class="p">,</span> <span class="s1">&#39;SECP384R1&#39;</span><span class="p">,</span> <span class="s1">&#39;SECP521R1&#39;</span><span class="p">):</span>
+                <span class="n">curve</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">ec</span><span class="p">,</span> <span class="n">elliptic_curve</span><span class="o">.</span><span class="n">upper</span><span class="p">())</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">curve</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="n">errors</span><span class="o">.</span><span class="n">Error</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Invalid curve type: </span><span class="si">{</span><span class="n">elliptic_curve</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="n">_key</span> <span class="o">=</span> <span class="n">ec</span><span class="o">.</span><span class="n">generate_private_key</span><span class="p">(</span>
+                    <span class="n">curve</span><span class="o">=</span><span class="n">curve</span><span class="p">(),</span>
+                    <span class="n">backend</span><span class="o">=</span><span class="n">default_backend</span><span class="p">()</span>
+                <span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="n">errors</span><span class="o">.</span><span class="n">Error</span><span class="p">(</span><span class="s2">&quot;Unsupported elliptic curve: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">elliptic_curve</span><span class="p">))</span>
+        <span class="k">except</span> <span class="ne">TypeError</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">errors</span><span class="o">.</span><span class="n">Error</span><span class="p">(</span><span class="s2">&quot;Unsupported elliptic curve: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">elliptic_curve</span><span class="p">))</span>
+        <span class="k">except</span> <span class="n">UnsupportedAlgorithm</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">e</span> <span class="kn">from</span> <span class="nn">errors.Error</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">))</span>
+        <span class="n">_key_pem</span> <span class="o">=</span> <span class="n">_key</span><span class="o">.</span><span class="n">private_bytes</span><span class="p">(</span>
+            <span class="n">encoding</span><span class="o">=</span><span class="n">Encoding</span><span class="o">.</span><span class="n">PEM</span><span class="p">,</span>
+            <span class="nb">format</span><span class="o">=</span><span class="n">PrivateFormat</span><span class="o">.</span><span class="n">TraditionalOpenSSL</span><span class="p">,</span>
+            <span class="n">encryption_algorithm</span><span class="o">=</span><span class="n">NoEncryption</span><span class="p">()</span>
+        <span class="p">)</span>
+        <span class="n">key</span> <span class="o">=</span> <span class="n">crypto</span><span class="o">.</span><span class="n">load_privatekey</span><span class="p">(</span><span class="n">crypto</span><span class="o">.</span><span class="n">FILETYPE_PEM</span><span class="p">,</span> <span class="n">_key_pem</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">errors</span><span class="o">.</span><span class="n">Error</span><span class="p">(</span><span class="s2">&quot;Invalid key_type specified: </span><span class="si">{}</span><span class="s2">.  Use [rsa|ecdsa]&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">key_type</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">crypto</span><span class="o">.</span><span class="n">dump_privatekey</span><span class="p">(</span><span class="n">crypto</span><span class="o">.</span><span class="n">FILETYPE_PEM</span><span class="p">,</span> <span class="n">key</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="valid_privkey"><a class="viewcode-back" href="../../api/certbot.crypto_util.html#certbot.crypto_util.valid_privkey">[docs]</a><span class="k">def</span> <span class="nf">valid_privkey</span><span class="p">(</span><span class="n">privkey</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">bytes</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Is valid RSA private key?</span>
+
+<span class="sd">    :param privkey: Private key file contents in PEM</span>
+
+<span class="sd">    :returns: Validity of private key.</span>
+<span class="sd">    :rtype: bool</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">crypto</span><span class="o">.</span><span class="n">load_privatekey</span><span class="p">(</span>
+            <span class="n">crypto</span><span class="o">.</span><span class="n">FILETYPE_PEM</span><span class="p">,</span> <span class="n">privkey</span><span class="p">)</span><span class="o">.</span><span class="n">check</span><span class="p">()</span>
+    <span class="k">except</span> <span class="p">(</span><span class="ne">TypeError</span><span class="p">,</span> <span class="n">crypto</span><span class="o">.</span><span class="n">Error</span><span class="p">):</span>
+        <span class="k">return</span> <span class="kc">False</span></div>
+
+
+<div class="viewcode-block" id="verify_renewable_cert"><a class="viewcode-back" href="../../api/certbot.crypto_util.html#certbot.crypto_util.verify_renewable_cert">[docs]</a><span class="k">def</span> <span class="nf">verify_renewable_cert</span><span class="p">(</span><span class="n">renewable_cert</span><span class="p">:</span> <span class="n">interfaces</span><span class="o">.</span><span class="n">RenewableCert</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;For checking that your certs were not corrupted on disk.</span>
+
+<span class="sd">    Several things are checked:</span>
+<span class="sd">        1. Signature verification for the cert.</span>
+<span class="sd">        2. That fullchain matches cert and chain when concatenated.</span>
+<span class="sd">        3. Check that the private key matches the certificate.</span>
+
+<span class="sd">    :param renewable_cert: cert to verify</span>
+<span class="sd">    :type renewable_cert: certbot.interfaces.RenewableCert</span>
+
+<span class="sd">    :raises errors.Error: If verification fails.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">verify_renewable_cert_sig</span><span class="p">(</span><span class="n">renewable_cert</span><span class="p">)</span>
+    <span class="n">verify_fullchain</span><span class="p">(</span><span class="n">renewable_cert</span><span class="p">)</span>
+    <span class="n">verify_cert_matches_priv_key</span><span class="p">(</span><span class="n">renewable_cert</span><span class="o">.</span><span class="n">cert_path</span><span class="p">,</span> <span class="n">renewable_cert</span><span class="o">.</span><span class="n">key_path</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="verify_renewable_cert_sig"><a class="viewcode-back" href="../../api/certbot.crypto_util.html#certbot.crypto_util.verify_renewable_cert_sig">[docs]</a><span class="k">def</span> <span class="nf">verify_renewable_cert_sig</span><span class="p">(</span><span class="n">renewable_cert</span><span class="p">:</span> <span class="n">interfaces</span><span class="o">.</span><span class="n">RenewableCert</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Verifies the signature of a RenewableCert object.</span>
+
+<span class="sd">    :param renewable_cert: cert to verify</span>
+<span class="sd">    :type renewable_cert: certbot.interfaces.RenewableCert</span>
+
+<span class="sd">    :raises errors.Error: If signature verification fails.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">renewable_cert</span><span class="o">.</span><span class="n">chain_path</span><span class="p">,</span> <span class="s1">&#39;rb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">chain_file</span><span class="p">:</span>
+            <span class="n">chain</span> <span class="o">=</span> <span class="n">x509</span><span class="o">.</span><span class="n">load_pem_x509_certificate</span><span class="p">(</span><span class="n">chain_file</span><span class="o">.</span><span class="n">read</span><span class="p">(),</span> <span class="n">default_backend</span><span class="p">())</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">renewable_cert</span><span class="o">.</span><span class="n">cert_path</span><span class="p">,</span> <span class="s1">&#39;rb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">cert_file</span><span class="p">:</span>
+            <span class="n">cert</span> <span class="o">=</span> <span class="n">x509</span><span class="o">.</span><span class="n">load_pem_x509_certificate</span><span class="p">(</span><span class="n">cert_file</span><span class="o">.</span><span class="n">read</span><span class="p">(),</span> <span class="n">default_backend</span><span class="p">())</span>
+        <span class="n">pk</span> <span class="o">=</span> <span class="n">chain</span><span class="o">.</span><span class="n">public_key</span><span class="p">()</span>
+        <span class="k">assert</span> <span class="n">cert</span><span class="o">.</span><span class="n">signature_hash_algorithm</span> <span class="c1"># always present for RSA and ECDSA</span>
+        <span class="n">verify_signed_payload</span><span class="p">(</span><span class="n">pk</span><span class="p">,</span> <span class="n">cert</span><span class="o">.</span><span class="n">signature</span><span class="p">,</span> <span class="n">cert</span><span class="o">.</span><span class="n">tbs_certificate_bytes</span><span class="p">,</span>
+                                <span class="n">cert</span><span class="o">.</span><span class="n">signature_hash_algorithm</span><span class="p">)</span>
+    <span class="k">except</span> <span class="p">(</span><span class="ne">IOError</span><span class="p">,</span> <span class="ne">ValueError</span><span class="p">,</span> <span class="n">InvalidSignature</span><span class="p">)</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="n">error_str</span> <span class="o">=</span> <span class="s2">&quot;verifying the signature of the certificate located at </span><span class="si">{0}</span><span class="s2"> has failed. </span><span class="se">\</span>
+<span class="s2">                Details: </span><span class="si">{1}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">renewable_cert</span><span class="o">.</span><span class="n">cert_path</span><span class="p">,</span> <span class="n">e</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">exception</span><span class="p">(</span><span class="n">error_str</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="n">errors</span><span class="o">.</span><span class="n">Error</span><span class="p">(</span><span class="n">error_str</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="verify_signed_payload"><a class="viewcode-back" href="../../api/certbot.crypto_util.html#certbot.crypto_util.verify_signed_payload">[docs]</a><span class="k">def</span> <span class="nf">verify_signed_payload</span><span class="p">(</span><span class="n">public_key</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">DSAPublicKey</span><span class="p">,</span> <span class="s1">&#39;Ed25519PublicKey&#39;</span><span class="p">,</span> <span class="s1">&#39;Ed448PublicKey&#39;</span><span class="p">,</span>
+                                            <span class="n">EllipticCurvePublicKey</span><span class="p">,</span> <span class="n">RSAPublicKey</span><span class="p">,</span>
+                                            <span class="s1">&#39;X25519PublicKey&#39;</span><span class="p">,</span> <span class="s1">&#39;X448PublicKey&#39;</span><span class="p">],</span>
+                          <span class="n">signature</span><span class="p">:</span> <span class="nb">bytes</span><span class="p">,</span> <span class="n">payload</span><span class="p">:</span> <span class="nb">bytes</span><span class="p">,</span>
+                          <span class="n">signature_hash_algorithm</span><span class="p">:</span> <span class="n">hashes</span><span class="o">.</span><span class="n">HashAlgorithm</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Check the signature of a payload.</span>
+
+<span class="sd">    :param RSAPublicKey/EllipticCurvePublicKey public_key: the public_key to check signature</span>
+<span class="sd">    :param bytes signature: the signature bytes</span>
+<span class="sd">    :param bytes payload: the payload bytes</span>
+<span class="sd">    :param hashes.HashAlgorithm signature_hash_algorithm: algorithm used to hash the payload</span>
+
+<span class="sd">    :raises InvalidSignature: If signature verification fails.</span>
+<span class="sd">    :raises errors.Error: If public key type is not supported</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">public_key</span><span class="p">,</span> <span class="n">RSAPublicKey</span><span class="p">):</span>
+        <span class="n">public_key</span><span class="o">.</span><span class="n">verify</span><span class="p">(</span>
+            <span class="n">signature</span><span class="p">,</span> <span class="n">payload</span><span class="p">,</span> <span class="n">PKCS1v15</span><span class="p">(),</span> <span class="n">signature_hash_algorithm</span>
+        <span class="p">)</span>
+    <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">public_key</span><span class="p">,</span> <span class="n">EllipticCurvePublicKey</span><span class="p">):</span>
+        <span class="n">public_key</span><span class="o">.</span><span class="n">verify</span><span class="p">(</span>
+            <span class="n">signature</span><span class="p">,</span> <span class="n">payload</span><span class="p">,</span> <span class="n">ECDSA</span><span class="p">(</span><span class="n">signature_hash_algorithm</span><span class="p">)</span>
+        <span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">errors</span><span class="o">.</span><span class="n">Error</span><span class="p">(</span><span class="s2">&quot;Unsupported public key type.&quot;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="verify_cert_matches_priv_key"><a class="viewcode-back" href="../../api/certbot.crypto_util.html#certbot.crypto_util.verify_cert_matches_priv_key">[docs]</a><span class="k">def</span> <span class="nf">verify_cert_matches_priv_key</span><span class="p">(</span><span class="n">cert_path</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">key_path</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot; Verifies that the private key and cert match.</span>
+
+<span class="sd">    :param str cert_path: path to a cert in PEM format</span>
+<span class="sd">    :param str key_path: path to a private key file</span>
+
+<span class="sd">    :raises errors.Error: If they don&#39;t match.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">context</span> <span class="o">=</span> <span class="n">SSL</span><span class="o">.</span><span class="n">Context</span><span class="p">(</span><span class="n">SSL</span><span class="o">.</span><span class="n">SSLv23_METHOD</span><span class="p">)</span>
+        <span class="n">context</span><span class="o">.</span><span class="n">use_certificate_file</span><span class="p">(</span><span class="n">cert_path</span><span class="p">)</span>
+        <span class="n">context</span><span class="o">.</span><span class="n">use_privatekey_file</span><span class="p">(</span><span class="n">key_path</span><span class="p">)</span>
+        <span class="n">context</span><span class="o">.</span><span class="n">check_privatekey</span><span class="p">()</span>
+    <span class="k">except</span> <span class="p">(</span><span class="ne">IOError</span><span class="p">,</span> <span class="n">SSL</span><span class="o">.</span><span class="n">Error</span><span class="p">)</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="n">error_str</span> <span class="o">=</span> <span class="s2">&quot;verifying the certificate located at </span><span class="si">{0}</span><span class="s2"> matches the </span><span class="se">\</span>
+<span class="s2">                private key located at </span><span class="si">{1}</span><span class="s2"> has failed. </span><span class="se">\</span>
+<span class="s2">                Details: </span><span class="si">{2}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">cert_path</span><span class="p">,</span>
+                        <span class="n">key_path</span><span class="p">,</span> <span class="n">e</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">exception</span><span class="p">(</span><span class="n">error_str</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="n">errors</span><span class="o">.</span><span class="n">Error</span><span class="p">(</span><span class="n">error_str</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="verify_fullchain"><a class="viewcode-back" href="../../api/certbot.crypto_util.html#certbot.crypto_util.verify_fullchain">[docs]</a><span class="k">def</span> <span class="nf">verify_fullchain</span><span class="p">(</span><span class="n">renewable_cert</span><span class="p">:</span> <span class="n">interfaces</span><span class="o">.</span><span class="n">RenewableCert</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot; Verifies that fullchain is indeed cert concatenated with chain.</span>
+
+<span class="sd">    :param renewable_cert: cert to verify</span>
+<span class="sd">    :type renewable_cert: certbot.interfaces.RenewableCert</span>
+
+<span class="sd">    :raises errors.Error: If cert and chain do not combine to fullchain.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">renewable_cert</span><span class="o">.</span><span class="n">chain_path</span><span class="p">)</span> <span class="k">as</span> <span class="n">chain_file</span><span class="p">:</span>
+            <span class="n">chain</span> <span class="o">=</span> <span class="n">chain_file</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">renewable_cert</span><span class="o">.</span><span class="n">cert_path</span><span class="p">)</span> <span class="k">as</span> <span class="n">cert_file</span><span class="p">:</span>
+            <span class="n">cert</span> <span class="o">=</span> <span class="n">cert_file</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">renewable_cert</span><span class="o">.</span><span class="n">fullchain_path</span><span class="p">)</span> <span class="k">as</span> <span class="n">fullchain_file</span><span class="p">:</span>
+            <span class="n">fullchain</span> <span class="o">=</span> <span class="n">fullchain_file</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">cert</span> <span class="o">+</span> <span class="n">chain</span><span class="p">)</span> <span class="o">!=</span> <span class="n">fullchain</span><span class="p">:</span>
+            <span class="n">error_str</span> <span class="o">=</span> <span class="s2">&quot;fullchain does not match cert + chain for </span><span class="si">{0}</span><span class="s2">!&quot;</span>
+            <span class="n">error_str</span> <span class="o">=</span> <span class="n">error_str</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">renewable_cert</span><span class="o">.</span><span class="n">lineagename</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="n">errors</span><span class="o">.</span><span class="n">Error</span><span class="p">(</span><span class="n">error_str</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">IOError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="n">error_str</span> <span class="o">=</span> <span class="s2">&quot;reading one of cert, chain, or fullchain has failed: </span><span class="si">{0}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">exception</span><span class="p">(</span><span class="n">error_str</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="n">errors</span><span class="o">.</span><span class="n">Error</span><span class="p">(</span><span class="n">error_str</span><span class="p">)</span>
+    <span class="k">except</span> <span class="n">errors</span><span class="o">.</span><span class="n">Error</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">e</span></div>
+
+
+<div class="viewcode-block" id="pyopenssl_load_certificate"><a class="viewcode-back" href="../../api/certbot.crypto_util.html#certbot.crypto_util.pyopenssl_load_certificate">[docs]</a><span class="k">def</span> <span class="nf">pyopenssl_load_certificate</span><span class="p">(</span><span class="n">data</span><span class="p">:</span> <span class="nb">bytes</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">crypto</span><span class="o">.</span><span class="n">X509</span><span class="p">,</span> <span class="nb">int</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Load PEM/DER certificate.</span>
+
+<span class="sd">    :raises errors.Error:</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">openssl_errors</span> <span class="o">=</span> <span class="p">[]</span>
+
+    <span class="k">for</span> <span class="n">file_type</span> <span class="ow">in</span> <span class="p">(</span><span class="n">crypto</span><span class="o">.</span><span class="n">FILETYPE_PEM</span><span class="p">,</span> <span class="n">crypto</span><span class="o">.</span><span class="n">FILETYPE_ASN1</span><span class="p">):</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">crypto</span><span class="o">.</span><span class="n">load_certificate</span><span class="p">(</span><span class="n">file_type</span><span class="p">,</span> <span class="n">data</span><span class="p">),</span> <span class="n">file_type</span>
+        <span class="k">except</span> <span class="n">crypto</span><span class="o">.</span><span class="n">Error</span> <span class="k">as</span> <span class="n">error</span><span class="p">:</span>  <span class="c1"># TODO: other errors?</span>
+            <span class="n">openssl_errors</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">error</span><span class="p">)</span>
+    <span class="k">raise</span> <span class="n">errors</span><span class="o">.</span><span class="n">Error</span><span class="p">(</span><span class="s2">&quot;Unable to load: </span><span class="si">{0}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="s2">&quot;,&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
+        <span class="nb">str</span><span class="p">(</span><span class="n">error</span><span class="p">)</span> <span class="k">for</span> <span class="n">error</span> <span class="ow">in</span> <span class="n">openssl_errors</span><span class="p">)))</span></div>
+
+
+<span class="k">def</span> <span class="nf">_load_cert_or_req</span><span class="p">(</span><span class="n">cert_or_req_str</span><span class="p">:</span> <span class="nb">bytes</span><span class="p">,</span>
+                      <span class="n">load_func</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">bytes</span><span class="p">],</span> <span class="n">Union</span><span class="p">[</span><span class="n">crypto</span><span class="o">.</span><span class="n">X509</span><span class="p">,</span> <span class="n">crypto</span><span class="o">.</span><span class="n">X509Req</span><span class="p">]],</span>
+                      <span class="n">typ</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">crypto</span><span class="o">.</span><span class="n">FILETYPE_PEM</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">crypto</span><span class="o">.</span><span class="n">X509</span><span class="p">,</span> <span class="n">crypto</span><span class="o">.</span><span class="n">X509Req</span><span class="p">]:</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">load_func</span><span class="p">(</span><span class="n">typ</span><span class="p">,</span> <span class="n">cert_or_req_str</span><span class="p">)</span>
+    <span class="k">except</span> <span class="n">crypto</span><span class="o">.</span><span class="n">Error</span> <span class="k">as</span> <span class="n">err</span><span class="p">:</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">exc_info</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;Encountered error while loading certificate or csr: </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">err</span><span class="p">))</span>
+        <span class="k">raise</span>
+
+
+<span class="k">def</span> <span class="nf">_get_sans_from_cert_or_req</span><span class="p">(</span><span class="n">cert_or_req_str</span><span class="p">:</span> <span class="nb">bytes</span><span class="p">,</span>
+                               <span class="n">load_func</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">bytes</span><span class="p">],</span> <span class="n">Union</span><span class="p">[</span><span class="n">crypto</span><span class="o">.</span><span class="n">X509</span><span class="p">,</span>
+                                                                       <span class="n">crypto</span><span class="o">.</span><span class="n">X509Req</span><span class="p">]],</span>
+                               <span class="n">typ</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">crypto</span><span class="o">.</span><span class="n">FILETYPE_PEM</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+    <span class="c1"># pylint: disable=protected-access</span>
+    <span class="k">return</span> <span class="n">acme_crypto_util</span><span class="o">.</span><span class="n">_pyopenssl_cert_or_req_san</span><span class="p">(</span><span class="n">_load_cert_or_req</span><span class="p">(</span>
+        <span class="n">cert_or_req_str</span><span class="p">,</span> <span class="n">load_func</span><span class="p">,</span> <span class="n">typ</span><span class="p">))</span>
+
+
+<div class="viewcode-block" id="get_sans_from_cert"><a class="viewcode-back" href="../../api/certbot.crypto_util.html#certbot.crypto_util.get_sans_from_cert">[docs]</a><span class="k">def</span> <span class="nf">get_sans_from_cert</span><span class="p">(</span><span class="n">cert</span><span class="p">:</span> <span class="nb">bytes</span><span class="p">,</span> <span class="n">typ</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">crypto</span><span class="o">.</span><span class="n">FILETYPE_PEM</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Get a list of Subject Alternative Names from a certificate.</span>
+
+<span class="sd">    :param str cert: Certificate (encoded).</span>
+<span class="sd">    :param typ: `crypto.FILETYPE_PEM` or `crypto.FILETYPE_ASN1`</span>
+
+<span class="sd">    :returns: A list of Subject Alternative Names.</span>
+<span class="sd">    :rtype: list</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">_get_sans_from_cert_or_req</span><span class="p">(</span>
+        <span class="n">cert</span><span class="p">,</span> <span class="n">crypto</span><span class="o">.</span><span class="n">load_certificate</span><span class="p">,</span> <span class="n">typ</span><span class="p">)</span></div>
+
+
+<span class="k">def</span> <span class="nf">_get_names_from_cert_or_req</span><span class="p">(</span><span class="n">cert_or_req</span><span class="p">:</span> <span class="nb">bytes</span><span class="p">,</span>
+                                <span class="n">load_func</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">bytes</span><span class="p">],</span> <span class="n">Union</span><span class="p">[</span><span class="n">crypto</span><span class="o">.</span><span class="n">X509</span><span class="p">,</span>
+                                                                        <span class="n">crypto</span><span class="o">.</span><span class="n">X509Req</span><span class="p">]],</span>
+                                <span class="n">typ</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+    <span class="n">loaded_cert_or_req</span> <span class="o">=</span> <span class="n">_load_cert_or_req</span><span class="p">(</span><span class="n">cert_or_req</span><span class="p">,</span> <span class="n">load_func</span><span class="p">,</span> <span class="n">typ</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">_get_names_from_loaded_cert_or_req</span><span class="p">(</span><span class="n">loaded_cert_or_req</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">_get_names_from_loaded_cert_or_req</span><span class="p">(</span><span class="n">loaded_cert_or_req</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">crypto</span><span class="o">.</span><span class="n">X509</span><span class="p">,</span> <span class="n">crypto</span><span class="o">.</span><span class="n">X509Req</span><span class="p">]</span>
+                                       <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+    <span class="c1"># pylint: disable=protected-access</span>
+    <span class="k">return</span> <span class="n">acme_crypto_util</span><span class="o">.</span><span class="n">_pyopenssl_cert_or_req_all_names</span><span class="p">(</span><span class="n">loaded_cert_or_req</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="get_names_from_cert"><a class="viewcode-back" href="../../api/certbot.crypto_util.html#certbot.crypto_util.get_names_from_cert">[docs]</a><span class="k">def</span> <span class="nf">get_names_from_cert</span><span class="p">(</span><span class="n">cert</span><span class="p">:</span> <span class="nb">bytes</span><span class="p">,</span> <span class="n">typ</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">crypto</span><span class="o">.</span><span class="n">FILETYPE_PEM</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Get a list of domains from a cert, including the CN if it is set.</span>
+
+<span class="sd">    :param str cert: Certificate (encoded).</span>
+<span class="sd">    :param typ: `crypto.FILETYPE_PEM` or `crypto.FILETYPE_ASN1`</span>
+
+<span class="sd">    :returns: A list of domain names.</span>
+<span class="sd">    :rtype: list</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">_get_names_from_cert_or_req</span><span class="p">(</span>
+        <span class="n">cert</span><span class="p">,</span> <span class="n">crypto</span><span class="o">.</span><span class="n">load_certificate</span><span class="p">,</span> <span class="n">typ</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="get_names_from_req"><a class="viewcode-back" href="../../api/certbot.crypto_util.html#certbot.crypto_util.get_names_from_req">[docs]</a><span class="k">def</span> <span class="nf">get_names_from_req</span><span class="p">(</span><span class="n">csr</span><span class="p">:</span> <span class="nb">bytes</span><span class="p">,</span> <span class="n">typ</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">crypto</span><span class="o">.</span><span class="n">FILETYPE_PEM</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Get a list of domains from a CSR, including the CN if it is set.</span>
+
+<span class="sd">    :param str csr: CSR (encoded).</span>
+<span class="sd">    :param typ: `crypto.FILETYPE_PEM` or `crypto.FILETYPE_ASN1`</span>
+<span class="sd">    :returns: A list of domain names.</span>
+<span class="sd">    :rtype: list</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">_get_names_from_cert_or_req</span><span class="p">(</span><span class="n">csr</span><span class="p">,</span> <span class="n">crypto</span><span class="o">.</span><span class="n">load_certificate_request</span><span class="p">,</span> <span class="n">typ</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="dump_pyopenssl_chain"><a class="viewcode-back" href="../../api/certbot.crypto_util.html#certbot.crypto_util.dump_pyopenssl_chain">[docs]</a><span class="k">def</span> <span class="nf">dump_pyopenssl_chain</span><span class="p">(</span><span class="n">chain</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">crypto</span><span class="o">.</span><span class="n">X509</span><span class="p">],</span> <span class="n">List</span><span class="p">[</span><span class="n">josepy</span><span class="o">.</span><span class="n">ComparableX509</span><span class="p">]],</span>
+                         <span class="n">filetype</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">crypto</span><span class="o">.</span><span class="n">FILETYPE_PEM</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bytes</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Dump certificate chain into a bundle.</span>
+
+<span class="sd">    :param list chain: List of `crypto.X509` (or wrapped in</span>
+<span class="sd">        :class:`josepy.util.ComparableX509`).</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># XXX: returns empty string when no chain is available, which</span>
+    <span class="c1"># shuts up RenewableCert, but might not be the best solution...</span>
+    <span class="k">return</span> <span class="n">acme_crypto_util</span><span class="o">.</span><span class="n">dump_pyopenssl_chain</span><span class="p">(</span><span class="n">chain</span><span class="p">,</span> <span class="n">filetype</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="notBefore"><a class="viewcode-back" href="../../api/certbot.crypto_util.html#certbot.crypto_util.notBefore">[docs]</a><span class="k">def</span> <span class="nf">notBefore</span><span class="p">(</span><span class="n">cert_path</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;When does the cert at cert_path start being valid?</span>
+
+<span class="sd">    :param str cert_path: path to a cert in PEM format</span>
+
+<span class="sd">    :returns: the notBefore value from the cert at cert_path</span>
+<span class="sd">    :rtype: :class:`datetime.datetime`</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">_notAfterBefore</span><span class="p">(</span><span class="n">cert_path</span><span class="p">,</span> <span class="n">crypto</span><span class="o">.</span><span class="n">X509</span><span class="o">.</span><span class="n">get_notBefore</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="notAfter"><a class="viewcode-back" href="../../api/certbot.crypto_util.html#certbot.crypto_util.notAfter">[docs]</a><span class="k">def</span> <span class="nf">notAfter</span><span class="p">(</span><span class="n">cert_path</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;When does the cert at cert_path stop being valid?</span>
+
+<span class="sd">    :param str cert_path: path to a cert in PEM format</span>
+
+<span class="sd">    :returns: the notAfter value from the cert at cert_path</span>
+<span class="sd">    :rtype: :class:`datetime.datetime`</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">_notAfterBefore</span><span class="p">(</span><span class="n">cert_path</span><span class="p">,</span> <span class="n">crypto</span><span class="o">.</span><span class="n">X509</span><span class="o">.</span><span class="n">get_notAfter</span><span class="p">)</span></div>
+
+
+<span class="k">def</span> <span class="nf">_notAfterBefore</span><span class="p">(</span><span class="n">cert_path</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+                    <span class="n">method</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">crypto</span><span class="o">.</span><span class="n">X509</span><span class="p">],</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bytes</span><span class="p">]])</span> <span class="o">-&gt;</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Internal helper function for finding notbefore/notafter.</span>
+
+<span class="sd">    :param str cert_path: path to a cert in PEM format</span>
+<span class="sd">    :param function method: one of ``crypto.X509.get_notBefore``</span>
+<span class="sd">        or ``crypto.X509.get_notAfter``</span>
+
+<span class="sd">    :returns: the notBefore or notAfter value from the cert at cert_path</span>
+<span class="sd">    :rtype: :class:`datetime.datetime`</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># pylint: disable=redefined-outer-name</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">cert_path</span><span class="p">,</span> <span class="s2">&quot;rb&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+        <span class="n">x509</span> <span class="o">=</span> <span class="n">crypto</span><span class="o">.</span><span class="n">load_certificate</span><span class="p">(</span><span class="n">crypto</span><span class="o">.</span><span class="n">FILETYPE_PEM</span><span class="p">,</span> <span class="n">f</span><span class="o">.</span><span class="n">read</span><span class="p">())</span>
+    <span class="c1"># pyopenssl always returns bytes</span>
+    <span class="n">timestamp</span> <span class="o">=</span> <span class="n">method</span><span class="p">(</span><span class="n">x509</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">timestamp</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">errors</span><span class="o">.</span><span class="n">Error</span><span class="p">(</span><span class="s2">&quot;Error while invoking timestamp method, None has been returned.&quot;</span><span class="p">)</span>
+    <span class="n">reformatted_timestamp</span> <span class="o">=</span> <span class="p">[</span><span class="n">timestamp</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">4</span><span class="p">],</span> <span class="sa">b</span><span class="s2">&quot;-&quot;</span><span class="p">,</span> <span class="n">timestamp</span><span class="p">[</span><span class="mi">4</span><span class="p">:</span><span class="mi">6</span><span class="p">],</span> <span class="sa">b</span><span class="s2">&quot;-&quot;</span><span class="p">,</span>
+                             <span class="n">timestamp</span><span class="p">[</span><span class="mi">6</span><span class="p">:</span><span class="mi">8</span><span class="p">],</span> <span class="sa">b</span><span class="s2">&quot;T&quot;</span><span class="p">,</span> <span class="n">timestamp</span><span class="p">[</span><span class="mi">8</span><span class="p">:</span><span class="mi">10</span><span class="p">],</span> <span class="sa">b</span><span class="s2">&quot;:&quot;</span><span class="p">,</span>
+                             <span class="n">timestamp</span><span class="p">[</span><span class="mi">10</span><span class="p">:</span><span class="mi">12</span><span class="p">],</span> <span class="sa">b</span><span class="s2">&quot;:&quot;</span><span class="p">,</span> <span class="n">timestamp</span><span class="p">[</span><span class="mi">12</span><span class="p">:]]</span>
+    <span class="c1"># pyrfc3339 always uses the type `str`</span>
+    <span class="n">timestamp_bytes</span> <span class="o">=</span> <span class="sa">b</span><span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">reformatted_timestamp</span><span class="p">)</span>
+    <span class="n">timestamp_str</span> <span class="o">=</span> <span class="n">timestamp_bytes</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s1">&#39;ascii&#39;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">pyrfc3339</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="n">timestamp_str</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="sha256sum"><a class="viewcode-back" href="../../api/certbot.crypto_util.html#certbot.crypto_util.sha256sum">[docs]</a><span class="k">def</span> <span class="nf">sha256sum</span><span class="p">(</span><span class="n">filename</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Compute a sha256sum of a file.</span>
+
+<span class="sd">    NB: In given file, platform specific newlines characters will be converted</span>
+<span class="sd">    into their equivalent unicode counterparts before calculating the hash.</span>
+
+<span class="sd">    :param str filename: path to the file whose hash will be computed</span>
+
+<span class="sd">    :returns: sha256 digest of the file in hexadecimal</span>
+<span class="sd">    :rtype: str</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">sha256</span> <span class="o">=</span> <span class="n">hashlib</span><span class="o">.</span><span class="n">sha256</span><span class="p">()</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">file_d</span><span class="p">:</span>
+        <span class="n">sha256</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">file_d</span><span class="o">.</span><span class="n">read</span><span class="p">()</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s1">&#39;UTF-8&#39;</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">sha256</span><span class="o">.</span><span class="n">hexdigest</span><span class="p">()</span></div>
+
+<span class="c1"># Finds one CERTIFICATE stricttextualmsg according to rfc7468#section-3.</span>
+<span class="c1"># Does not validate the base64text - use crypto.load_certificate.</span>
+<span class="n">CERT_PEM_REGEX</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span>
+<span class="w">    </span><span class="sa">b</span><span class="sd">&quot;&quot;&quot;-----BEGIN CERTIFICATE-----\r?</span>
+<span class="sd">.+?\r?</span>
+<span class="sd">-----END CERTIFICATE-----\r?</span>
+<span class="sd">&quot;&quot;&quot;</span><span class="p">,</span>
+    <span class="n">re</span><span class="o">.</span><span class="n">DOTALL</span> <span class="c1"># DOTALL (/s) because the base64text may include newlines</span>
+<span class="p">)</span>
+
+
+<div class="viewcode-block" id="cert_and_chain_from_fullchain"><a class="viewcode-back" href="../../api/certbot.crypto_util.html#certbot.crypto_util.cert_and_chain_from_fullchain">[docs]</a><span class="k">def</span> <span class="nf">cert_and_chain_from_fullchain</span><span class="p">(</span><span class="n">fullchain_pem</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Split fullchain_pem into cert_pem and chain_pem</span>
+
+<span class="sd">    :param str fullchain_pem: concatenated cert + chain</span>
+
+<span class="sd">    :returns: tuple of string cert_pem and chain_pem</span>
+<span class="sd">    :rtype: tuple</span>
+
+<span class="sd">    :raises errors.Error: If there are less than 2 certificates in the chain.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># First pass: find the boundary of each certificate in the chain.</span>
+    <span class="c1"># TODO: This will silently skip over any &quot;explanatory text&quot; in between boundaries,</span>
+    <span class="c1"># which is prohibited by RFC8555.</span>
+    <span class="n">certs</span> <span class="o">=</span> <span class="n">CERT_PEM_REGEX</span><span class="o">.</span><span class="n">findall</span><span class="p">(</span><span class="n">fullchain_pem</span><span class="o">.</span><span class="n">encode</span><span class="p">())</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">certs</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">2</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">errors</span><span class="o">.</span><span class="n">Error</span><span class="p">(</span><span class="s2">&quot;failed to parse fullchain into cert and chain: &quot;</span> <span class="o">+</span>
+                           <span class="s2">&quot;less than 2 certificates in chain&quot;</span><span class="p">)</span>
+
+    <span class="c1"># Second pass: for each certificate found, parse it using OpenSSL and re-encode it,</span>
+    <span class="c1"># with the effect of normalizing any encoding variations (e.g. CRLF, whitespace).</span>
+    <span class="n">certs_normalized</span> <span class="o">=</span> <span class="p">[</span><span class="n">crypto</span><span class="o">.</span><span class="n">dump_certificate</span><span class="p">(</span><span class="n">crypto</span><span class="o">.</span><span class="n">FILETYPE_PEM</span><span class="p">,</span>
+        <span class="n">crypto</span><span class="o">.</span><span class="n">load_certificate</span><span class="p">(</span><span class="n">crypto</span><span class="o">.</span><span class="n">FILETYPE_PEM</span><span class="p">,</span> <span class="n">cert</span><span class="p">))</span><span class="o">.</span><span class="n">decode</span><span class="p">()</span> <span class="k">for</span> <span class="n">cert</span> <span class="ow">in</span> <span class="n">certs</span><span class="p">]</span>
+
+    <span class="c1"># Since each normalized cert has a newline suffix, no extra newlines are required.</span>
+    <span class="k">return</span> <span class="p">(</span><span class="n">certs_normalized</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">certs_normalized</span><span class="p">[</span><span class="mi">1</span><span class="p">:]))</span></div>
+
+
+<div class="viewcode-block" id="get_serial_from_cert"><a class="viewcode-back" href="../../api/certbot.crypto_util.html#certbot.crypto_util.get_serial_from_cert">[docs]</a><span class="k">def</span> <span class="nf">get_serial_from_cert</span><span class="p">(</span><span class="n">cert_path</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Retrieve the serial number of a certificate from certificate path</span>
+
+<span class="sd">    :param str cert_path: path to a cert in PEM format</span>
+
+<span class="sd">    :returns: serial number of the certificate</span>
+<span class="sd">    :rtype: int</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># pylint: disable=redefined-outer-name</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">cert_path</span><span class="p">,</span> <span class="s2">&quot;rb&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+        <span class="n">x509</span> <span class="o">=</span> <span class="n">crypto</span><span class="o">.</span><span class="n">load_certificate</span><span class="p">(</span><span class="n">crypto</span><span class="o">.</span><span class="n">FILETYPE_PEM</span><span class="p">,</span> <span class="n">f</span><span class="o">.</span><span class="n">read</span><span class="p">())</span>
+    <span class="k">return</span> <span class="n">x509</span><span class="o">.</span><span class="n">get_serial_number</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="find_chain_with_issuer"><a class="viewcode-back" href="../../api/certbot.crypto_util.html#certbot.crypto_util.find_chain_with_issuer">[docs]</a><span class="k">def</span> <span class="nf">find_chain_with_issuer</span><span class="p">(</span><span class="n">fullchains</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">issuer_cn</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+                           <span class="n">warn_on_no_match</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Chooses the first certificate chain from fullchains whose topmost</span>
+<span class="sd">    intermediate has an Issuer Common Name matching issuer_cn (in other words</span>
+<span class="sd">    the first chain which chains to a root whose name matches issuer_cn).</span>
+
+<span class="sd">    :param fullchains: The list of fullchains in PEM chain format.</span>
+<span class="sd">    :type fullchains: `list` of `str`</span>
+<span class="sd">    :param `str` issuer_cn: The exact Subject Common Name to match against any</span>
+<span class="sd">        issuer in the certificate chain.</span>
+
+<span class="sd">    :returns: The best-matching fullchain, PEM-encoded, or the first if none match.</span>
+<span class="sd">    :rtype: `str`</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">for</span> <span class="n">chain</span> <span class="ow">in</span> <span class="n">fullchains</span><span class="p">:</span>
+        <span class="n">certs</span> <span class="o">=</span> <span class="n">CERT_PEM_REGEX</span><span class="o">.</span><span class="n">findall</span><span class="p">(</span><span class="n">chain</span><span class="o">.</span><span class="n">encode</span><span class="p">())</span>
+        <span class="n">top_cert</span> <span class="o">=</span> <span class="n">x509</span><span class="o">.</span><span class="n">load_pem_x509_certificate</span><span class="p">(</span><span class="n">certs</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">default_backend</span><span class="p">())</span>
+        <span class="n">top_issuer_cn</span> <span class="o">=</span> <span class="n">top_cert</span><span class="o">.</span><span class="n">issuer</span><span class="o">.</span><span class="n">get_attributes_for_oid</span><span class="p">(</span><span class="n">x509</span><span class="o">.</span><span class="n">NameOID</span><span class="o">.</span><span class="n">COMMON_NAME</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">top_issuer_cn</span> <span class="ow">and</span> <span class="n">top_issuer_cn</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">value</span> <span class="o">==</span> <span class="n">issuer_cn</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">chain</span>
+
+    <span class="c1"># Nothing matched, return whatever was first in the list.</span>
+    <span class="k">if</span> <span class="n">warn_on_no_match</span><span class="p">:</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;Certbot has been configured to prefer certificate chains with &quot;</span>
+                    <span class="s2">&quot;issuer &#39;</span><span class="si">%s</span><span class="s2">&#39;, but no chain from the CA matched this issuer. Using &quot;</span>
+                    <span class="s2">&quot;the default certificate chain instead.&quot;</span><span class="p">,</span> <span class="n">issuer_cn</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">fullchains</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span></div>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+    <span class="copyright">
+    &copy; Copyright 2014-2018 - The Certbot software and documentation are licensed under the Apache 2.0 license as described at <a href="https://eff.org/cb-license">https://eff.org/cb-license</a>.
+    </span>
+    <br>
+    <br>
+    <span class="status">
+        <a href="https://letsencrypt.status.io/">Let's Encrypt Status</a>
+    </span>
+
+    </p>
+  </div>
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

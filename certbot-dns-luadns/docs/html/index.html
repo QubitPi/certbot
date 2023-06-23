@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Welcome to certbot-dns-luadns’s documentation! &mdash; certbot-dns-luadns 0 documentation</title>
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/sphinx_highlight.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="API Documentation" href="api.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="#" class="icon icon-home">
+            certbot-dns-luadns
+          </a>
+              <div class="version">
+                0
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="api.html">API Documentation</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="#">certbot-dns-luadns</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="#" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Welcome to certbot-dns-luadns’s documentation!</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/index.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="welcome-to-certbot-dns-luadns-s-documentation">
+<h1>Welcome to certbot-dns-luadns’s documentation!<a class="headerlink" href="#welcome-to-certbot-dns-luadns-s-documentation" title="Permalink to this heading">¶</a></h1>
+<div class="toctree-wrapper compound">
+</div>
+<span class="target" id="module-certbot_dns_luadns"></span><p>The <code class="xref py py-obj docutils literal notranslate"><span class="pre">dns_luadns</span></code> plugin automates the process of
+completing a <code class="docutils literal notranslate"><span class="pre">dns-01</span></code> challenge (<a class="reference external" href="https://acme-python.readthedocs.io/en/latest/api/challenges.html#acme.challenges.DNS01" title="(in acme-python v0)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">DNS01</span></code></a>) by creating, and
+subsequently removing, TXT records using the LuaDNS API.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The plugin is not installed by default. It can be installed by heading to
+<a class="reference external" href="https://certbot.eff.org/instructions#wildcard">certbot.eff.org</a>, choosing your system and
+selecting the Wildcard tab.</p>
+</div>
+<section id="named-arguments">
+<h2>Named Arguments<a class="headerlink" href="#named-arguments" title="Permalink to this heading">¶</a></h2>
+<table class="docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">--dns-luadns-credentials</span></code></p></td>
+<td><p>LuaDNS <a class="reference internal" href="#credentials">credentials</a> INI file.
+(Required)</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">--dns-luadns-propagation-seconds</span></code></p></td>
+<td><p>The number of seconds to wait for DNS
+to propagate before asking the ACME
+server to verify the DNS record.
+(Default: 30)</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="credentials">
+<h2>Credentials<a class="headerlink" href="#credentials" title="Permalink to this heading">¶</a></h2>
+<p>Use of this plugin requires a configuration file containing LuaDNS API
+credentials, obtained from your LuaDNS
+<a class="reference external" href="https://api.luadns.com/settings">account settings page</a>.</p>
+<div class="literal-block-wrapper docutils container" id="credentials-ini">
+<div class="code-block-caption"><span class="caption-text">Example credentials file:</span><a class="headerlink" href="#credentials-ini" title="Permalink to this code">¶</a></div>
+<div class="highlight-ini notranslate"><div class="highlight"><pre><span></span><span class="c1"># LuaDNS API credentials used by Certbot</span>
+<span class="na">dns_luadns_email</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">user@example.com</span>
+<span class="na">dns_luadns_token</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">0123456789abcdef0123456789abcdef</span>
+</pre></div>
+</div>
+</div>
+<p>The path to this file can be provided interactively or using the
+<code class="docutils literal notranslate"><span class="pre">--dns-luadns-credentials</span></code> command-line argument. Certbot records the path
+to this file for use during renewal, but does not store the file’s contents.</p>
+<div class="admonition caution">
+<p class="admonition-title">Caution</p>
+<p>You should protect these API credentials as you would the password to your
+LuaDNS account. Users who can read this file can use these credentials
+to issue arbitrary API calls on your behalf. Users who can cause Certbot to
+run using these credentials can complete a <code class="docutils literal notranslate"><span class="pre">dns-01</span></code> challenge to acquire
+new certificates or revoke existing certificates for associated domains,
+even if those domains aren’t being managed by this server.</p>
+</div>
+<p>Certbot will emit a warning if it detects that the credentials file can be
+accessed by other users on your system. The warning reads “Unsafe permissions
+on credentials configuration file”, followed by the path to the credentials
+file. This warning will be emitted each time Certbot uses the credentials file,
+including for renewal, and cannot be silenced except by addressing the issue
+(e.g., by using a command like <code class="docutils literal notranslate"><span class="pre">chmod</span> <span class="pre">600</span></code> to restrict access to the file).</p>
+</section>
+<section id="examples">
+<h2>Examples<a class="headerlink" href="#examples" title="Permalink to this heading">¶</a></h2>
+<div class="literal-block-wrapper docutils container" id="id1">
+<div class="code-block-caption"><span class="caption-text">To acquire a certificate for <code class="docutils literal notranslate"><span class="pre">example.com</span></code></span><a class="headerlink" href="#id1" title="Permalink to this code">¶</a></div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>certbot<span class="w"> </span>certonly<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--dns-luadns<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--dns-luadns-credentials<span class="w"> </span>~/.secrets/certbot/luadns.ini<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-d<span class="w"> </span>example.com
+</pre></div>
+</div>
+</div>
+<div class="literal-block-wrapper docutils container" id="id2">
+<div class="code-block-caption"><span class="caption-text">To acquire a single certificate for both <code class="docutils literal notranslate"><span class="pre">example.com</span></code> and
+<code class="docutils literal notranslate"><span class="pre">www.example.com</span></code></span><a class="headerlink" href="#id2" title="Permalink to this code">¶</a></div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>certbot<span class="w"> </span>certonly<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--dns-luadns<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--dns-luadns-credentials<span class="w"> </span>~/.secrets/certbot/luadns.ini<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-d<span class="w"> </span>example.com<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-d<span class="w"> </span>www.example.com
+</pre></div>
+</div>
+</div>
+<div class="literal-block-wrapper docutils container" id="id3">
+<div class="code-block-caption"><span class="caption-text">To acquire a certificate for <code class="docutils literal notranslate"><span class="pre">example.com</span></code>, waiting 2 minutes
+for DNS propagation</span><a class="headerlink" href="#id3" title="Permalink to this code">¶</a></div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>certbot<span class="w"> </span>certonly<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--dns-luadns<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--dns-luadns-credentials<span class="w"> </span>~/.secrets/certbot/luadns.ini<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--dns-luadns-propagation-seconds<span class="w"> </span><span class="m">120</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-d<span class="w"> </span>example.com
+</pre></div>
+</div>
+</div>
+</section>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="api.html">API Documentation</a></li>
+</ul>
+</div>
+</section>
+<section id="indices-and-tables">
+<h1>Indices and tables<a class="headerlink" href="#indices-and-tables" title="Permalink to this heading">¶</a></h1>
+<ul class="simple">
+<li><p><a class="reference internal" href="genindex.html"><span class="std std-ref">Index</span></a></p></li>
+<li><p><a class="reference internal" href="py-modindex.html"><span class="std std-ref">Module Index</span></a></p></li>
+<li><p><a class="reference internal" href="search.html"><span class="std std-ref">Search Page</span></a></p></li>
+</ul>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="api.html" class="btn btn-neutral float-right" title="API Documentation" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2017, Certbot Project.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

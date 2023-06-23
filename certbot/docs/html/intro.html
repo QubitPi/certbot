@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Introduction &mdash; Certbot 2.7.0.dev0 documentation</title>
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+    <link rel="canonical" href="https://QubitPi.github.io/certbot/intro.html" />
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/sphinx_highlight.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="What is a Certificate?" href="what.html" />
+    <link rel="prev" title="Welcome to the Certbot documentation!" href="index.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            Certbot
+          </a>
+              <div class="version">
+                2.7
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Introduction</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#getting-started">Getting Started</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#contributing">Contributing</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#links">Links</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="what.html">What is a Certificate?</a></li>
+<li class="toctree-l1"><a class="reference internal" href="install.html">Get Certbot</a></li>
+<li class="toctree-l1"><a class="reference internal" href="using.html">User Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="contributing.html">Developer Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="packaging.html">Packaging Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="compatibility.html">Backwards Compatibility</a></li>
+<li class="toctree-l1"><a class="reference internal" href="resources.html">Resources</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="api.html">API Documentation</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Certbot</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Introduction</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/intro.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="introduction">
+<h1>Introduction<a class="headerlink" href="#introduction" title="Permalink to this heading">¶</a></h1>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>To get started quickly, use the <a class="reference external" href="https://certbot.eff.org">interactive installation guide</a>.</p>
+</div>
+<p><a class="reference external" href="https://dev.azure.com/certbot/certbot/_build?definitionId=5"><img alt="Azure Pipelines CI status" src="https://img.shields.io/azure-devops/build/certbot/ba534f81-a483-4b9b-9b4e-a60bec8fee72/5/master" /></a></p>
+<a class="reference internal image-reference" href="https://raw.githubusercontent.com/EFForg/design/master/logos/eff-certbot-lockup.png"><img alt="EFF Certbot Logo" src="https://raw.githubusercontent.com/EFForg/design/master/logos/eff-certbot-lockup.png" style="width: 200px;" /></a>
+<p>Certbot is part of EFF’s effort to encrypt the entire Internet. Secure communication over the Web relies on HTTPS, which requires the use of a digital certificate that lets browsers verify the identity of web servers (e.g., is that really google.com?). Web servers obtain their certificates from trusted third parties called certificate authorities (CAs). Certbot is an easy-to-use client that fetches a certificate from Let’s Encrypt—an open certificate authority launched by the EFF, Mozilla, and others—and deploys it to a web server.</p>
+<p>Anyone who has gone through the trouble of setting up a secure website knows what a hassle getting and maintaining a certificate is. Certbot and Let’s Encrypt can automate away the pain and let you turn on and manage HTTPS with simple commands. Using Certbot and Let’s Encrypt is free.</p>
+<section id="getting-started">
+<span id="installation"></span><h2>Getting Started<a class="headerlink" href="#getting-started" title="Permalink to this heading">¶</a></h2>
+<p>The best way to get started is to use our <a class="reference external" href="https://certbot.eff.org">interactive guide</a>. It generates instructions based on your configuration settings. In most cases, you’ll need <a class="reference external" href="https://certbot.eff.org/faq/#does-certbot-require-root-administrator-privileges">root or administrator access</a> to your web server to run Certbot.</p>
+<p>Certbot is meant to be run directly on your web server on the command line, not on your personal computer. If you’re using a hosted service and don’t have direct access to your web server, you might not be able to use Certbot. Check with your hosting provider for documentation about uploading certificates or using certificates issued by Let’s Encrypt.</p>
+</section>
+<section id="contributing">
+<h2>Contributing<a class="headerlink" href="#contributing" title="Permalink to this heading">¶</a></h2>
+<p>If you’d like to contribute to this project please read <a class="reference external" href="https://certbot.eff.org/docs/contributing.html">Developer Guide</a>.</p>
+<p>This project is governed by <a class="reference external" href="https://www.eff.org/pages/eppcode">EFF’s Public Projects Code of Conduct</a>.</p>
+<section id="links">
+<h3>Links<a class="headerlink" href="#links" title="Permalink to this heading">¶</a></h3>
+<p>Documentation: <a class="reference external" href="https://certbot.eff.org/docs">https://certbot.eff.org/docs</a></p>
+<p>Software project: <a class="reference external" href="https://github.com/certbot/certbot">https://github.com/certbot/certbot</a></p>
+<p>Changelog: <a class="reference external" href="https://github.com/certbot/certbot/blob/master/certbot/CHANGELOG.md">https://github.com/certbot/certbot/blob/master/certbot/CHANGELOG.md</a></p>
+<p>For Contributors: <a class="reference external" href="https://certbot.eff.org/docs/contributing.html">https://certbot.eff.org/docs/contributing.html</a></p>
+<p>For Users: <a class="reference external" href="https://certbot.eff.org/docs/using.html">https://certbot.eff.org/docs/using.html</a></p>
+<p>Main Website: <a class="reference external" href="https://certbot.eff.org">https://certbot.eff.org</a></p>
+<p>Let’s Encrypt Website: <a class="reference external" href="https://letsencrypt.org">https://letsencrypt.org</a></p>
+<p>Community: <a class="reference external" href="https://community.letsencrypt.org">https://community.letsencrypt.org</a></p>
+<p>ACME spec: <a class="reference external" href="https://tools.ietf.org/html/rfc8555">RFC 8555</a></p>
+<p>ACME working area in github (archived): <a class="reference external" href="https://github.com/ietf-wg-acme/acme">https://github.com/ietf-wg-acme/acme</a></p>
+</section>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="what.html" class="btn btn-neutral float-right" title="What is a Certificate?" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="index.html" class="btn btn-neutral" title="Welcome to the Certbot documentation!" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+    <span class="copyright">
+    &copy; Copyright 2014-2018 - The Certbot software and documentation are licensed under the Apache 2.0 license as described at <a href="https://eff.org/cb-license">https://eff.org/cb-license</a>.
+    </span>
+    <br>
+    <br>
+    <span class="status">
+        <a href="https://letsencrypt.status.io/">Let's Encrypt Status</a>
+    </span>
+
+    </p>
+  </div>
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

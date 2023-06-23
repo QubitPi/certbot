@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>certbot.plugins.dns_common_lexicon &mdash; Certbot 2.7.0.dev0 documentation</title>
+      <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+    <link rel="canonical" href="https://QubitPi.github.io/certbot/_modules/certbot/plugins/dns_common_lexicon.html" />
+  <!--[if lt IE 9]>
+    <script src="../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
+        <script src="../../../_static/jquery.js"></script>
+        <script src="../../../_static/underscore.js"></script>
+        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../../../_static/doctools.js"></script>
+        <script src="../../../_static/sphinx_highlight.js"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            Certbot
+          </a>
+              <div class="version">
+                2.7
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../intro.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../what.html">What is a Certificate?</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../install.html">Get Certbot</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../using.html">User Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../contributing.html">Developer Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../packaging.html">Packaging Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../compatibility.html">Backwards Compatibility</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../resources.html">Resources</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../api.html">API Documentation</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">Certbot</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">certbot.plugins.dns_common_lexicon</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for certbot.plugins.dns_common_lexicon</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;Common code for DNS Authenticator Plugins built on Lexicon.&quot;&quot;&quot;</span>
+<span class="kn">import</span> <span class="nn">logging</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Dict</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Mapping</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Optional</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Union</span>
+
+<span class="kn">from</span> <span class="nn">requests.exceptions</span> <span class="kn">import</span> <span class="n">HTTPError</span>
+<span class="kn">from</span> <span class="nn">requests.exceptions</span> <span class="kn">import</span> <span class="n">RequestException</span>
+
+<span class="kn">from</span> <span class="nn">certbot</span> <span class="kn">import</span> <span class="n">errors</span>
+<span class="kn">from</span> <span class="nn">certbot.plugins</span> <span class="kn">import</span> <span class="n">dns_common</span>
+
+<span class="c1"># Lexicon is not declared as a dependency in Certbot itself,</span>
+<span class="c1"># but in the Certbot plugins backed by Lexicon.</span>
+<span class="c1"># So we catch import error here to allow this module to be</span>
+<span class="c1"># always importable, even if it does not make sense to use it</span>
+<span class="c1"># if Lexicon is not available, obviously.</span>
+<span class="k">try</span><span class="p">:</span>
+    <span class="kn">from</span> <span class="nn">lexicon.config</span> <span class="kn">import</span> <span class="n">ConfigResolver</span>
+    <span class="kn">from</span> <span class="nn">lexicon.providers.base</span> <span class="kn">import</span> <span class="n">Provider</span>
+<span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
+    <span class="n">ConfigResolver</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">Provider</span> <span class="o">=</span> <span class="kc">None</span>
+
+<span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="LexiconClient"><a class="viewcode-back" href="../../../api/certbot.plugins.dns_common_lexicon.html#certbot.plugins.dns_common_lexicon.LexiconClient">[docs]</a><span class="k">class</span> <span class="nc">LexiconClient</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Encapsulates all communication with a DNS provider via Lexicon.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">provider</span><span class="p">:</span> <span class="n">Provider</span>
+
+<div class="viewcode-block" id="LexiconClient.add_txt_record"><a class="viewcode-back" href="../../../api/certbot.plugins.dns_common_lexicon.html#certbot.plugins.dns_common_lexicon.LexiconClient.add_txt_record">[docs]</a>    <span class="k">def</span> <span class="nf">add_txt_record</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">domain</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">record_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">record_content</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Add a TXT record using the supplied information.</span>
+
+<span class="sd">        :param str domain: The domain to use to look up the managed zone.</span>
+<span class="sd">        :param str record_name: The record name (typically beginning with &#39;_acme-challenge.&#39;).</span>
+<span class="sd">        :param str record_content: The record content (typically the challenge validation).</span>
+<span class="sd">        :raises errors.PluginError: if an error occurs communicating with the DNS Provider API</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_find_domain_id</span><span class="p">(</span><span class="n">domain</span><span class="p">)</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">provider</span><span class="o">.</span><span class="n">create_record</span><span class="p">(</span><span class="n">rtype</span><span class="o">=</span><span class="s1">&#39;TXT&#39;</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="n">record_name</span><span class="p">,</span> <span class="n">content</span><span class="o">=</span><span class="n">record_content</span><span class="p">)</span>
+        <span class="k">except</span> <span class="n">RequestException</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Encountered error adding TXT record: </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">e</span><span class="p">,</span> <span class="n">exc_info</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="n">errors</span><span class="o">.</span><span class="n">PluginError</span><span class="p">(</span><span class="s1">&#39;Error adding TXT record: </span><span class="si">{0}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">e</span><span class="p">))</span></div>
+
+<div class="viewcode-block" id="LexiconClient.del_txt_record"><a class="viewcode-back" href="../../../api/certbot.plugins.dns_common_lexicon.html#certbot.plugins.dns_common_lexicon.LexiconClient.del_txt_record">[docs]</a>    <span class="k">def</span> <span class="nf">del_txt_record</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">domain</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">record_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">record_content</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Delete a TXT record using the supplied information.</span>
+
+<span class="sd">        :param str domain: The domain to use to look up the managed zone.</span>
+<span class="sd">        :param str record_name: The record name (typically beginning with &#39;_acme-challenge.&#39;).</span>
+<span class="sd">        :param str record_content: The record content (typically the challenge validation).</span>
+<span class="sd">        :raises errors.PluginError: if an error occurs communicating with the DNS Provider  API</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_find_domain_id</span><span class="p">(</span><span class="n">domain</span><span class="p">)</span>
+        <span class="k">except</span> <span class="n">errors</span><span class="o">.</span><span class="n">PluginError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Encountered error finding domain_id during deletion: </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">e</span><span class="p">,</span>
+                         <span class="n">exc_info</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="k">return</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">provider</span><span class="o">.</span><span class="n">delete_record</span><span class="p">(</span><span class="n">rtype</span><span class="o">=</span><span class="s1">&#39;TXT&#39;</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="n">record_name</span><span class="p">,</span> <span class="n">content</span><span class="o">=</span><span class="n">record_content</span><span class="p">)</span>
+        <span class="k">except</span> <span class="n">RequestException</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Encountered error deleting TXT record: </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">e</span><span class="p">,</span> <span class="n">exc_info</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
+
+    <span class="k">def</span> <span class="nf">_find_domain_id</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">domain</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Find the domain_id for a given domain.</span>
+
+<span class="sd">        :param str domain: The domain for which to find the domain_id.</span>
+<span class="sd">        :raises errors.PluginError: if the domain_id cannot be found.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">domain_name_guesses</span> <span class="o">=</span> <span class="n">dns_common</span><span class="o">.</span><span class="n">base_domain_name_guesses</span><span class="p">(</span><span class="n">domain</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">domain_name</span> <span class="ow">in</span> <span class="n">domain_name_guesses</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">provider</span><span class="p">,</span> <span class="s1">&#39;options&#39;</span><span class="p">):</span>
+                    <span class="c1"># For Lexicon 2.x</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">provider</span><span class="o">.</span><span class="n">options</span><span class="p">[</span><span class="s1">&#39;domain&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">domain_name</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="c1"># For Lexicon 3.x</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">provider</span><span class="o">.</span><span class="n">domain</span> <span class="o">=</span> <span class="n">domain_name</span>
+
+                <span class="bp">self</span><span class="o">.</span><span class="n">provider</span><span class="o">.</span><span class="n">authenticate</span><span class="p">()</span>
+
+                <span class="k">return</span>  <span class="c1"># If `authenticate` doesn&#39;t throw an exception, we&#39;ve found the right name</span>
+            <span class="k">except</span> <span class="n">HTTPError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                <span class="n">result1</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_handle_http_error</span><span class="p">(</span><span class="n">e</span><span class="p">,</span> <span class="n">domain_name</span><span class="p">)</span>
+
+                <span class="k">if</span> <span class="n">result1</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="n">result1</span>
+            <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>  <span class="c1"># pylint: disable=broad-except</span>
+                <span class="n">result2</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_handle_general_error</span><span class="p">(</span><span class="n">e</span><span class="p">,</span> <span class="n">domain_name</span><span class="p">)</span>
+
+                <span class="k">if</span> <span class="n">result2</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="n">result2</span>  <span class="c1"># pylint: disable=raising-bad-type</span>
+
+        <span class="k">raise</span> <span class="n">errors</span><span class="o">.</span><span class="n">PluginError</span><span class="p">(</span><span class="s1">&#39;Unable to determine zone identifier for </span><span class="si">{0}</span><span class="s1"> using zone names: </span><span class="si">{1}</span><span class="s1">&#39;</span>
+                                 <span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">domain</span><span class="p">,</span> <span class="n">domain_name_guesses</span><span class="p">))</span>
+
+    <span class="k">def</span> <span class="nf">_handle_http_error</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">e</span><span class="p">:</span> <span class="n">HTTPError</span><span class="p">,</span> <span class="n">domain_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">errors</span><span class="o">.</span><span class="n">PluginError</span><span class="p">]:</span>
+        <span class="k">return</span> <span class="n">errors</span><span class="o">.</span><span class="n">PluginError</span><span class="p">(</span><span class="s1">&#39;Error determining zone identifier for </span><span class="si">{0}</span><span class="s1">: </span><span class="si">{1}</span><span class="s1">.&#39;</span>
+                                  <span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">domain_name</span><span class="p">,</span> <span class="n">e</span><span class="p">))</span>
+
+    <span class="k">def</span> <span class="nf">_handle_general_error</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">e</span><span class="p">:</span> <span class="ne">Exception</span><span class="p">,</span> <span class="n">domain_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">errors</span><span class="o">.</span><span class="n">PluginError</span><span class="p">]:</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">)</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;No domain found&#39;</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">errors</span><span class="o">.</span><span class="n">PluginError</span><span class="p">(</span><span class="s1">&#39;Unexpected error determining zone identifier for </span><span class="si">{0}</span><span class="s1">: </span><span class="si">{1}</span><span class="s1">&#39;</span>
+                                      <span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">domain_name</span><span class="p">,</span> <span class="n">e</span><span class="p">))</span>
+        <span class="k">return</span> <span class="kc">None</span></div>
+
+
+<div class="viewcode-block" id="build_lexicon_config"><a class="viewcode-back" href="../../../api/certbot.plugins.dns_common_lexicon.html#certbot.plugins.dns_common_lexicon.build_lexicon_config">[docs]</a><span class="k">def</span> <span class="nf">build_lexicon_config</span><span class="p">(</span><span class="n">lexicon_provider_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+                         <span class="n">lexicon_options</span><span class="p">:</span> <span class="n">Mapping</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">],</span> <span class="n">provider_options</span><span class="p">:</span> <span class="n">Mapping</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span>
+                         <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">ConfigResolver</span><span class="p">,</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Convenient function to build a Lexicon 2.x/3.x config object.</span>
+<span class="sd">    :param str lexicon_provider_name: the name of the lexicon provider to use</span>
+<span class="sd">    :param dict lexicon_options: options specific to lexicon</span>
+<span class="sd">    :param dict provider_options: options specific to provider</span>
+<span class="sd">    :return: configuration to apply to the provider</span>
+<span class="sd">    :rtype: ConfigurationResolver or dict</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">config</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ConfigResolver</span><span class="p">,</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;provider_name&#39;</span><span class="p">:</span> <span class="n">lexicon_provider_name</span><span class="p">}</span>
+    <span class="n">config</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">lexicon_options</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">ConfigResolver</span><span class="p">:</span>
+        <span class="c1"># Lexicon 2.x</span>
+        <span class="n">config</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">provider_options</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="c1"># Lexicon 3.x</span>
+        <span class="n">provider_config</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">provider_config</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">provider_options</span><span class="p">)</span>
+        <span class="n">config</span><span class="p">[</span><span class="n">lexicon_provider_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">provider_config</span>
+        <span class="n">config</span> <span class="o">=</span> <span class="n">ConfigResolver</span><span class="p">()</span><span class="o">.</span><span class="n">with_dict</span><span class="p">(</span><span class="n">config</span><span class="p">)</span><span class="o">.</span><span class="n">with_env</span><span class="p">()</span>
+
+    <span class="k">return</span> <span class="n">config</span></div>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+    <span class="copyright">
+    &copy; Copyright 2014-2018 - The Certbot software and documentation are licensed under the Apache 2.0 license as described at <a href="https://eff.org/cb-license">https://eff.org/cb-license</a>.
+    </span>
+    <br>
+    <br>
+    <span class="status">
+        <a href="https://letsencrypt.status.io/">Let's Encrypt Status</a>
+    </span>
+
+    </p>
+  </div>
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

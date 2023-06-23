@@ -1,0 +1,666 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Messages &mdash; acme-python 0 documentation</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/sphinx_highlight.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Standalone" href="standalone.html" />
+    <link rel="prev" title="JOSE" href="jose.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            acme-python
+          </a>
+              <div class="version">
+                0
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="../api.html">API Documentation</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="challenges.html">Challenges</a></li>
+<li class="toctree-l2"><a class="reference internal" href="client.html">Client</a></li>
+<li class="toctree-l2"><a class="reference internal" href="errors.html">Errors</a></li>
+<li class="toctree-l2"><a class="reference internal" href="fields.html">Fields</a></li>
+<li class="toctree-l2"><a class="reference internal" href="jose.html">JOSE</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Messages</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#acme.messages.is_acme_error"><code class="docutils literal notranslate"><span class="pre">is_acme_error()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#acme.messages.IdentifierType"><code class="docutils literal notranslate"><span class="pre">IdentifierType</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#acme.messages.Identifier"><code class="docutils literal notranslate"><span class="pre">Identifier</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#acme.messages.Error"><code class="docutils literal notranslate"><span class="pre">Error</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#acme.messages.Error.with_code"><code class="docutils literal notranslate"><span class="pre">Error.with_code()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#acme.messages.Error.description"><code class="docutils literal notranslate"><span class="pre">Error.description</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#acme.messages.Error.code"><code class="docutils literal notranslate"><span class="pre">Error.code</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#acme.messages.Status"><code class="docutils literal notranslate"><span class="pre">Status</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#acme.messages.Directory"><code class="docutils literal notranslate"><span class="pre">Directory</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#acme.messages.Directory.Meta"><code class="docutils literal notranslate"><span class="pre">Directory.Meta</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#acme.messages.Directory.to_partial_json"><code class="docutils literal notranslate"><span class="pre">Directory.to_partial_json()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#acme.messages.Directory.from_json"><code class="docutils literal notranslate"><span class="pre">Directory.from_json()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#acme.messages.Resource"><code class="docutils literal notranslate"><span class="pre">Resource</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#acme.messages.ResourceWithURI"><code class="docutils literal notranslate"><span class="pre">ResourceWithURI</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#acme.messages.ResourceBody"><code class="docutils literal notranslate"><span class="pre">ResourceBody</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#acme.messages.ExternalAccountBinding"><code class="docutils literal notranslate"><span class="pre">ExternalAccountBinding</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#acme.messages.ExternalAccountBinding.from_data"><code class="docutils literal notranslate"><span class="pre">ExternalAccountBinding.from_data()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#acme.messages.Registration"><code class="docutils literal notranslate"><span class="pre">Registration</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#acme.messages.Registration.from_data"><code class="docutils literal notranslate"><span class="pre">Registration.from_data()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#acme.messages.Registration.to_partial_json"><code class="docutils literal notranslate"><span class="pre">Registration.to_partial_json()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#acme.messages.Registration.fields_to_partial_json"><code class="docutils literal notranslate"><span class="pre">Registration.fields_to_partial_json()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#acme.messages.Registration.phones"><code class="docutils literal notranslate"><span class="pre">Registration.phones</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#acme.messages.Registration.emails"><code class="docutils literal notranslate"><span class="pre">Registration.emails</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#acme.messages.NewRegistration"><code class="docutils literal notranslate"><span class="pre">NewRegistration</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#acme.messages.UpdateRegistration"><code class="docutils literal notranslate"><span class="pre">UpdateRegistration</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#acme.messages.RegistrationResource"><code class="docutils literal notranslate"><span class="pre">RegistrationResource</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#acme.messages.ChallengeBody"><code class="docutils literal notranslate"><span class="pre">ChallengeBody</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#acme.messages.ChallengeBody.encode"><code class="docutils literal notranslate"><span class="pre">ChallengeBody.encode()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#acme.messages.ChallengeBody.to_partial_json"><code class="docutils literal notranslate"><span class="pre">ChallengeBody.to_partial_json()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#acme.messages.ChallengeBody.fields_from_json"><code class="docutils literal notranslate"><span class="pre">ChallengeBody.fields_from_json()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#acme.messages.ChallengeBody.uri"><code class="docutils literal notranslate"><span class="pre">ChallengeBody.uri</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#acme.messages.ChallengeResource"><code class="docutils literal notranslate"><span class="pre">ChallengeResource</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#acme.messages.ChallengeResource.uri"><code class="docutils literal notranslate"><span class="pre">ChallengeResource.uri</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#acme.messages.Authorization"><code class="docutils literal notranslate"><span class="pre">Authorization</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#acme.messages.NewAuthorization"><code class="docutils literal notranslate"><span class="pre">NewAuthorization</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#acme.messages.UpdateAuthorization"><code class="docutils literal notranslate"><span class="pre">UpdateAuthorization</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#acme.messages.AuthorizationResource"><code class="docutils literal notranslate"><span class="pre">AuthorizationResource</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#acme.messages.CertificateRequest"><code class="docutils literal notranslate"><span class="pre">CertificateRequest</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#acme.messages.CertificateResource"><code class="docutils literal notranslate"><span class="pre">CertificateResource</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#acme.messages.Revocation"><code class="docutils literal notranslate"><span class="pre">Revocation</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#acme.messages.Order"><code class="docutils literal notranslate"><span class="pre">Order</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#acme.messages.OrderResource"><code class="docutils literal notranslate"><span class="pre">OrderResource</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#acme.messages.NewOrder"><code class="docutils literal notranslate"><span class="pre">NewOrder</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="standalone.html">Standalone</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">acme-python</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../api.html">API Documentation</a></li>
+      <li class="breadcrumb-item active">Messages</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/api/messages.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="module-acme.messages">
+<span id="messages"></span><h1>Messages<a class="headerlink" href="#module-acme.messages" title="Permalink to this heading">¶</a></h1>
+<p>ACME protocol messages.</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="acme.messages.is_acme_error">
+<span class="sig-prename descclassname"><span class="pre">acme.messages.</span></span><span class="sig-name descname"><span class="pre">is_acme_error</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">err</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#BaseException" title="(in Python v3.11)"><span class="pre">BaseException</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><span class="pre">bool</span></a></span></span><a class="reference internal" href="../_modules/acme/messages.html#is_acme_error"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#acme.messages.is_acme_error" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check if argument is an ACME error.</p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="acme.messages.IdentifierType">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">acme.messages.</span></span><span class="sig-name descname"><span class="pre">IdentifierType</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/acme/messages.html#IdentifierType"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#acme.messages.IdentifierType" title="Permalink to this definition">¶</a></dt>
+<dd><p>ACME identifier type.</p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="acme.messages.Identifier">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">acme.messages.</span></span><span class="sig-name descname"><span class="pre">Identifier</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.11)"><span class="pre">Any</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/acme/messages.html#Identifier"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#acme.messages.Identifier" title="Permalink to this definition">¶</a></dt>
+<dd><p>ACME identifier.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Variables<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>typ</strong> (<a class="reference internal" href="#acme.messages.IdentifierType" title="acme.messages.IdentifierType"><em>IdentifierType</em></a>) – </p></li>
+<li><p><strong>value</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a>) – </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py exception">
+<dt class="sig sig-object py" id="acme.messages.Error">
+<em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">acme.messages.</span></span><span class="sig-name descname"><span class="pre">Error</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.11)"><span class="pre">Any</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/acme/messages.html#Error"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#acme.messages.Error" title="Permalink to this definition">¶</a></dt>
+<dd><p>ACME error.</p>
+<p><a class="reference external" href="https://datatracker.ietf.org/doc/html/rfc7807">https://datatracker.ietf.org/doc/html/rfc7807</a></p>
+<p>Note: Although Error inherits from JSONObjectWithFields, which is immutable,
+we add mutability for Error to comply with the Python exception API.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Variables<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>typ</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a>) – </p></li>
+<li><p><strong>title</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a>) – </p></li>
+<li><p><strong>detail</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a>) – </p></li>
+<li><p><strong>identifier</strong> (<a class="reference internal" href="#acme.messages.Identifier" title="acme.messages.Identifier"><em>Identifier</em></a>) – </p></li>
+<li><p><strong>subproblems</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.11)"><em>tuple</em></a>) – An array of ACME Errors which may be present when the CA
+returns multiple errors related to the same request, <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.11)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">tuple</span></code></a> of <a class="reference internal" href="#acme.messages.Error" title="acme.messages.Error"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Error</span></code></a>.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="acme.messages.Error.with_code">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">with_code</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">code</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.11)"><span class="pre">Any</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#acme.messages.Error" title="acme.messages.Error"><span class="pre">Error</span></a></span></span><a class="reference internal" href="../_modules/acme/messages.html#Error.with_code"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#acme.messages.Error.with_code" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create an Error instance with an ACME Error code.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Str code<span class="colon">:</span></dt>
+<dd class="field-odd"><p>An ACME error code, like ‘dnssec’.</p>
+</dd>
+<dt class="field-even">Kwargs<span class="colon">:</span></dt>
+<dd class="field-even"><p>kwargs to pass to Error.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="acme.messages.Error.description">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">description</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.11)"><span class="pre">Optional</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#acme.messages.Error.description" title="Permalink to this definition">¶</a></dt>
+<dd><p>Hardcoded error description based on its type.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Description if standard ACME error or <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)">str</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="acme.messages.Error.code">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">code</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.11)"><span class="pre">Optional</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#acme.messages.Error.code" title="Permalink to this definition">¶</a></dt>
+<dd><p>ACME error code.</p>
+<p>Basically self.typ without the ERROR_PREFIX.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>error code if standard ACME code or <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)">str</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="acme.messages.Status">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">acme.messages.</span></span><span class="sig-name descname"><span class="pre">Status</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/acme/messages.html#Status"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#acme.messages.Status" title="Permalink to this definition">¶</a></dt>
+<dd><p>ACME “status” field.</p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="acme.messages.Directory">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">acme.messages.</span></span><span class="sig-name descname"><span class="pre">Directory</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">jobj</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Mapping" title="(in Python v3.11)"><span class="pre">Mapping</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.11)"><span class="pre">Any</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/acme/messages.html#Directory"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#acme.messages.Directory" title="Permalink to this definition">¶</a></dt>
+<dd><p>Directory.</p>
+<p>Directory resources must be accessed by the exact field name in RFC8555 (section 9.7.5).</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="acme.messages.Directory.Meta">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">Meta</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.11)"><span class="pre">Any</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/acme/messages.html#Directory.Meta"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#acme.messages.Directory.Meta" title="Permalink to this definition">¶</a></dt>
+<dd><p>Directory Meta.</p>
+<dl class="py property">
+<dt class="sig sig-object py" id="acme.messages.Directory.Meta.terms_of_service">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">terms_of_service</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a></em><a class="headerlink" href="#acme.messages.Directory.Meta.terms_of_service" title="Permalink to this definition">¶</a></dt>
+<dd><p>URL for the CA TOS</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="acme.messages.Directory.to_partial_json">
+<span class="sig-name descname"><span class="pre">to_partial_json</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Dict" title="(in Python v3.11)"><span class="pre">Dict</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.11)"><span class="pre">Any</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/acme/messages.html#Directory.to_partial_json"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#acme.messages.Directory.to_partial_json" title="Permalink to this definition">¶</a></dt>
+<dd><p>Partially serialize.</p>
+<p>Following the example, <strong>partial serialization</strong> means the following:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">Bar</span><span class="p">()</span><span class="o">.</span><span class="n">to_partial_json</span><span class="p">()[</span><span class="mi">0</span><span class="p">],</span> <span class="n">Foo</span><span class="p">)</span>
+<span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">Bar</span><span class="p">()</span><span class="o">.</span><span class="n">to_partial_json</span><span class="p">()[</span><span class="mi">1</span><span class="p">],</span> <span class="n">Foo</span><span class="p">)</span>
+
+<span class="c1"># in particular...</span>
+<span class="k">assert</span> <span class="n">Bar</span><span class="p">()</span><span class="o">.</span><span class="n">to_partial_json</span><span class="p">()</span> <span class="o">!=</span> <span class="p">[</span><span class="s1">&#39;foo&#39;</span><span class="p">,</span> <span class="s1">&#39;foo&#39;</span><span class="p">]</span>
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://josepy.readthedocs.io/en/latest/api/errors.html#josepy.errors.SerializationError" title="(in josepy v1.14)"><strong>josepy.errors.SerializationError</strong></a> – in case of any serialization error.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Partially serializable object.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="acme.messages.Directory.from_json">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_json</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">jobj</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.MutableMapping" title="(in Python v3.11)"><span class="pre">MutableMapping</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.11)"><span class="pre">Any</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#acme.messages.Directory" title="acme.messages.Directory"><span class="pre">Directory</span></a></span></span><a class="reference internal" href="../_modules/acme/messages.html#Directory.from_json"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#acme.messages.Directory.from_json" title="Permalink to this definition">¶</a></dt>
+<dd><p>Deserialize a decoded JSON document.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>jobj</strong> – Python object, composed of only other basic data
+types, as decoded from JSON document. Not necessarily
+<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></a> (as decoded from “JSON object” document).</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://josepy.readthedocs.io/en/latest/api/errors.html#josepy.errors.DeserializationError" title="(in josepy v1.14)"><strong>josepy.errors.DeserializationError</strong></a> – if decoding was unsuccessful, e.g. in case of unparseable
+X509 certificate, or wrong padding in JOSE base64 encoded
+string, etc.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="acme.messages.Resource">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">acme.messages.</span></span><span class="sig-name descname"><span class="pre">Resource</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.11)"><span class="pre">Any</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/acme/messages.html#Resource"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#acme.messages.Resource" title="Permalink to this definition">¶</a></dt>
+<dd><p>ACME Resource.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Variables<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>body</strong> (<a class="reference internal" href="#acme.messages.ResourceBody" title="acme.messages.ResourceBody"><em>acme.messages.ResourceBody</em></a>) – Resource body.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="acme.messages.ResourceWithURI">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">acme.messages.</span></span><span class="sig-name descname"><span class="pre">ResourceWithURI</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.11)"><span class="pre">Any</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/acme/messages.html#ResourceWithURI"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#acme.messages.ResourceWithURI" title="Permalink to this definition">¶</a></dt>
+<dd><p>ACME Resource with URI.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Variables<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>uri</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a>) – Location of the resource.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="acme.messages.ResourceBody">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">acme.messages.</span></span><span class="sig-name descname"><span class="pre">ResourceBody</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.11)"><span class="pre">Any</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/acme/messages.html#ResourceBody"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#acme.messages.ResourceBody" title="Permalink to this definition">¶</a></dt>
+<dd><p>ACME Resource Body.</p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="acme.messages.ExternalAccountBinding">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">acme.messages.</span></span><span class="sig-name descname"><span class="pre">ExternalAccountBinding</span></span><a class="reference internal" href="../_modules/acme/messages.html#ExternalAccountBinding"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#acme.messages.ExternalAccountBinding" title="Permalink to this definition">¶</a></dt>
+<dd><p>ACME External Account Binding</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="acme.messages.ExternalAccountBinding.from_data">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">account_public_key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://josepy.readthedocs.io/en/latest/api/jwk.html#josepy.jwk.JWK" title="(in josepy v1.14)"><span class="pre">JWK</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">kid</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">hmac_key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">directory</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#acme.messages.Directory" title="acme.messages.Directory"><span class="pre">Directory</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Dict" title="(in Python v3.11)"><span class="pre">Dict</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.11)"><span class="pre">Any</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/acme/messages.html#ExternalAccountBinding.from_data"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#acme.messages.ExternalAccountBinding.from_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create External Account Binding Resource from contact details, kid and hmac.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="acme.messages.Registration">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">acme.messages.</span></span><span class="sig-name descname"><span class="pre">Registration</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.11)"><span class="pre">Any</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/acme/messages.html#Registration"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#acme.messages.Registration" title="Permalink to this definition">¶</a></dt>
+<dd><p>Registration Resource Body.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Variables<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>key</strong> (<em>jose.JWK</em>) – Public key.</p></li>
+<li><p><strong>contact</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.11)"><em>tuple</em></a>) – Contact information following ACME spec,
+<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.11)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">tuple</span></code></a> of <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code></a>.</p></li>
+<li><p><strong>agreement</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a>) – </p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="acme.messages.Registration.from_data">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">phone</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.11)"><span class="pre">Optional</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">email</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.11)"><span class="pre">Optional</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">external_account_binding</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.11)"><span class="pre">Optional</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Dict" title="(in Python v3.11)"><span class="pre">Dict</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.11)"><span class="pre">Any</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.11)"><span class="pre">Any</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">GenericRegistration</span></span></span><a class="reference internal" href="../_modules/acme/messages.html#Registration.from_data"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#acme.messages.Registration.from_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create registration resource from contact details.</p>
+<p>The <code class="xref py py-obj docutils literal notranslate"><span class="pre">contact</span></code> keyword being passed to a Registration object is meaningful, so
+this function represents empty iterables in its kwargs by passing on an empty
+<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.11)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">tuple</span></code></a>.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="acme.messages.Registration.to_partial_json">
+<span class="sig-name descname"><span class="pre">to_partial_json</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Dict" title="(in Python v3.11)"><span class="pre">Dict</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.11)"><span class="pre">Any</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/acme/messages.html#Registration.to_partial_json"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#acme.messages.Registration.to_partial_json" title="Permalink to this definition">¶</a></dt>
+<dd><p>Modify josepy.JSONDeserializable.to_partial_json()</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="acme.messages.Registration.fields_to_partial_json">
+<span class="sig-name descname"><span class="pre">fields_to_partial_json</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Dict" title="(in Python v3.11)"><span class="pre">Dict</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.11)"><span class="pre">Any</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/acme/messages.html#Registration.fields_to_partial_json"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#acme.messages.Registration.fields_to_partial_json" title="Permalink to this definition">¶</a></dt>
+<dd><p>Modify josepy.JSONObjectWithFields.fields_to_partial_json()</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="acme.messages.Registration.phones">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">phones</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Tuple" title="(in Python v3.11)"><span class="pre">Tuple</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="p"><span class="pre">...</span></span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#acme.messages.Registration.phones" title="Permalink to this definition">¶</a></dt>
+<dd><p>All phones found in the <code class="docutils literal notranslate"><span class="pre">contact</span></code> field.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="acme.messages.Registration.emails">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">emails</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Tuple" title="(in Python v3.11)"><span class="pre">Tuple</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="p"><span class="pre">...</span></span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#acme.messages.Registration.emails" title="Permalink to this definition">¶</a></dt>
+<dd><p>All emails found in the <code class="docutils literal notranslate"><span class="pre">contact</span></code> field.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="acme.messages.NewRegistration">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">acme.messages.</span></span><span class="sig-name descname"><span class="pre">NewRegistration</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.11)"><span class="pre">Any</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/acme/messages.html#NewRegistration"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#acme.messages.NewRegistration" title="Permalink to this definition">¶</a></dt>
+<dd><p>New registration.</p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="acme.messages.UpdateRegistration">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">acme.messages.</span></span><span class="sig-name descname"><span class="pre">UpdateRegistration</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.11)"><span class="pre">Any</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/acme/messages.html#UpdateRegistration"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#acme.messages.UpdateRegistration" title="Permalink to this definition">¶</a></dt>
+<dd><p>Update registration.</p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="acme.messages.RegistrationResource">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">acme.messages.</span></span><span class="sig-name descname"><span class="pre">RegistrationResource</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.11)"><span class="pre">Any</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/acme/messages.html#RegistrationResource"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#acme.messages.RegistrationResource" title="Permalink to this definition">¶</a></dt>
+<dd><p>Registration Resource.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Variables<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>body</strong> (<a class="reference internal" href="#acme.messages.Registration" title="acme.messages.Registration"><em>acme.messages.Registration</em></a>) – </p></li>
+<li><p><strong>new_authzr_uri</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a>) – Deprecated. Do not use.</p></li>
+<li><p><strong>terms_of_service</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a>) – URL for the CA TOS.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="acme.messages.ChallengeBody">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">acme.messages.</span></span><span class="sig-name descname"><span class="pre">ChallengeBody</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.11)"><span class="pre">Any</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/acme/messages.html#ChallengeBody"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#acme.messages.ChallengeBody" title="Permalink to this definition">¶</a></dt>
+<dd><p>Challenge Resource Body.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Variables<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>acme.challenges.Challenge</strong> – Wrapped challenge.
+Conveniently, all challenge fields are proxied, i.e. you can
+call <code class="docutils literal notranslate"><span class="pre">challb.x</span></code> to get <code class="docutils literal notranslate"><span class="pre">challb.chall.x</span></code> contents.</p></li>
+<li><p><strong>status</strong> (<a class="reference internal" href="#acme.messages.Status" title="acme.messages.Status"><em>acme.messages.Status</em></a>) – </p></li>
+<li><p><strong>validated</strong> (<a class="reference external" href="https://docs.python.org/3/library/datetime.html#datetime.datetime" title="(in Python v3.11)"><em>datetime.datetime</em></a>) – </p></li>
+<li><p><strong>error</strong> (<a class="reference internal" href="#acme.messages.Error" title="acme.messages.Error"><em>messages.Error</em></a>) – </p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="acme.messages.ChallengeBody.encode">
+<span class="sig-name descname"><span class="pre">encode</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.11)"><span class="pre">Any</span></a></span></span><a class="reference internal" href="../_modules/acme/messages.html#ChallengeBody.encode"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#acme.messages.ChallengeBody.encode" title="Permalink to this definition">¶</a></dt>
+<dd><p>Encode a single field.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a>) – Name of the field to be encoded.</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>errors.SerializationError</strong> – if field cannot be serialized</p></li>
+<li><p><a class="reference internal" href="errors.html#acme.errors.Error" title="acme.errors.Error"><strong>errors.Error</strong></a> – if field could not be found</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="acme.messages.ChallengeBody.to_partial_json">
+<span class="sig-name descname"><span class="pre">to_partial_json</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Dict" title="(in Python v3.11)"><span class="pre">Dict</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.11)"><span class="pre">Any</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/acme/messages.html#ChallengeBody.to_partial_json"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#acme.messages.ChallengeBody.to_partial_json" title="Permalink to this definition">¶</a></dt>
+<dd><p>Partially serialize.</p>
+<p>Following the example, <strong>partial serialization</strong> means the following:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">Bar</span><span class="p">()</span><span class="o">.</span><span class="n">to_partial_json</span><span class="p">()[</span><span class="mi">0</span><span class="p">],</span> <span class="n">Foo</span><span class="p">)</span>
+<span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">Bar</span><span class="p">()</span><span class="o">.</span><span class="n">to_partial_json</span><span class="p">()[</span><span class="mi">1</span><span class="p">],</span> <span class="n">Foo</span><span class="p">)</span>
+
+<span class="c1"># in particular...</span>
+<span class="k">assert</span> <span class="n">Bar</span><span class="p">()</span><span class="o">.</span><span class="n">to_partial_json</span><span class="p">()</span> <span class="o">!=</span> <span class="p">[</span><span class="s1">&#39;foo&#39;</span><span class="p">,</span> <span class="s1">&#39;foo&#39;</span><span class="p">]</span>
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://josepy.readthedocs.io/en/latest/api/errors.html#josepy.errors.SerializationError" title="(in josepy v1.14)"><strong>josepy.errors.SerializationError</strong></a> – in case of any serialization error.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Partially serializable object.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="acme.messages.ChallengeBody.fields_from_json">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">fields_from_json</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">jobj</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Mapping" title="(in Python v3.11)"><span class="pre">Mapping</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.11)"><span class="pre">Any</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Dict" title="(in Python v3.11)"><span class="pre">Dict</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.11)"><span class="pre">Any</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/acme/messages.html#ChallengeBody.fields_from_json"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#acme.messages.ChallengeBody.fields_from_json" title="Permalink to this definition">¶</a></dt>
+<dd><p>Deserialize fields from JSON.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="acme.messages.ChallengeBody.uri">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">uri</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a></em><a class="headerlink" href="#acme.messages.ChallengeBody.uri" title="Permalink to this definition">¶</a></dt>
+<dd><p>The URL of this challenge.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="acme.messages.ChallengeResource">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">acme.messages.</span></span><span class="sig-name descname"><span class="pre">ChallengeResource</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.11)"><span class="pre">Any</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/acme/messages.html#ChallengeResource"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#acme.messages.ChallengeResource" title="Permalink to this definition">¶</a></dt>
+<dd><p>Challenge Resource.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Variables<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>body</strong> (<a class="reference internal" href="#acme.messages.ChallengeBody" title="acme.messages.ChallengeBody"><em>acme.messages.ChallengeBody</em></a>) – </p></li>
+<li><p><strong>authzr_uri</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a>) – URI found in the ‘up’ <code class="docutils literal notranslate"><span class="pre">Link</span></code> header.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py property">
+<dt class="sig sig-object py" id="acme.messages.ChallengeResource.uri">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">uri</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a></em><a class="headerlink" href="#acme.messages.ChallengeResource.uri" title="Permalink to this definition">¶</a></dt>
+<dd><p>The URL of the challenge body.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="acme.messages.Authorization">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">acme.messages.</span></span><span class="sig-name descname"><span class="pre">Authorization</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.11)"><span class="pre">Any</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/acme/messages.html#Authorization"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#acme.messages.Authorization" title="Permalink to this definition">¶</a></dt>
+<dd><p>Authorization Resource Body.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Variables<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>identifier</strong> (<a class="reference internal" href="#acme.messages.Identifier" title="acme.messages.Identifier"><em>acme.messages.Identifier</em></a>) – </p></li>
+<li><p><strong>challenges</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.11)"><em>list</em></a>) – <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.11)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">list</span></code></a> of <a class="reference internal" href="#acme.messages.ChallengeBody" title="acme.messages.ChallengeBody"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ChallengeBody</span></code></a></p></li>
+<li><p><strong>status</strong> (<a class="reference internal" href="#acme.messages.Status" title="acme.messages.Status"><em>acme.messages.Status</em></a>) – </p></li>
+<li><p><strong>expires</strong> (<a class="reference external" href="https://docs.python.org/3/library/datetime.html#datetime.datetime" title="(in Python v3.11)"><em>datetime.datetime</em></a>) – </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="acme.messages.NewAuthorization">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">acme.messages.</span></span><span class="sig-name descname"><span class="pre">NewAuthorization</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.11)"><span class="pre">Any</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/acme/messages.html#NewAuthorization"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#acme.messages.NewAuthorization" title="Permalink to this definition">¶</a></dt>
+<dd><p>New authorization.</p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="acme.messages.UpdateAuthorization">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">acme.messages.</span></span><span class="sig-name descname"><span class="pre">UpdateAuthorization</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.11)"><span class="pre">Any</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/acme/messages.html#UpdateAuthorization"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#acme.messages.UpdateAuthorization" title="Permalink to this definition">¶</a></dt>
+<dd><p>Update authorization.</p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="acme.messages.AuthorizationResource">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">acme.messages.</span></span><span class="sig-name descname"><span class="pre">AuthorizationResource</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.11)"><span class="pre">Any</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/acme/messages.html#AuthorizationResource"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#acme.messages.AuthorizationResource" title="Permalink to this definition">¶</a></dt>
+<dd><p>Authorization Resource.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Variables<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>body</strong> (<a class="reference internal" href="#acme.messages.Authorization" title="acme.messages.Authorization"><em>acme.messages.Authorization</em></a>) – </p></li>
+<li><p><strong>new_cert_uri</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a>) – Deprecated. Do not use.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="acme.messages.CertificateRequest">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">acme.messages.</span></span><span class="sig-name descname"><span class="pre">CertificateRequest</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.11)"><span class="pre">Any</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/acme/messages.html#CertificateRequest"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#acme.messages.CertificateRequest" title="Permalink to this definition">¶</a></dt>
+<dd><p>ACME newOrder request.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Variables<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>csr</strong> (<em>jose.ComparableX509</em>) – <code class="xref py py-obj docutils literal notranslate"><span class="pre">OpenSSL.crypto.X509Req</span></code> wrapped in <code class="xref py py-obj docutils literal notranslate"><span class="pre">ComparableX509</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="acme.messages.CertificateResource">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">acme.messages.</span></span><span class="sig-name descname"><span class="pre">CertificateResource</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.11)"><span class="pre">Any</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/acme/messages.html#CertificateResource"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#acme.messages.CertificateResource" title="Permalink to this definition">¶</a></dt>
+<dd><p>Certificate Resource.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Variables<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>body</strong> (<a class="reference external" href="https://josepy.readthedocs.io/en/latest/api/util.html#josepy.util.ComparableX509" title="(in josepy v1.14)"><em>josepy.util.ComparableX509</em></a>) – <code class="xref py py-obj docutils literal notranslate"><span class="pre">OpenSSL.crypto.X509</span></code> wrapped in <code class="xref py py-obj docutils literal notranslate"><span class="pre">ComparableX509</span></code></p></li>
+<li><p><strong>cert_chain_uri</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a>) – URI found in the ‘up’ <code class="docutils literal notranslate"><span class="pre">Link</span></code> header</p></li>
+<li><p><strong>authzrs</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.11)"><em>tuple</em></a>) – <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.11)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">tuple</span></code></a> of <a class="reference internal" href="#acme.messages.AuthorizationResource" title="acme.messages.AuthorizationResource"><code class="xref py py-obj docutils literal notranslate"><span class="pre">AuthorizationResource</span></code></a>.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="acme.messages.Revocation">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">acme.messages.</span></span><span class="sig-name descname"><span class="pre">Revocation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.11)"><span class="pre">Any</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/acme/messages.html#Revocation"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#acme.messages.Revocation" title="Permalink to this definition">¶</a></dt>
+<dd><p>Revocation message.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Variables<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>certificate</strong> (<em>jose.ComparableX509</em>) – <code class="xref py py-obj docutils literal notranslate"><span class="pre">OpenSSL.crypto.X509</span></code> wrapped in
+<code class="xref py py-obj docutils literal notranslate"><span class="pre">jose.ComparableX509</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="acme.messages.Order">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">acme.messages.</span></span><span class="sig-name descname"><span class="pre">Order</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.11)"><span class="pre">Any</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/acme/messages.html#Order"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#acme.messages.Order" title="Permalink to this definition">¶</a></dt>
+<dd><p>Order Resource Body.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Variables<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>identifiers</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.11)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">list</span></code></a> of <a class="reference internal" href="#acme.messages.Identifier" title="acme.messages.Identifier"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Identifier</span></code></a>) – List of identifiers for the certificate.</p></li>
+<li><p><strong>status</strong> (<a class="reference internal" href="#acme.messages.Status" title="acme.messages.Status"><em>acme.messages.Status</em></a>) – </p></li>
+<li><p><strong>authorizations</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.11)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">list</span></code></a> of <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code></a>) – URLs of authorizations.</p></li>
+<li><p><strong>certificate</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a>) – URL to download certificate as a fullchain PEM.</p></li>
+<li><p><strong>finalize</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a>) – URL to POST to to request issuance once all
+authorizations have “valid” status.</p></li>
+<li><p><strong>expires</strong> (<a class="reference external" href="https://docs.python.org/3/library/datetime.html#datetime.datetime" title="(in Python v3.11)"><em>datetime.datetime</em></a>) – When the order expires.</p></li>
+<li><p><strong>error</strong> (<em>Error</em>) – Any error that occurred during finalization, if applicable.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="acme.messages.OrderResource">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">acme.messages.</span></span><span class="sig-name descname"><span class="pre">OrderResource</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.11)"><span class="pre">Any</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/acme/messages.html#OrderResource"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#acme.messages.OrderResource" title="Permalink to this definition">¶</a></dt>
+<dd><p>Order Resource.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Variables<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>body</strong> (<a class="reference internal" href="#acme.messages.Order" title="acme.messages.Order"><em>acme.messages.Order</em></a>) – </p></li>
+<li><p><strong>csr_pem</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#bytes" title="(in Python v3.11)"><em>bytes</em></a>) – The CSR this Order will be finalized with.</p></li>
+<li><p><strong>authorizations</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.11)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">list</span></code></a> of <a class="reference internal" href="#acme.messages.AuthorizationResource" title="acme.messages.AuthorizationResource"><code class="xref py py-obj docutils literal notranslate"><span class="pre">acme.messages.AuthorizationResource</span></code></a>) – Fully-fetched AuthorizationResource objects.</p></li>
+<li><p><strong>fullchain_pem</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a>) – The fetched contents of the certificate URL
+produced once the order was finalized, if it’s present.</p></li>
+<li><p><strong>alternative_fullchains_pem</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.11)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">list</span></code></a> of <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code></a>) – The fetched contents of alternative certificate
+chain URLs produced once the order was finalized, if present and requested during
+finalization.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="acme.messages.NewOrder">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">acme.messages.</span></span><span class="sig-name descname"><span class="pre">NewOrder</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.11)"><span class="pre">Any</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/acme/messages.html#NewOrder"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#acme.messages.NewOrder" title="Permalink to this definition">¶</a></dt>
+<dd><p>New order.</p>
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="jose.html" class="btn btn-neutral float-left" title="JOSE" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="standalone.html" class="btn btn-neutral float-right" title="Standalone" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2015, Let&#39;s Encrypt Project.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

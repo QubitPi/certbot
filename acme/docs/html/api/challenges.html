@@ -1,0 +1,928 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Challenges &mdash; acme-python 0 documentation</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/sphinx_highlight.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Client" href="client.html" />
+    <link rel="prev" title="API Documentation" href="../api.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            acme-python
+          </a>
+              <div class="version">
+                0
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="../api.html">API Documentation</a><ul class="current">
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Challenges</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#acme.challenges.Challenge"><code class="docutils literal notranslate"><span class="pre">Challenge</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#acme.challenges.Challenge.TYPES"><code class="docutils literal notranslate"><span class="pre">Challenge.TYPES</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#acme.challenges.Challenge.from_json"><code class="docutils literal notranslate"><span class="pre">Challenge.from_json()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#acme.challenges.ChallengeResponse"><code class="docutils literal notranslate"><span class="pre">ChallengeResponse</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#acme.challenges.ChallengeResponse.TYPES"><code class="docutils literal notranslate"><span class="pre">ChallengeResponse.TYPES</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#acme.challenges.ChallengeResponse.to_partial_json"><code class="docutils literal notranslate"><span class="pre">ChallengeResponse.to_partial_json()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#acme.challenges.UnrecognizedChallenge"><code class="docutils literal notranslate"><span class="pre">UnrecognizedChallenge</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#acme.challenges.UnrecognizedChallenge.to_partial_json"><code class="docutils literal notranslate"><span class="pre">UnrecognizedChallenge.to_partial_json()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#acme.challenges.UnrecognizedChallenge.from_json"><code class="docutils literal notranslate"><span class="pre">UnrecognizedChallenge.from_json()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#acme.challenges.KeyAuthorizationChallengeResponse"><code class="docutils literal notranslate"><span class="pre">KeyAuthorizationChallengeResponse</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#acme.challenges.KeyAuthorizationChallengeResponse.verify"><code class="docutils literal notranslate"><span class="pre">KeyAuthorizationChallengeResponse.verify()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#acme.challenges.KeyAuthorizationChallengeResponse.to_partial_json"><code class="docutils literal notranslate"><span class="pre">KeyAuthorizationChallengeResponse.to_partial_json()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#acme.challenges.KeyAuthorizationChallenge"><code class="docutils literal notranslate"><span class="pre">KeyAuthorizationChallenge</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#acme.challenges.KeyAuthorizationChallenge.typ"><code class="docutils literal notranslate"><span class="pre">KeyAuthorizationChallenge.typ</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#acme.challenges.KeyAuthorizationChallenge.key_authorization"><code class="docutils literal notranslate"><span class="pre">KeyAuthorizationChallenge.key_authorization()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#acme.challenges.KeyAuthorizationChallenge.response"><code class="docutils literal notranslate"><span class="pre">KeyAuthorizationChallenge.response()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#acme.challenges.KeyAuthorizationChallenge.validation"><code class="docutils literal notranslate"><span class="pre">KeyAuthorizationChallenge.validation()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#acme.challenges.KeyAuthorizationChallenge.response_and_validation"><code class="docutils literal notranslate"><span class="pre">KeyAuthorizationChallenge.response_and_validation()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#acme.challenges.DNS01Response"><code class="docutils literal notranslate"><span class="pre">DNS01Response</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#acme.challenges.DNS01Response.typ"><code class="docutils literal notranslate"><span class="pre">DNS01Response.typ</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#acme.challenges.DNS01Response.simple_verify"><code class="docutils literal notranslate"><span class="pre">DNS01Response.simple_verify()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#acme.challenges.DNS01"><code class="docutils literal notranslate"><span class="pre">DNS01</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#acme.challenges.DNS01.response_cls"><code class="docutils literal notranslate"><span class="pre">DNS01.response_cls</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#acme.challenges.DNS01.typ"><code class="docutils literal notranslate"><span class="pre">DNS01.typ</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#acme.challenges.DNS01.LABEL"><code class="docutils literal notranslate"><span class="pre">DNS01.LABEL</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#acme.challenges.DNS01.validation"><code class="docutils literal notranslate"><span class="pre">DNS01.validation()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#acme.challenges.DNS01.validation_domain_name"><code class="docutils literal notranslate"><span class="pre">DNS01.validation_domain_name()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#acme.challenges.HTTP01Response"><code class="docutils literal notranslate"><span class="pre">HTTP01Response</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#acme.challenges.HTTP01Response.typ"><code class="docutils literal notranslate"><span class="pre">HTTP01Response.typ</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#acme.challenges.HTTP01Response.PORT"><code class="docutils literal notranslate"><span class="pre">HTTP01Response.PORT</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#acme.challenges.HTTP01Response.WHITESPACE_CUTSET"><code class="docutils literal notranslate"><span class="pre">HTTP01Response.WHITESPACE_CUTSET</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#acme.challenges.HTTP01Response.simple_verify"><code class="docutils literal notranslate"><span class="pre">HTTP01Response.simple_verify()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#acme.challenges.HTTP01"><code class="docutils literal notranslate"><span class="pre">HTTP01</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#acme.challenges.HTTP01.response_cls"><code class="docutils literal notranslate"><span class="pre">HTTP01.response_cls</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#acme.challenges.HTTP01.typ"><code class="docutils literal notranslate"><span class="pre">HTTP01.typ</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#acme.challenges.HTTP01.URI_ROOT_PATH"><code class="docutils literal notranslate"><span class="pre">HTTP01.URI_ROOT_PATH</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#acme.challenges.HTTP01.path"><code class="docutils literal notranslate"><span class="pre">HTTP01.path</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#acme.challenges.HTTP01.uri"><code class="docutils literal notranslate"><span class="pre">HTTP01.uri()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#acme.challenges.HTTP01.validation"><code class="docutils literal notranslate"><span class="pre">HTTP01.validation()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#acme.challenges.TLSALPN01Response"><code class="docutils literal notranslate"><span class="pre">TLSALPN01Response</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#acme.challenges.TLSALPN01Response.typ"><code class="docutils literal notranslate"><span class="pre">TLSALPN01Response.typ</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#acme.challenges.TLSALPN01Response.PORT"><code class="docutils literal notranslate"><span class="pre">TLSALPN01Response.PORT</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#acme.challenges.TLSALPN01Response.h"><code class="docutils literal notranslate"><span class="pre">TLSALPN01Response.h</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#acme.challenges.TLSALPN01Response.gen_cert"><code class="docutils literal notranslate"><span class="pre">TLSALPN01Response.gen_cert()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#acme.challenges.TLSALPN01Response.probe_cert"><code class="docutils literal notranslate"><span class="pre">TLSALPN01Response.probe_cert()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#acme.challenges.TLSALPN01Response.verify_cert"><code class="docutils literal notranslate"><span class="pre">TLSALPN01Response.verify_cert()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#acme.challenges.TLSALPN01Response.simple_verify"><code class="docutils literal notranslate"><span class="pre">TLSALPN01Response.simple_verify()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#acme.challenges.TLSALPN01"><code class="docutils literal notranslate"><span class="pre">TLSALPN01</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#acme.challenges.TLSALPN01.response_cls"><code class="docutils literal notranslate"><span class="pre">TLSALPN01.response_cls</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#acme.challenges.TLSALPN01.typ"><code class="docutils literal notranslate"><span class="pre">TLSALPN01.typ</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#acme.challenges.TLSALPN01.validation"><code class="docutils literal notranslate"><span class="pre">TLSALPN01.validation()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#acme.challenges.TLSALPN01.is_supported"><code class="docutils literal notranslate"><span class="pre">TLSALPN01.is_supported()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#acme.challenges.DNS"><code class="docutils literal notranslate"><span class="pre">DNS</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#acme.challenges.DNS.typ"><code class="docutils literal notranslate"><span class="pre">DNS.typ</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#acme.challenges.DNS.LABEL"><code class="docutils literal notranslate"><span class="pre">DNS.LABEL</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#acme.challenges.DNS.gen_validation"><code class="docutils literal notranslate"><span class="pre">DNS.gen_validation()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#acme.challenges.DNS.check_validation"><code class="docutils literal notranslate"><span class="pre">DNS.check_validation()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#acme.challenges.DNS.gen_response"><code class="docutils literal notranslate"><span class="pre">DNS.gen_response()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#acme.challenges.DNS.validation_domain_name"><code class="docutils literal notranslate"><span class="pre">DNS.validation_domain_name()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#acme.challenges.DNSResponse"><code class="docutils literal notranslate"><span class="pre">DNSResponse</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#acme.challenges.DNSResponse.typ"><code class="docutils literal notranslate"><span class="pre">DNSResponse.typ</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#acme.challenges.DNSResponse.check_validation"><code class="docutils literal notranslate"><span class="pre">DNSResponse.check_validation()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="client.html">Client</a></li>
+<li class="toctree-l2"><a class="reference internal" href="errors.html">Errors</a></li>
+<li class="toctree-l2"><a class="reference internal" href="fields.html">Fields</a></li>
+<li class="toctree-l2"><a class="reference internal" href="jose.html">JOSE</a></li>
+<li class="toctree-l2"><a class="reference internal" href="messages.html">Messages</a></li>
+<li class="toctree-l2"><a class="reference internal" href="standalone.html">Standalone</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">acme-python</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../api.html">API Documentation</a></li>
+      <li class="breadcrumb-item active">Challenges</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/api/challenges.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="module-acme.challenges">
+<span id="challenges"></span><h1>Challenges<a class="headerlink" href="#module-acme.challenges" title="Permalink to this heading">¶</a></h1>
+<p>ACME Identifier Validation Challenges.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="acme.challenges.Challenge">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">acme.challenges.</span></span><span class="sig-name descname"><span class="pre">Challenge</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.11)"><span class="pre">Any</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/acme/challenges.html#Challenge"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#acme.challenges.Challenge" title="Permalink to this definition">¶</a></dt>
+<dd><p>ACME challenge.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="acme.challenges.Challenge.TYPES">
+<span class="sig-name descname"><span class="pre">TYPES</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Dict" title="(in Python v3.11)"><span class="pre">Dict</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Type" title="(in Python v3.11)"><span class="pre">Type</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#acme.challenges.Challenge" title="acme.challenges.Challenge"><span class="pre">Challenge</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{'dns':</span> <span class="pre">&lt;class</span> <span class="pre">'acme.challenges.DNS'&gt;,</span> <span class="pre">'dns-01':</span> <span class="pre">&lt;class</span> <span class="pre">'acme.challenges.DNS01'&gt;,</span> <span class="pre">'http-01':</span> <span class="pre">&lt;class</span> <span class="pre">'acme.challenges.HTTP01'&gt;,</span> <span class="pre">'tls-alpn-01':</span> <span class="pre">&lt;class</span> <span class="pre">'acme.challenges.TLSALPN01'&gt;}</span></em><a class="headerlink" href="#acme.challenges.Challenge.TYPES" title="Permalink to this definition">¶</a></dt>
+<dd><p>Types registered for JSON deserialization</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="acme.challenges.Challenge.from_json">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_json</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">jobj</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Mapping" title="(in Python v3.11)"><span class="pre">Mapping</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.11)"><span class="pre">Any</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Union" title="(in Python v3.11)"><span class="pre">Union</span></a><span class="p"><span class="pre">[</span></span><span class="pre">GenericChallenge</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="#acme.challenges.UnrecognizedChallenge" title="acme.challenges.UnrecognizedChallenge"><span class="pre">UnrecognizedChallenge</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/acme/challenges.html#Challenge.from_json"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#acme.challenges.Challenge.from_json" title="Permalink to this definition">¶</a></dt>
+<dd><p>Deserialize ACME object from valid JSON object.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://josepy.readthedocs.io/en/latest/api/errors.html#josepy.errors.UnrecognizedTypeError" title="(in josepy v1.14)"><strong>josepy.errors.UnrecognizedTypeError</strong></a> – if type
+of the ACME object has not been registered.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="acme.challenges.ChallengeResponse">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">acme.challenges.</span></span><span class="sig-name descname"><span class="pre">ChallengeResponse</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.11)"><span class="pre">Any</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/acme/challenges.html#ChallengeResponse"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#acme.challenges.ChallengeResponse" title="Permalink to this definition">¶</a></dt>
+<dd><p>ACME challenge response.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="acme.challenges.ChallengeResponse.TYPES">
+<span class="sig-name descname"><span class="pre">TYPES</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Dict" title="(in Python v3.11)"><span class="pre">Dict</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Type" title="(in Python v3.11)"><span class="pre">Type</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#acme.challenges.ChallengeResponse" title="acme.challenges.ChallengeResponse"><span class="pre">ChallengeResponse</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{'dns':</span> <span class="pre">&lt;class</span> <span class="pre">'acme.challenges.DNSResponse'&gt;,</span> <span class="pre">'dns-01':</span> <span class="pre">&lt;class</span> <span class="pre">'acme.challenges.DNS01Response'&gt;,</span> <span class="pre">'http-01':</span> <span class="pre">&lt;class</span> <span class="pre">'acme.challenges.HTTP01Response'&gt;,</span> <span class="pre">'tls-alpn-01':</span> <span class="pre">&lt;class</span> <span class="pre">'acme.challenges.TLSALPN01Response'&gt;}</span></em><a class="headerlink" href="#acme.challenges.ChallengeResponse.TYPES" title="Permalink to this definition">¶</a></dt>
+<dd><p>Types registered for JSON deserialization</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="acme.challenges.ChallengeResponse.to_partial_json">
+<span class="sig-name descname"><span class="pre">to_partial_json</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Dict" title="(in Python v3.11)"><span class="pre">Dict</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.11)"><span class="pre">Any</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/acme/challenges.html#ChallengeResponse.to_partial_json"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#acme.challenges.ChallengeResponse.to_partial_json" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get JSON serializable object.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Serializable JSON object representing ACME typed object.
+<code class="xref py py-meth docutils literal notranslate"><span class="pre">validate()</span></code> will almost certainly not work, due to reasons
+explained in <code class="xref py py-class docutils literal notranslate"><span class="pre">josepy.interfaces.IJSONSerializable</span></code>.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.11)">dict</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="acme.challenges.UnrecognizedChallenge">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">acme.challenges.</span></span><span class="sig-name descname"><span class="pre">UnrecognizedChallenge</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">jobj</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Mapping" title="(in Python v3.11)"><span class="pre">Mapping</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.11)"><span class="pre">Any</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/acme/challenges.html#UnrecognizedChallenge"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#acme.challenges.UnrecognizedChallenge" title="Permalink to this definition">¶</a></dt>
+<dd><p>Unrecognized challenge.</p>
+<p>ACME specification defines a generic framework for challenges and
+defines some standard challenges that are implemented in this
+module. However, other implementations (including peers) might
+define additional challenge types, which should be ignored if
+unrecognized.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Variables<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>jobj</strong> – Original JSON decoded object.</p>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="acme.challenges.UnrecognizedChallenge.to_partial_json">
+<span class="sig-name descname"><span class="pre">to_partial_json</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Dict" title="(in Python v3.11)"><span class="pre">Dict</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.11)"><span class="pre">Any</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/acme/challenges.html#UnrecognizedChallenge.to_partial_json"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#acme.challenges.UnrecognizedChallenge.to_partial_json" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get JSON serializable object.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Serializable JSON object representing ACME typed object.
+<code class="xref py py-meth docutils literal notranslate"><span class="pre">validate()</span></code> will almost certainly not work, due to reasons
+explained in <code class="xref py py-class docutils literal notranslate"><span class="pre">josepy.interfaces.IJSONSerializable</span></code>.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.11)">dict</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="acme.challenges.UnrecognizedChallenge.from_json">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_json</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">jobj</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Mapping" title="(in Python v3.11)"><span class="pre">Mapping</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.11)"><span class="pre">Any</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#acme.challenges.UnrecognizedChallenge" title="acme.challenges.UnrecognizedChallenge"><span class="pre">UnrecognizedChallenge</span></a></span></span><a class="reference internal" href="../_modules/acme/challenges.html#UnrecognizedChallenge.from_json"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#acme.challenges.UnrecognizedChallenge.from_json" title="Permalink to this definition">¶</a></dt>
+<dd><p>Deserialize ACME object from valid JSON object.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://josepy.readthedocs.io/en/latest/api/errors.html#josepy.errors.UnrecognizedTypeError" title="(in josepy v1.14)"><strong>josepy.errors.UnrecognizedTypeError</strong></a> – if type
+of the ACME object has not been registered.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="acme.challenges.KeyAuthorizationChallengeResponse">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">acme.challenges.</span></span><span class="sig-name descname"><span class="pre">KeyAuthorizationChallengeResponse</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.11)"><span class="pre">Any</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/acme/challenges.html#KeyAuthorizationChallengeResponse"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#acme.challenges.KeyAuthorizationChallengeResponse" title="Permalink to this definition">¶</a></dt>
+<dd><p>Response to Challenges based on Key Authorization.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>key_authorization</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a>) – </p>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="acme.challenges.KeyAuthorizationChallengeResponse.verify">
+<span class="sig-name descname"><span class="pre">verify</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">chall</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#acme.challenges.KeyAuthorizationChallenge" title="acme.challenges.KeyAuthorizationChallenge"><span class="pre">KeyAuthorizationChallenge</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">account_public_key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://josepy.readthedocs.io/en/latest/api/jwk.html#josepy.jwk.JWK" title="(in josepy v1.14)"><span class="pre">JWK</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><span class="pre">bool</span></a></span></span><a class="reference internal" href="../_modules/acme/challenges.html#KeyAuthorizationChallengeResponse.verify"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#acme.challenges.KeyAuthorizationChallengeResponse.verify" title="Permalink to this definition">¶</a></dt>
+<dd><p>Verify the key authorization.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>chall</strong> (<em>KeyAuthorization</em>) – Challenge that corresponds to
+this response.</p></li>
+<li><p><strong>account_public_key</strong> (<em>JWK</em>) – </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">True</span></code> iff verification of the key authorization was
+successful.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)">bool</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="acme.challenges.KeyAuthorizationChallengeResponse.to_partial_json">
+<span class="sig-name descname"><span class="pre">to_partial_json</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Dict" title="(in Python v3.11)"><span class="pre">Dict</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.11)"><span class="pre">Any</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/acme/challenges.html#KeyAuthorizationChallengeResponse.to_partial_json"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#acme.challenges.KeyAuthorizationChallengeResponse.to_partial_json" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get JSON serializable object.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Serializable JSON object representing ACME typed object.
+<code class="xref py py-meth docutils literal notranslate"><span class="pre">validate()</span></code> will almost certainly not work, due to reasons
+explained in <code class="xref py py-class docutils literal notranslate"><span class="pre">josepy.interfaces.IJSONSerializable</span></code>.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.11)">dict</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="acme.challenges.KeyAuthorizationChallenge">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">acme.challenges.</span></span><span class="sig-name descname"><span class="pre">KeyAuthorizationChallenge</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.11)"><span class="pre">Any</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/acme/challenges.html#KeyAuthorizationChallenge"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#acme.challenges.KeyAuthorizationChallenge" title="Permalink to this definition">¶</a></dt>
+<dd><p>Challenge based on Key Authorization.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>response_cls</strong> – Subclass of <a class="reference internal" href="#acme.challenges.KeyAuthorizationChallengeResponse" title="acme.challenges.KeyAuthorizationChallengeResponse"><code class="xref py py-obj docutils literal notranslate"><span class="pre">KeyAuthorizationChallengeResponse</span></code></a>
+that will be used to generate <code class="docutils literal notranslate"><span class="pre">response</span></code>.</p></li>
+<li><p><strong>typ</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a>) – type of the challenge</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="acme.challenges.KeyAuthorizationChallenge.typ">
+<span class="sig-name descname"><span class="pre">typ</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">NotImplemented</span></em><a class="headerlink" href="#acme.challenges.KeyAuthorizationChallenge.typ" title="Permalink to this definition">¶</a></dt>
+<dd><p>Type of the object. Subclasses must override.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="acme.challenges.KeyAuthorizationChallenge.key_authorization">
+<span class="sig-name descname"><span class="pre">key_authorization</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">account_key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://josepy.readthedocs.io/en/latest/api/jwk.html#josepy.jwk.JWK" title="(in josepy v1.14)"><span class="pre">JWK</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a></span></span><a class="reference internal" href="../_modules/acme/challenges.html#KeyAuthorizationChallenge.key_authorization"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#acme.challenges.KeyAuthorizationChallenge.key_authorization" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generate Key Authorization.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>account_key</strong> (<em>JWK</em>) – </p>
+</dd>
+<dt class="field-even">Rtype str<span class="colon">:</span></dt>
+<dd class="field-even"><p></p></dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="acme.challenges.KeyAuthorizationChallenge.response">
+<span class="sig-name descname"><span class="pre">response</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">account_key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://josepy.readthedocs.io/en/latest/api/jwk.html#josepy.jwk.JWK" title="(in josepy v1.14)"><span class="pre">JWK</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#acme.challenges.KeyAuthorizationChallengeResponse" title="acme.challenges.KeyAuthorizationChallengeResponse"><span class="pre">KeyAuthorizationChallengeResponse</span></a></span></span><a class="reference internal" href="../_modules/acme/challenges.html#KeyAuthorizationChallenge.response"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#acme.challenges.KeyAuthorizationChallenge.response" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generate response to the challenge.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>account_key</strong> (<em>JWK</em>) – </p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Response (initialized <code class="xref py py-obj docutils literal notranslate"><span class="pre">response_cls</span></code>) to the challenge.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="#acme.challenges.KeyAuthorizationChallengeResponse" title="acme.challenges.KeyAuthorizationChallengeResponse">KeyAuthorizationChallengeResponse</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="acme.challenges.KeyAuthorizationChallenge.validation">
+<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">validation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">account_key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://josepy.readthedocs.io/en/latest/api/jwk.html#josepy.jwk.JWK" title="(in josepy v1.14)"><span class="pre">JWK</span></a></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.11)"><span class="pre">Any</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.11)"><span class="pre">Any</span></a></span></span><a class="reference internal" href="../_modules/acme/challenges.html#KeyAuthorizationChallenge.validation"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#acme.challenges.KeyAuthorizationChallenge.validation" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generate validation for the challenge.</p>
+<p>Subclasses must implement this method, but they are likely to
+return completely different data structures, depending on what’s
+necessary to complete the challenge. Interpretation of that
+return value must be known to the caller.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>account_key</strong> (<em>JWK</em>) – </p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Challenge-specific validation.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="acme.challenges.KeyAuthorizationChallenge.response_and_validation">
+<span class="sig-name descname"><span class="pre">response_and_validation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">account_key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://josepy.readthedocs.io/en/latest/api/jwk.html#josepy.jwk.JWK" title="(in josepy v1.14)"><span class="pre">JWK</span></a></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.11)"><span class="pre">Any</span></a></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.11)"><span class="pre">Any</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Tuple" title="(in Python v3.11)"><span class="pre">Tuple</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#acme.challenges.KeyAuthorizationChallengeResponse" title="acme.challenges.KeyAuthorizationChallengeResponse"><span class="pre">KeyAuthorizationChallengeResponse</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.11)"><span class="pre">Any</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/acme/challenges.html#KeyAuthorizationChallenge.response_and_validation"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#acme.challenges.KeyAuthorizationChallenge.response_and_validation" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generate response and validation.</p>
+<p>Convenience function that return results of <a class="reference internal" href="#acme.challenges.KeyAuthorizationChallenge.response" title="acme.challenges.KeyAuthorizationChallenge.response"><code class="xref py py-obj docutils literal notranslate"><span class="pre">response</span></code></a> and
+<a class="reference internal" href="#acme.challenges.KeyAuthorizationChallenge.validation" title="acme.challenges.KeyAuthorizationChallenge.validation"><code class="xref py py-obj docutils literal notranslate"><span class="pre">validation</span></code></a>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>account_key</strong> (<em>JWK</em>) – </p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.11)">tuple</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="acme.challenges.DNS01Response">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">acme.challenges.</span></span><span class="sig-name descname"><span class="pre">DNS01Response</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.11)"><span class="pre">Any</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/acme/challenges.html#DNS01Response"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#acme.challenges.DNS01Response" title="Permalink to this definition">¶</a></dt>
+<dd><p>ACME dns-01 challenge response.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="acme.challenges.DNS01Response.typ">
+<span class="sig-name descname"><span class="pre">typ</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'dns-01'</span></em><a class="headerlink" href="#acme.challenges.DNS01Response.typ" title="Permalink to this definition">¶</a></dt>
+<dd><p>Type of the object. Subclasses must override.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="acme.challenges.DNS01Response.simple_verify">
+<span class="sig-name descname"><span class="pre">simple_verify</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">chall</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#acme.challenges.DNS01" title="acme.challenges.DNS01"><span class="pre">DNS01</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">domain</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">account_public_key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://josepy.readthedocs.io/en/latest/api/jwk.html#josepy.jwk.JWK" title="(in josepy v1.14)"><span class="pre">JWK</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><span class="pre">bool</span></a></span></span><a class="reference internal" href="../_modules/acme/challenges.html#DNS01Response.simple_verify"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#acme.challenges.DNS01Response.simple_verify" title="Permalink to this definition">¶</a></dt>
+<dd><p>Simple verify.</p>
+<p>This method no longer checks DNS records and is a simple wrapper
+around <a class="reference internal" href="#acme.challenges.KeyAuthorizationChallengeResponse.verify" title="acme.challenges.KeyAuthorizationChallengeResponse.verify"><code class="xref py py-obj docutils literal notranslate"><span class="pre">KeyAuthorizationChallengeResponse.verify</span></code></a>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>chall</strong> (<a class="reference internal" href="#acme.challenges.DNS01" title="acme.challenges.DNS01"><em>challenges.DNS01</em></a>) – Corresponding challenge.</p></li>
+<li><p><strong>domain</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a>) – Domain name being verified.</p></li>
+<li><p><strong>account_public_key</strong> (<em>JWK</em>) – Public key for the key pair
+being authorized.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">True</span></code> iff verification of the key authorization was
+successful.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)">bool</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="acme.challenges.DNS01">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">acme.challenges.</span></span><span class="sig-name descname"><span class="pre">DNS01</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.11)"><span class="pre">Any</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/acme/challenges.html#DNS01"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#acme.challenges.DNS01" title="Permalink to this definition">¶</a></dt>
+<dd><p>ACME dns-01 challenge.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="acme.challenges.DNS01.response_cls">
+<span class="sig-name descname"><span class="pre">response_cls</span></span><a class="headerlink" href="#acme.challenges.DNS01.response_cls" title="Permalink to this definition">¶</a></dt>
+<dd><p>alias of <a class="reference internal" href="#acme.challenges.DNS01Response" title="acme.challenges.DNS01Response"><code class="xref py py-class docutils literal notranslate"><span class="pre">DNS01Response</span></code></a></p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="acme.challenges.DNS01.typ">
+<span class="sig-name descname"><span class="pre">typ</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'dns-01'</span></em><a class="headerlink" href="#acme.challenges.DNS01.typ" title="Permalink to this definition">¶</a></dt>
+<dd><p>Type of the object. Subclasses must override.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="acme.challenges.DNS01.LABEL">
+<span class="sig-name descname"><span class="pre">LABEL</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'_acme-challenge'</span></em><a class="headerlink" href="#acme.challenges.DNS01.LABEL" title="Permalink to this definition">¶</a></dt>
+<dd><p>Label clients prepend to the domain name being validated.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="acme.challenges.DNS01.validation">
+<span class="sig-name descname"><span class="pre">validation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">account_key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://josepy.readthedocs.io/en/latest/api/jwk.html#josepy.jwk.JWK" title="(in josepy v1.14)"><span class="pre">JWK</span></a></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">unused_kwargs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.11)"><span class="pre">Any</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a></span></span><a class="reference internal" href="../_modules/acme/challenges.html#DNS01.validation"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#acme.challenges.DNS01.validation" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generate validation.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>account_key</strong> (<em>JWK</em>) – </p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)">str</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="acme.challenges.DNS01.validation_domain_name">
+<span class="sig-name descname"><span class="pre">validation_domain_name</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a></span></span><a class="reference internal" href="../_modules/acme/challenges.html#DNS01.validation_domain_name"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#acme.challenges.DNS01.validation_domain_name" title="Permalink to this definition">¶</a></dt>
+<dd><p>Domain name for TXT validation record.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a>) – Domain name being validated.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)">str</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="acme.challenges.HTTP01Response">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">acme.challenges.</span></span><span class="sig-name descname"><span class="pre">HTTP01Response</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.11)"><span class="pre">Any</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/acme/challenges.html#HTTP01Response"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#acme.challenges.HTTP01Response" title="Permalink to this definition">¶</a></dt>
+<dd><p>ACME http-01 challenge response.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="acme.challenges.HTTP01Response.typ">
+<span class="sig-name descname"><span class="pre">typ</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'http-01'</span></em><a class="headerlink" href="#acme.challenges.HTTP01Response.typ" title="Permalink to this definition">¶</a></dt>
+<dd><p>Type of the object. Subclasses must override.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="acme.challenges.HTTP01Response.PORT">
+<span class="sig-name descname"><span class="pre">PORT</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">80</span></em><a class="headerlink" href="#acme.challenges.HTTP01Response.PORT" title="Permalink to this definition">¶</a></dt>
+<dd><p>Verification port as defined by the protocol.</p>
+<p>You can override it (e.g. for testing) by passing <code class="docutils literal notranslate"><span class="pre">port</span></code> to
+<a class="reference internal" href="#acme.challenges.HTTP01Response.simple_verify" title="acme.challenges.HTTP01Response.simple_verify"><code class="xref py py-obj docutils literal notranslate"><span class="pre">simple_verify</span></code></a>.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="acme.challenges.HTTP01Response.WHITESPACE_CUTSET">
+<span class="sig-name descname"><span class="pre">WHITESPACE_CUTSET</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'\n\r\t</span> <span class="pre">'</span></em><a class="headerlink" href="#acme.challenges.HTTP01Response.WHITESPACE_CUTSET" title="Permalink to this definition">¶</a></dt>
+<dd><p>Whitespace characters which should be ignored at the end of the body.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="acme.challenges.HTTP01Response.simple_verify">
+<span class="sig-name descname"><span class="pre">simple_verify</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">chall</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#acme.challenges.HTTP01" title="acme.challenges.HTTP01"><span class="pre">HTTP01</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">domain</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">account_public_key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://josepy.readthedocs.io/en/latest/api/jwk.html#josepy.jwk.JWK" title="(in josepy v1.14)"><span class="pre">JWK</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">port</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.11)"><span class="pre">Optional</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><span class="pre">int</span></a><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">timeout</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><span class="pre">int</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">30</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><span class="pre">bool</span></a></span></span><a class="reference internal" href="../_modules/acme/challenges.html#HTTP01Response.simple_verify"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#acme.challenges.HTTP01Response.simple_verify" title="Permalink to this definition">¶</a></dt>
+<dd><p>Simple verify.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>chall</strong> (<em>challenges.SimpleHTTP</em>) – Corresponding challenge.</p></li>
+<li><p><strong>domain</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a>) – Domain name being verified.</p></li>
+<li><p><strong>account_public_key</strong> (<em>JWK</em>) – Public key for the key pair
+being authorized.</p></li>
+<li><p><strong>port</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a>) – Port used in the validation.</p></li>
+<li><p><strong>timeout</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a>) – Timeout in seconds.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">True</span></code> iff validation with the files currently served by the
+HTTP server is successful.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)">bool</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="acme.challenges.HTTP01">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">acme.challenges.</span></span><span class="sig-name descname"><span class="pre">HTTP01</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.11)"><span class="pre">Any</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/acme/challenges.html#HTTP01"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#acme.challenges.HTTP01" title="Permalink to this definition">¶</a></dt>
+<dd><p>ACME http-01 challenge.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="acme.challenges.HTTP01.response_cls">
+<span class="sig-name descname"><span class="pre">response_cls</span></span><a class="headerlink" href="#acme.challenges.HTTP01.response_cls" title="Permalink to this definition">¶</a></dt>
+<dd><p>alias of <a class="reference internal" href="#acme.challenges.HTTP01Response" title="acme.challenges.HTTP01Response"><code class="xref py py-class docutils literal notranslate"><span class="pre">HTTP01Response</span></code></a></p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="acme.challenges.HTTP01.typ">
+<span class="sig-name descname"><span class="pre">typ</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'http-01'</span></em><a class="headerlink" href="#acme.challenges.HTTP01.typ" title="Permalink to this definition">¶</a></dt>
+<dd><p>Type of the object. Subclasses must override.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="acme.challenges.HTTP01.URI_ROOT_PATH">
+<span class="sig-name descname"><span class="pre">URI_ROOT_PATH</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'.well-known/acme-challenge'</span></em><a class="headerlink" href="#acme.challenges.HTTP01.URI_ROOT_PATH" title="Permalink to this definition">¶</a></dt>
+<dd><p>URI root path for the server provisioned resource.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="acme.challenges.HTTP01.path">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">path</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a></em><a class="headerlink" href="#acme.challenges.HTTP01.path" title="Permalink to this definition">¶</a></dt>
+<dd><p>Path (starting with ‘/’) for provisioned resource.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)">str</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="acme.challenges.HTTP01.uri">
+<span class="sig-name descname"><span class="pre">uri</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">domain</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a></span></span><a class="reference internal" href="../_modules/acme/challenges.html#HTTP01.uri"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#acme.challenges.HTTP01.uri" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create an URI to the provisioned resource.</p>
+<p>Forms an URI to the HTTPS server provisioned resource
+(containing <code class="xref py py-attr docutils literal notranslate"><span class="pre">token</span></code>).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>domain</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a>) – Domain name being verified.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)">str</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="acme.challenges.HTTP01.validation">
+<span class="sig-name descname"><span class="pre">validation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">account_key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://josepy.readthedocs.io/en/latest/api/jwk.html#josepy.jwk.JWK" title="(in josepy v1.14)"><span class="pre">JWK</span></a></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">unused_kwargs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.11)"><span class="pre">Any</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a></span></span><a class="reference internal" href="../_modules/acme/challenges.html#HTTP01.validation"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#acme.challenges.HTTP01.validation" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generate validation.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>account_key</strong> (<em>JWK</em>) – </p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)">str</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="acme.challenges.TLSALPN01Response">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">acme.challenges.</span></span><span class="sig-name descname"><span class="pre">TLSALPN01Response</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.11)"><span class="pre">Any</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/acme/challenges.html#TLSALPN01Response"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#acme.challenges.TLSALPN01Response" title="Permalink to this definition">¶</a></dt>
+<dd><p>ACME tls-alpn-01 challenge response.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="acme.challenges.TLSALPN01Response.typ">
+<span class="sig-name descname"><span class="pre">typ</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'tls-alpn-01'</span></em><a class="headerlink" href="#acme.challenges.TLSALPN01Response.typ" title="Permalink to this definition">¶</a></dt>
+<dd><p>Type of the object. Subclasses must override.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="acme.challenges.TLSALPN01Response.PORT">
+<span class="sig-name descname"><span class="pre">PORT</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">443</span></em><a class="headerlink" href="#acme.challenges.TLSALPN01Response.PORT" title="Permalink to this definition">¶</a></dt>
+<dd><p>Verification port as defined by the protocol.</p>
+<p>You can override it (e.g. for testing) by passing <code class="docutils literal notranslate"><span class="pre">port</span></code> to
+<a class="reference internal" href="#acme.challenges.TLSALPN01Response.simple_verify" title="acme.challenges.TLSALPN01Response.simple_verify"><code class="xref py py-obj docutils literal notranslate"><span class="pre">simple_verify</span></code></a>.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="acme.challenges.TLSALPN01Response.h">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">h</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#bytes" title="(in Python v3.11)"><span class="pre">bytes</span></a></em><a class="headerlink" href="#acme.challenges.TLSALPN01Response.h" title="Permalink to this definition">¶</a></dt>
+<dd><p>Hash value stored in challenge certificate</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="acme.challenges.TLSALPN01Response.gen_cert">
+<span class="sig-name descname"><span class="pre">gen_cert</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">domain</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.11)"><span class="pre">Optional</span></a><span class="p"><span class="pre">[</span></span><span class="pre">PKey</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bits</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><span class="pre">int</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">2048</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Tuple" title="(in Python v3.11)"><span class="pre">Tuple</span></a><span class="p"><span class="pre">[</span></span><span class="pre">X509</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">PKey</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/acme/challenges.html#TLSALPN01Response.gen_cert"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#acme.challenges.TLSALPN01Response.gen_cert" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generate tls-alpn-01 certificate.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>domain</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a>) – Domain verified by the challenge.</p></li>
+<li><p><strong>key</strong> (<em>OpenSSL.crypto.PKey</em>) – Optional private key used in
+certificate generation. If not provided (<code class="docutils literal notranslate"><span class="pre">None</span></code>), then
+fresh key will be generated.</p></li>
+<li><p><strong>bits</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a>) – Number of bits for newly generated key.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.11)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">tuple</span></code></a> of <code class="xref py py-obj docutils literal notranslate"><span class="pre">OpenSSL.crypto.X509</span></code> and <code class="xref py py-obj docutils literal notranslate"><span class="pre">OpenSSL.crypto.PKey</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="acme.challenges.TLSALPN01Response.probe_cert">
+<span class="sig-name descname"><span class="pre">probe_cert</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">domain</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">host</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.11)"><span class="pre">Optional</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">port</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.11)"><span class="pre">Optional</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><span class="pre">int</span></a><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">X509</span></span></span><a class="reference internal" href="../_modules/acme/challenges.html#TLSALPN01Response.probe_cert"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#acme.challenges.TLSALPN01Response.probe_cert" title="Permalink to this definition">¶</a></dt>
+<dd><p>Probe tls-alpn-01 challenge certificate.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>domain</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a>) – domain being validated, required.</p></li>
+<li><p><strong>host</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a>) – IP address used to probe the certificate.</p></li>
+<li><p><strong>port</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a>) – Port used to probe the certificate.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="acme.challenges.TLSALPN01Response.verify_cert">
+<span class="sig-name descname"><span class="pre">verify_cert</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">domain</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">cert</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">X509</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><span class="pre">bool</span></a></span></span><a class="reference internal" href="../_modules/acme/challenges.html#TLSALPN01Response.verify_cert"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#acme.challenges.TLSALPN01Response.verify_cert" title="Permalink to this definition">¶</a></dt>
+<dd><p>Verify tls-alpn-01 challenge certificate.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>domain</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a>) – Domain name being validated.</p></li>
+<li><p><strong>cert</strong> (<em>OpensSSL.crypto.X509</em>) – Challenge certificate.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Whether the certificate was successfully verified.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)">bool</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="acme.challenges.TLSALPN01Response.simple_verify">
+<span class="sig-name descname"><span class="pre">simple_verify</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">chall</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#acme.challenges.TLSALPN01" title="acme.challenges.TLSALPN01"><span class="pre">TLSALPN01</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">domain</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">account_public_key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://josepy.readthedocs.io/en/latest/api/jwk.html#josepy.jwk.JWK" title="(in josepy v1.14)"><span class="pre">JWK</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">cert</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.11)"><span class="pre">Optional</span></a><span class="p"><span class="pre">[</span></span><span class="pre">X509</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">host</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.11)"><span class="pre">Optional</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">port</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.11)"><span class="pre">Optional</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><span class="pre">int</span></a><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><span class="pre">bool</span></a></span></span><a class="reference internal" href="../_modules/acme/challenges.html#TLSALPN01Response.simple_verify"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#acme.challenges.TLSALPN01Response.simple_verify" title="Permalink to this definition">¶</a></dt>
+<dd><p>Simple verify.</p>
+<p>Verify <code class="docutils literal notranslate"><span class="pre">validation</span></code> using <code class="docutils literal notranslate"><span class="pre">account_public_key</span></code>, optionally
+probe tls-alpn-01 certificate and check using <a class="reference internal" href="#acme.challenges.TLSALPN01Response.verify_cert" title="acme.challenges.TLSALPN01Response.verify_cert"><code class="xref py py-obj docutils literal notranslate"><span class="pre">verify_cert</span></code></a>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>chall</strong> (<em>.challenges.TLSALPN01</em>) – Corresponding challenge.</p></li>
+<li><p><strong>domain</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a>) – Domain name being validated.</p></li>
+<li><p><strong>account_public_key</strong> (<em>JWK</em>) – </p></li>
+<li><p><strong>cert</strong> (<em>OpenSSL.crypto.X509</em>) – Optional certificate. If not
+provided (<code class="docutils literal notranslate"><span class="pre">None</span></code>) certificate will be retrieved using
+<a class="reference internal" href="#acme.challenges.TLSALPN01Response.probe_cert" title="acme.challenges.TLSALPN01Response.probe_cert"><code class="xref py py-obj docutils literal notranslate"><span class="pre">probe_cert</span></code></a>.</p></li>
+<li><p><strong>host</strong> (<em>string</em>) – IP address used to probe the certificate.</p></li>
+<li><p><strong>port</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a>) – Port used to probe the certificate.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">True</span></code> if and only if client’s control of the domain has been verified.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)">bool</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="acme.challenges.TLSALPN01">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">acme.challenges.</span></span><span class="sig-name descname"><span class="pre">TLSALPN01</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.11)"><span class="pre">Any</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/acme/challenges.html#TLSALPN01"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#acme.challenges.TLSALPN01" title="Permalink to this definition">¶</a></dt>
+<dd><p>ACME tls-alpn-01 challenge.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="acme.challenges.TLSALPN01.response_cls">
+<span class="sig-name descname"><span class="pre">response_cls</span></span><a class="headerlink" href="#acme.challenges.TLSALPN01.response_cls" title="Permalink to this definition">¶</a></dt>
+<dd><p>alias of <a class="reference internal" href="#acme.challenges.TLSALPN01Response" title="acme.challenges.TLSALPN01Response"><code class="xref py py-class docutils literal notranslate"><span class="pre">TLSALPN01Response</span></code></a></p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="acme.challenges.TLSALPN01.typ">
+<span class="sig-name descname"><span class="pre">typ</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'tls-alpn-01'</span></em><a class="headerlink" href="#acme.challenges.TLSALPN01.typ" title="Permalink to this definition">¶</a></dt>
+<dd><p>Type of the object. Subclasses must override.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="acme.challenges.TLSALPN01.validation">
+<span class="sig-name descname"><span class="pre">validation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">account_key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://josepy.readthedocs.io/en/latest/api/jwk.html#josepy.jwk.JWK" title="(in josepy v1.14)"><span class="pre">JWK</span></a></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.11)"><span class="pre">Any</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Tuple" title="(in Python v3.11)"><span class="pre">Tuple</span></a><span class="p"><span class="pre">[</span></span><span class="pre">X509</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">PKey</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/acme/challenges.html#TLSALPN01.validation"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#acme.challenges.TLSALPN01.validation" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generate validation.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>account_key</strong> (<em>JWK</em>) – </p></li>
+<li><p><strong>domain</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a>) – Domain verified by the challenge.</p></li>
+<li><p><strong>cert_key</strong> (<em>OpenSSL.crypto.PKey</em>) – Optional private key used
+in certificate generation. If not provided (<code class="docutils literal notranslate"><span class="pre">None</span></code>), then
+fresh key will be generated.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.11)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">tuple</span></code></a> of <code class="xref py py-obj docutils literal notranslate"><span class="pre">OpenSSL.crypto.X509</span></code> and <code class="xref py py-obj docutils literal notranslate"><span class="pre">OpenSSL.crypto.PKey</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="acme.challenges.TLSALPN01.is_supported">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">is_supported</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><span class="pre">bool</span></a></span></span><a class="reference internal" href="../_modules/acme/challenges.html#TLSALPN01.is_supported"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#acme.challenges.TLSALPN01.is_supported" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check if TLS-ALPN-01 challenge is supported on this machine.
+This implies that a recent version of OpenSSL is installed (&gt;= 1.0.2),
+or a recent cryptography version shipped with the OpenSSL library is installed.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">True</span></code> if TLS-ALPN-01 is supported on this machine, <code class="docutils literal notranslate"><span class="pre">False</span></code> otherwise.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)">bool</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="acme.challenges.DNS">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">acme.challenges.</span></span><span class="sig-name descname"><span class="pre">DNS</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.11)"><span class="pre">Any</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/acme/challenges.html#DNS"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#acme.challenges.DNS" title="Permalink to this definition">¶</a></dt>
+<dd><p>ACME “dns” challenge.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="acme.challenges.DNS.typ">
+<span class="sig-name descname"><span class="pre">typ</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'dns'</span></em><a class="headerlink" href="#acme.challenges.DNS.typ" title="Permalink to this definition">¶</a></dt>
+<dd><p>Type of the object. Subclasses must override.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="acme.challenges.DNS.LABEL">
+<span class="sig-name descname"><span class="pre">LABEL</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'_acme-challenge'</span></em><a class="headerlink" href="#acme.challenges.DNS.LABEL" title="Permalink to this definition">¶</a></dt>
+<dd><p>Label clients prepend to the domain name being validated.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="acme.challenges.DNS.gen_validation">
+<span class="sig-name descname"><span class="pre">gen_validation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">account_key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://josepy.readthedocs.io/en/latest/api/jwk.html#josepy.jwk.JWK" title="(in josepy v1.14)"><span class="pre">JWK</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">alg</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://josepy.readthedocs.io/en/latest/api/jwa.html#josepy.jwa.JWASignature" title="(in josepy v1.14)"><span class="pre">JWASignature</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">RS256</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.11)"><span class="pre">Any</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://josepy.readthedocs.io/en/latest/api/jws.html#josepy.jws.JWS" title="(in josepy v1.14)"><span class="pre">JWS</span></a></span></span><a class="reference internal" href="../_modules/acme/challenges.html#DNS.gen_validation"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#acme.challenges.DNS.gen_validation" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generate validation.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>account_key</strong> (<em>.JWK</em>) – Private account key.</p></li>
+<li><p><strong>alg</strong> (<em>.JWA</em>) – </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>This challenge wrapped in <code class="xref py py-obj docutils literal notranslate"><span class="pre">JWS</span></code></p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>.JWS</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="acme.challenges.DNS.check_validation">
+<span class="sig-name descname"><span class="pre">check_validation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">validation</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://josepy.readthedocs.io/en/latest/api/jws.html#josepy.jws.JWS" title="(in josepy v1.14)"><span class="pre">JWS</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">account_public_key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://josepy.readthedocs.io/en/latest/api/jwk.html#josepy.jwk.JWK" title="(in josepy v1.14)"><span class="pre">JWK</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><span class="pre">bool</span></a></span></span><a class="reference internal" href="../_modules/acme/challenges.html#DNS.check_validation"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#acme.challenges.DNS.check_validation" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check validation.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>validation</strong> (<em>JWS</em>) – </p></li>
+<li><p><strong>account_public_key</strong> (<em>JWK</em>) – </p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)">bool</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="acme.challenges.DNS.gen_response">
+<span class="sig-name descname"><span class="pre">gen_response</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">account_key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://josepy.readthedocs.io/en/latest/api/jwk.html#josepy.jwk.JWK" title="(in josepy v1.14)"><span class="pre">JWK</span></a></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.11)"><span class="pre">Any</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#acme.challenges.DNSResponse" title="acme.challenges.DNSResponse"><span class="pre">DNSResponse</span></a></span></span><a class="reference internal" href="../_modules/acme/challenges.html#DNS.gen_response"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#acme.challenges.DNS.gen_response" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generate response.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>account_key</strong> (<em>.JWK</em>) – Private account key.</p></li>
+<li><p><strong>alg</strong> (<em>.JWA</em>) – </p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference internal" href="#acme.challenges.DNSResponse" title="acme.challenges.DNSResponse">DNSResponse</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="acme.challenges.DNS.validation_domain_name">
+<span class="sig-name descname"><span class="pre">validation_domain_name</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a></span></span><a class="reference internal" href="../_modules/acme/challenges.html#DNS.validation_domain_name"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#acme.challenges.DNS.validation_domain_name" title="Permalink to this definition">¶</a></dt>
+<dd><p>Domain name for TXT validation record.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a>) – Domain name being validated.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="acme.challenges.DNSResponse">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">acme.challenges.</span></span><span class="sig-name descname"><span class="pre">DNSResponse</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.11)"><span class="pre">Any</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/acme/challenges.html#DNSResponse"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#acme.challenges.DNSResponse" title="Permalink to this definition">¶</a></dt>
+<dd><p>ACME “dns” challenge response.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>validation</strong> (<em>JWS</em>) – </p>
+</dd>
+</dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="acme.challenges.DNSResponse.typ">
+<span class="sig-name descname"><span class="pre">typ</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'dns'</span></em><a class="headerlink" href="#acme.challenges.DNSResponse.typ" title="Permalink to this definition">¶</a></dt>
+<dd><p>Type of the object. Subclasses must override.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="acme.challenges.DNSResponse.check_validation">
+<span class="sig-name descname"><span class="pre">check_validation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">chall</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#acme.challenges.DNS" title="acme.challenges.DNS"><span class="pre">DNS</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">account_public_key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://josepy.readthedocs.io/en/latest/api/jwk.html#josepy.jwk.JWK" title="(in josepy v1.14)"><span class="pre">JWK</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><span class="pre">bool</span></a></span></span><a class="reference internal" href="../_modules/acme/challenges.html#DNSResponse.check_validation"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#acme.challenges.DNSResponse.check_validation" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check validation.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>chall</strong> (<a class="reference internal" href="#acme.challenges.DNS" title="acme.challenges.DNS"><em>challenges.DNS</em></a>) – </p></li>
+<li><p><strong>account_public_key</strong> (<em>JWK</em>) – </p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)">bool</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="../api.html" class="btn btn-neutral float-left" title="API Documentation" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="client.html" class="btn btn-neutral float-right" title="Client" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2015, Let&#39;s Encrypt Project.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

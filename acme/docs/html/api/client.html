@@ -1,0 +1,510 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Client &mdash; acme-python 0 documentation</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/sphinx_highlight.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Errors" href="errors.html" />
+    <link rel="prev" title="Challenges" href="challenges.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            acme-python
+          </a>
+              <div class="version">
+                0
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="../api.html">API Documentation</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="challenges.html">Challenges</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Client</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#acme.client.ClientV2"><code class="docutils literal notranslate"><span class="pre">ClientV2</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#acme.client.ClientV2.new_account"><code class="docutils literal notranslate"><span class="pre">ClientV2.new_account()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#acme.client.ClientV2.query_registration"><code class="docutils literal notranslate"><span class="pre">ClientV2.query_registration()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#acme.client.ClientV2.update_registration"><code class="docutils literal notranslate"><span class="pre">ClientV2.update_registration()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#acme.client.ClientV2.new_order"><code class="docutils literal notranslate"><span class="pre">ClientV2.new_order()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#acme.client.ClientV2.poll"><code class="docutils literal notranslate"><span class="pre">ClientV2.poll()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#acme.client.ClientV2.poll_and_finalize"><code class="docutils literal notranslate"><span class="pre">ClientV2.poll_and_finalize()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#acme.client.ClientV2.poll_authorizations"><code class="docutils literal notranslate"><span class="pre">ClientV2.poll_authorizations()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#acme.client.ClientV2.begin_finalization"><code class="docutils literal notranslate"><span class="pre">ClientV2.begin_finalization()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#acme.client.ClientV2.poll_finalization"><code class="docutils literal notranslate"><span class="pre">ClientV2.poll_finalization()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#acme.client.ClientV2.finalize_order"><code class="docutils literal notranslate"><span class="pre">ClientV2.finalize_order()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#acme.client.ClientV2.revoke"><code class="docutils literal notranslate"><span class="pre">ClientV2.revoke()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#acme.client.ClientV2.external_account_required"><code class="docutils literal notranslate"><span class="pre">ClientV2.external_account_required()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#acme.client.ClientV2.get_directory"><code class="docutils literal notranslate"><span class="pre">ClientV2.get_directory()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#acme.client.ClientV2.deactivate_registration"><code class="docutils literal notranslate"><span class="pre">ClientV2.deactivate_registration()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#acme.client.ClientV2.deactivate_authorization"><code class="docutils literal notranslate"><span class="pre">ClientV2.deactivate_authorization()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#acme.client.ClientV2.answer_challenge"><code class="docutils literal notranslate"><span class="pre">ClientV2.answer_challenge()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#acme.client.ClientV2.retry_after"><code class="docutils literal notranslate"><span class="pre">ClientV2.retry_after()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#acme.client.ClientNetwork"><code class="docutils literal notranslate"><span class="pre">ClientNetwork</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#acme.client.ClientNetwork.REPLAY_NONCE_HEADER"><code class="docutils literal notranslate"><span class="pre">ClientNetwork.REPLAY_NONCE_HEADER</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#acme.client.ClientNetwork.head"><code class="docutils literal notranslate"><span class="pre">ClientNetwork.head()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#acme.client.ClientNetwork.get"><code class="docutils literal notranslate"><span class="pre">ClientNetwork.get()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#acme.client.ClientNetwork.post"><code class="docutils literal notranslate"><span class="pre">ClientNetwork.post()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="errors.html">Errors</a></li>
+<li class="toctree-l2"><a class="reference internal" href="fields.html">Fields</a></li>
+<li class="toctree-l2"><a class="reference internal" href="jose.html">JOSE</a></li>
+<li class="toctree-l2"><a class="reference internal" href="messages.html">Messages</a></li>
+<li class="toctree-l2"><a class="reference internal" href="standalone.html">Standalone</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">acme-python</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../api.html">API Documentation</a></li>
+      <li class="breadcrumb-item active">Client</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/api/client.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="module-acme.client">
+<span id="client"></span><h1>Client<a class="headerlink" href="#module-acme.client" title="Permalink to this heading">¶</a></h1>
+<p>ACME client API.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="acme.client.ClientV2">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">acme.client.</span></span><span class="sig-name descname"><span class="pre">ClientV2</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">directory</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="messages.html#acme.messages.Directory" title="acme.messages.Directory"><span class="pre">Directory</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">net</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#acme.client.ClientNetwork" title="acme.client.ClientNetwork"><span class="pre">ClientNetwork</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/acme/client.html#ClientV2"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#acme.client.ClientV2" title="Permalink to this definition">¶</a></dt>
+<dd><p>ACME client for a v2 API.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Variables<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>directory</strong> (<a class="reference internal" href="messages.html#acme.messages.Directory" title="acme.messages.Directory"><em>messages.Directory</em></a>) – </p></li>
+<li><p><strong>net</strong> (<em>.ClientNetwork</em>) – Client network.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="acme.client.ClientV2.new_account">
+<span class="sig-name descname"><span class="pre">new_account</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">new_account</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="messages.html#acme.messages.NewRegistration" title="acme.messages.NewRegistration"><span class="pre">NewRegistration</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="messages.html#acme.messages.RegistrationResource" title="acme.messages.RegistrationResource"><span class="pre">RegistrationResource</span></a></span></span><a class="reference internal" href="../_modules/acme/client.html#ClientV2.new_account"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#acme.client.ClientV2.new_account" title="Permalink to this definition">¶</a></dt>
+<dd><p>Register.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>new_account</strong> (<em>.NewRegistration</em>) – </p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>.ConflictError</strong> – in case the account already exists</p>
+</dd>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Registration Resource.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference internal" href="messages.html#acme.messages.RegistrationResource" title="acme.messages.RegistrationResource"><code class="xref py py-obj docutils literal notranslate"><span class="pre">RegistrationResource</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="acme.client.ClientV2.query_registration">
+<span class="sig-name descname"><span class="pre">query_registration</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">regr</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="messages.html#acme.messages.RegistrationResource" title="acme.messages.RegistrationResource"><span class="pre">RegistrationResource</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="messages.html#acme.messages.RegistrationResource" title="acme.messages.RegistrationResource"><span class="pre">RegistrationResource</span></a></span></span><a class="reference internal" href="../_modules/acme/client.html#ClientV2.query_registration"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#acme.client.ClientV2.query_registration" title="Permalink to this definition">¶</a></dt>
+<dd><p>Query server about registration.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>regr</strong> (<a class="reference internal" href="messages.html#acme.messages.RegistrationResource" title="acme.messages.RegistrationResource"><em>messages.RegistrationResource</em></a>) – Existing Registration
+Resource.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="acme.client.ClientV2.update_registration">
+<span class="sig-name descname"><span class="pre">update_registration</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">regr</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="messages.html#acme.messages.RegistrationResource" title="acme.messages.RegistrationResource"><span class="pre">RegistrationResource</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">update</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.11)"><span class="pre">Optional</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="messages.html#acme.messages.Registration" title="acme.messages.Registration"><span class="pre">Registration</span></a><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="messages.html#acme.messages.RegistrationResource" title="acme.messages.RegistrationResource"><span class="pre">RegistrationResource</span></a></span></span><a class="reference internal" href="../_modules/acme/client.html#ClientV2.update_registration"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#acme.client.ClientV2.update_registration" title="Permalink to this definition">¶</a></dt>
+<dd><p>Update registration.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>regr</strong> (<a class="reference internal" href="messages.html#acme.messages.RegistrationResource" title="acme.messages.RegistrationResource"><em>messages.RegistrationResource</em></a>) – Registration Resource.</p></li>
+<li><p><strong>update</strong> (<a class="reference internal" href="messages.html#acme.messages.Registration" title="acme.messages.Registration"><em>messages.Registration</em></a>) – Updated body of the
+resource. If not provided, body will be taken from <code class="xref py py-obj docutils literal notranslate"><span class="pre">regr</span></code>.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Updated Registration Resource.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="messages.html#acme.messages.RegistrationResource" title="acme.messages.RegistrationResource"><code class="xref py py-obj docutils literal notranslate"><span class="pre">RegistrationResource</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="acme.client.ClientV2.new_order">
+<span class="sig-name descname"><span class="pre">new_order</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">csr_pem</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#bytes" title="(in Python v3.11)"><span class="pre">bytes</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="messages.html#acme.messages.OrderResource" title="acme.messages.OrderResource"><span class="pre">OrderResource</span></a></span></span><a class="reference internal" href="../_modules/acme/client.html#ClientV2.new_order"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#acme.client.ClientV2.new_order" title="Permalink to this definition">¶</a></dt>
+<dd><p>Request a new Order object from the server.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>csr_pem</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#bytes" title="(in Python v3.11)"><em>bytes</em></a>) – A CSR in PEM format.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The newly created order.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="messages.html#acme.messages.OrderResource" title="acme.messages.OrderResource">OrderResource</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="acme.client.ClientV2.poll">
+<span class="sig-name descname"><span class="pre">poll</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">authzr</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="messages.html#acme.messages.AuthorizationResource" title="acme.messages.AuthorizationResource"><span class="pre">AuthorizationResource</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Tuple" title="(in Python v3.11)"><span class="pre">Tuple</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="messages.html#acme.messages.AuthorizationResource" title="acme.messages.AuthorizationResource"><span class="pre">AuthorizationResource</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Response</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/acme/client.html#ClientV2.poll"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#acme.client.ClientV2.poll" title="Permalink to this definition">¶</a></dt>
+<dd><p>Poll Authorization Resource for status.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>authzr</strong> (<a class="reference internal" href="messages.html#acme.messages.AuthorizationResource" title="acme.messages.AuthorizationResource"><code class="xref py py-obj docutils literal notranslate"><span class="pre">AuthorizationResource</span></code></a>) – Authorization Resource</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Updated Authorization Resource and HTTP response.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>(<a class="reference internal" href="messages.html#acme.messages.AuthorizationResource" title="acme.messages.AuthorizationResource"><code class="xref py py-obj docutils literal notranslate"><span class="pre">AuthorizationResource</span></code></a>, <code class="xref py py-obj docutils literal notranslate"><span class="pre">requests.Response</span></code>)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="acme.client.ClientV2.poll_and_finalize">
+<span class="sig-name descname"><span class="pre">poll_and_finalize</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">orderr</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="messages.html#acme.messages.OrderResource" title="acme.messages.OrderResource"><span class="pre">OrderResource</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">deadline</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.11)"><span class="pre">Optional</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/datetime.html#datetime.datetime" title="(in Python v3.11)"><span class="pre">datetime</span></a><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="messages.html#acme.messages.OrderResource" title="acme.messages.OrderResource"><span class="pre">OrderResource</span></a></span></span><a class="reference internal" href="../_modules/acme/client.html#ClientV2.poll_and_finalize"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#acme.client.ClientV2.poll_and_finalize" title="Permalink to this definition">¶</a></dt>
+<dd><p>Poll authorizations and finalize the order.</p>
+<p>If no deadline is provided, this method will timeout after 90
+seconds.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>orderr</strong> (<a class="reference internal" href="messages.html#acme.messages.OrderResource" title="acme.messages.OrderResource"><em>messages.OrderResource</em></a>) – order to finalize</p></li>
+<li><p><strong>deadline</strong> (<a class="reference external" href="https://docs.python.org/3/library/datetime.html#datetime.datetime" title="(in Python v3.11)"><em>datetime.datetime</em></a>) – when to stop polling and timeout</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>finalized order</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="messages.html#acme.messages.OrderResource" title="acme.messages.OrderResource">messages.OrderResource</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="acme.client.ClientV2.poll_authorizations">
+<span class="sig-name descname"><span class="pre">poll_authorizations</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">orderr</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="messages.html#acme.messages.OrderResource" title="acme.messages.OrderResource"><span class="pre">OrderResource</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">deadline</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/datetime.html#datetime.datetime" title="(in Python v3.11)"><span class="pre">datetime</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="messages.html#acme.messages.OrderResource" title="acme.messages.OrderResource"><span class="pre">OrderResource</span></a></span></span><a class="reference internal" href="../_modules/acme/client.html#ClientV2.poll_authorizations"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#acme.client.ClientV2.poll_authorizations" title="Permalink to this definition">¶</a></dt>
+<dd><p>Poll Order Resource for status.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="acme.client.ClientV2.begin_finalization">
+<span class="sig-name descname"><span class="pre">begin_finalization</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">orderr</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="messages.html#acme.messages.OrderResource" title="acme.messages.OrderResource"><span class="pre">OrderResource</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="messages.html#acme.messages.OrderResource" title="acme.messages.OrderResource"><span class="pre">OrderResource</span></a></span></span><a class="reference internal" href="../_modules/acme/client.html#ClientV2.begin_finalization"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#acme.client.ClientV2.begin_finalization" title="Permalink to this definition">¶</a></dt>
+<dd><p>Start the process of finalizing an order.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>orderr</strong> (<a class="reference internal" href="messages.html#acme.messages.OrderResource" title="acme.messages.OrderResource"><em>messages.OrderResource</em></a>) – order to finalize</p></li>
+<li><p><strong>deadline</strong> (<a class="reference external" href="https://docs.python.org/3/library/datetime.html#datetime.datetime" title="(in Python v3.11)"><em>datetime.datetime</em></a>) – when to stop polling and timeout</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>updated order</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="messages.html#acme.messages.OrderResource" title="acme.messages.OrderResource">messages.OrderResource</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="acme.client.ClientV2.poll_finalization">
+<span class="sig-name descname"><span class="pre">poll_finalization</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">orderr</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="messages.html#acme.messages.OrderResource" title="acme.messages.OrderResource"><span class="pre">OrderResource</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">deadline</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/datetime.html#datetime.datetime" title="(in Python v3.11)"><span class="pre">datetime</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">fetch_alternative_chains</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="messages.html#acme.messages.OrderResource" title="acme.messages.OrderResource"><span class="pre">OrderResource</span></a></span></span><a class="reference internal" href="../_modules/acme/client.html#ClientV2.poll_finalization"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#acme.client.ClientV2.poll_finalization" title="Permalink to this definition">¶</a></dt>
+<dd><p>Poll an order that has been finalized for its status.
+If it becomes valid, obtain the certificate.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>finalized order (with certificate)</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference internal" href="messages.html#acme.messages.OrderResource" title="acme.messages.OrderResource">messages.OrderResource</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="acme.client.ClientV2.finalize_order">
+<span class="sig-name descname"><span class="pre">finalize_order</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">orderr</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="messages.html#acme.messages.OrderResource" title="acme.messages.OrderResource"><span class="pre">OrderResource</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">deadline</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/datetime.html#datetime.datetime" title="(in Python v3.11)"><span class="pre">datetime</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">fetch_alternative_chains</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="messages.html#acme.messages.OrderResource" title="acme.messages.OrderResource"><span class="pre">OrderResource</span></a></span></span><a class="reference internal" href="../_modules/acme/client.html#ClientV2.finalize_order"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#acme.client.ClientV2.finalize_order" title="Permalink to this definition">¶</a></dt>
+<dd><p>Finalize an order and obtain a certificate.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>orderr</strong> (<a class="reference internal" href="messages.html#acme.messages.OrderResource" title="acme.messages.OrderResource"><em>messages.OrderResource</em></a>) – order to finalize</p></li>
+<li><p><strong>deadline</strong> (<a class="reference external" href="https://docs.python.org/3/library/datetime.html#datetime.datetime" title="(in Python v3.11)"><em>datetime.datetime</em></a>) – when to stop polling and timeout</p></li>
+<li><p><strong>fetch_alternative_chains</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><em>bool</em></a>) – whether to also fetch alternative
+certificate chains</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>finalized order</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="messages.html#acme.messages.OrderResource" title="acme.messages.OrderResource">messages.OrderResource</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="acme.client.ClientV2.revoke">
+<span class="sig-name descname"><span class="pre">revoke</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cert</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://josepy.readthedocs.io/en/latest/api/util.html#josepy.util.ComparableX509" title="(in josepy v1.14)"><span class="pre">ComparableX509</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">rsn</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><span class="pre">int</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.11)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/acme/client.html#ClientV2.revoke"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#acme.client.ClientV2.revoke" title="Permalink to this definition">¶</a></dt>
+<dd><p>Revoke certificate.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>cert</strong> (<em>.ComparableX509</em>) – <code class="xref py py-obj docutils literal notranslate"><span class="pre">OpenSSL.crypto.X509</span></code> wrapped in
+<code class="xref py py-obj docutils literal notranslate"><span class="pre">ComparableX509</span></code></p></li>
+<li><p><strong>rsn</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a>) – Reason code for certificate revocation.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>.ClientError</strong> – If revocation is unsuccessful.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="acme.client.ClientV2.external_account_required">
+<span class="sig-name descname"><span class="pre">external_account_required</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><span class="pre">bool</span></a></span></span><a class="reference internal" href="../_modules/acme/client.html#ClientV2.external_account_required"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#acme.client.ClientV2.external_account_required" title="Permalink to this definition">¶</a></dt>
+<dd><p>Checks if ACME server requires External Account Binding authentication.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="acme.client.ClientV2.get_directory">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_directory</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">url</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">net</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#acme.client.ClientNetwork" title="acme.client.ClientNetwork"><span class="pre">ClientNetwork</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="messages.html#acme.messages.Directory" title="acme.messages.Directory"><span class="pre">Directory</span></a></span></span><a class="reference internal" href="../_modules/acme/client.html#ClientV2.get_directory"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#acme.client.ClientV2.get_directory" title="Permalink to this definition">¶</a></dt>
+<dd><p>Retrieves the ACME directory (RFC 8555 section 7.1.1) from the ACME server.
+:param str url: the URL where the ACME directory is available
+:param ClientNetwork net: the ClientNetwork to use to make the request</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>the ACME directory object</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference internal" href="messages.html#acme.messages.Directory" title="acme.messages.Directory">messages.Directory</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="acme.client.ClientV2.deactivate_registration">
+<span class="sig-name descname"><span class="pre">deactivate_registration</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">regr</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="messages.html#acme.messages.RegistrationResource" title="acme.messages.RegistrationResource"><span class="pre">RegistrationResource</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="messages.html#acme.messages.RegistrationResource" title="acme.messages.RegistrationResource"><span class="pre">RegistrationResource</span></a></span></span><a class="reference internal" href="../_modules/acme/client.html#ClientV2.deactivate_registration"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#acme.client.ClientV2.deactivate_registration" title="Permalink to this definition">¶</a></dt>
+<dd><p>Deactivate registration.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>regr</strong> (<a class="reference internal" href="messages.html#acme.messages.RegistrationResource" title="acme.messages.RegistrationResource"><em>messages.RegistrationResource</em></a>) – The Registration Resource
+to be deactivated.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The Registration resource that was deactivated.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="messages.html#acme.messages.RegistrationResource" title="acme.messages.RegistrationResource"><code class="xref py py-obj docutils literal notranslate"><span class="pre">RegistrationResource</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="acme.client.ClientV2.deactivate_authorization">
+<span class="sig-name descname"><span class="pre">deactivate_authorization</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">authzr</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="messages.html#acme.messages.AuthorizationResource" title="acme.messages.AuthorizationResource"><span class="pre">AuthorizationResource</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="messages.html#acme.messages.AuthorizationResource" title="acme.messages.AuthorizationResource"><span class="pre">AuthorizationResource</span></a></span></span><a class="reference internal" href="../_modules/acme/client.html#ClientV2.deactivate_authorization"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#acme.client.ClientV2.deactivate_authorization" title="Permalink to this definition">¶</a></dt>
+<dd><p>Deactivate authorization.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>authzr</strong> (<a class="reference internal" href="messages.html#acme.messages.AuthorizationResource" title="acme.messages.AuthorizationResource"><em>messages.AuthorizationResource</em></a>) – The Authorization resource
+to be deactivated.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The Authorization resource that was deactivated.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="messages.html#acme.messages.AuthorizationResource" title="acme.messages.AuthorizationResource"><code class="xref py py-obj docutils literal notranslate"><span class="pre">AuthorizationResource</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="acme.client.ClientV2.answer_challenge">
+<span class="sig-name descname"><span class="pre">answer_challenge</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">challb</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="messages.html#acme.messages.ChallengeBody" title="acme.messages.ChallengeBody"><span class="pre">ChallengeBody</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">response</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="challenges.html#acme.challenges.ChallengeResponse" title="acme.challenges.ChallengeResponse"><span class="pre">ChallengeResponse</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="messages.html#acme.messages.ChallengeResource" title="acme.messages.ChallengeResource"><span class="pre">ChallengeResource</span></a></span></span><a class="reference internal" href="../_modules/acme/client.html#ClientV2.answer_challenge"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#acme.client.ClientV2.answer_challenge" title="Permalink to this definition">¶</a></dt>
+<dd><p>Answer challenge.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>challb</strong> (<a class="reference internal" href="messages.html#acme.messages.ChallengeBody" title="acme.messages.ChallengeBody"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ChallengeBody</span></code></a>) – Challenge Resource body.</p></li>
+<li><p><strong>response</strong> (<a class="reference internal" href="challenges.html#acme.challenges.ChallengeResponse" title="acme.challenges.ChallengeResponse"><code class="xref py py-obj docutils literal notranslate"><span class="pre">challenges.ChallengeResponse</span></code></a>) – Corresponding Challenge response</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Challenge Resource with updated body.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="messages.html#acme.messages.ChallengeResource" title="acme.messages.ChallengeResource"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ChallengeResource</span></code></a></p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>.UnexpectedUpdate</strong> – </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="acme.client.ClientV2.retry_after">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">retry_after</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">response</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Response</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">default</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><span class="pre">int</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/datetime.html#datetime.datetime" title="(in Python v3.11)"><span class="pre">datetime</span></a></span></span><a class="reference internal" href="../_modules/acme/client.html#ClientV2.retry_after"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#acme.client.ClientV2.retry_after" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute next <a class="reference internal" href="#acme.client.ClientV2.poll" title="acme.client.ClientV2.poll"><code class="xref py py-obj docutils literal notranslate"><span class="pre">poll</span></code></a> time based on response <code class="docutils literal notranslate"><span class="pre">Retry-After</span></code> header.</p>
+<p>Handles integers and various datestring formats per
+<a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.37">https://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.37</a></p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>response</strong> (<em>requests.Response</em>) – Response from <a class="reference internal" href="#acme.client.ClientV2.poll" title="acme.client.ClientV2.poll"><code class="xref py py-obj docutils literal notranslate"><span class="pre">poll</span></code></a>.</p></li>
+<li><p><strong>default</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a>) – Default value (in seconds), used when
+<code class="docutils literal notranslate"><span class="pre">Retry-After</span></code> header is not present or invalid.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Time point when next <a class="reference internal" href="#acme.client.ClientV2.poll" title="acme.client.ClientV2.poll"><code class="xref py py-obj docutils literal notranslate"><span class="pre">poll</span></code></a> should be performed.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/datetime.html#datetime.datetime" title="(in Python v3.11)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">datetime.datetime</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="acme.client.ClientNetwork">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">acme.client.</span></span><span class="sig-name descname"><span class="pre">ClientNetwork</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://josepy.readthedocs.io/en/latest/api/jwk.html#josepy.jwk.JWK" title="(in josepy v1.14)"><span class="pre">JWK</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">account</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.11)"><span class="pre">Optional</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="messages.html#acme.messages.RegistrationResource" title="acme.messages.RegistrationResource"><span class="pre">RegistrationResource</span></a><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alg</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://josepy.readthedocs.io/en/latest/api/jwa.html#josepy.jwa.JWASignature" title="(in josepy v1.14)"><span class="pre">JWASignature</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">RS256</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verify_ssl</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">user_agent</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'acme-python'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">timeout</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><span class="pre">int</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">45</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/acme/client.html#ClientNetwork"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#acme.client.ClientNetwork" title="Permalink to this definition">¶</a></dt>
+<dd><p>Wrapper around requests that signs POSTs for authentication.</p>
+<p>Also adds user agent, and handles Content-Type.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="acme.client.ClientNetwork.REPLAY_NONCE_HEADER">
+<span class="sig-name descname"><span class="pre">REPLAY_NONCE_HEADER</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'Replay-Nonce'</span></em><a class="headerlink" href="#acme.client.ClientNetwork.REPLAY_NONCE_HEADER" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initialize.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>key</strong> (<em>josepy.JWK</em>) – Account private key</p></li>
+<li><p><strong>account</strong> (<a class="reference internal" href="messages.html#acme.messages.RegistrationResource" title="acme.messages.RegistrationResource"><em>messages.RegistrationResource</em></a>) – Account object. Required if you are
+planning to use .post() for anything other than creating a new account;
+may be set later after registering.</p></li>
+<li><p><strong>alg</strong> (<em>josepy.JWASignature</em>) – Algorithm to use in signing JWS.</p></li>
+<li><p><strong>verify_ssl</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><em>bool</em></a>) – Whether to verify certificates on SSL connections.</p></li>
+<li><p><strong>user_agent</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a>) – String to send as User-Agent header.</p></li>
+<li><p><strong>timeout</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a>) – Timeout for requests.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="acme.client.ClientNetwork.head">
+<span class="sig-name descname"><span class="pre">head</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.11)"><span class="pre">Any</span></a></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.11)"><span class="pre">Any</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Response</span></span></span><a class="reference internal" href="../_modules/acme/client.html#ClientNetwork.head"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#acme.client.ClientNetwork.head" title="Permalink to this definition">¶</a></dt>
+<dd><p>Send HEAD request without checking the response.</p>
+<p>Note, that <code class="xref py py-obj docutils literal notranslate"><span class="pre">_check_response</span></code> is not called, as it is expected
+that status code other than successfully 2xx will be returned, or
+messages2.Error will be raised by the server.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="acme.client.ClientNetwork.get">
+<span class="sig-name descname"><span class="pre">get</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">url</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">content_type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'application/json'</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.11)"><span class="pre">Any</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Response</span></span></span><a class="reference internal" href="../_modules/acme/client.html#ClientNetwork.get"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#acme.client.ClientNetwork.get" title="Permalink to this definition">¶</a></dt>
+<dd><p>Send GET request and check response.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="acme.client.ClientNetwork.post">
+<span class="sig-name descname"><span class="pre">post</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.11)"><span class="pre">Any</span></a></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.11)"><span class="pre">Any</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Response</span></span></span><a class="reference internal" href="../_modules/acme/client.html#ClientNetwork.post"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#acme.client.ClientNetwork.post" title="Permalink to this definition">¶</a></dt>
+<dd><p>POST object wrapped in <code class="xref py py-obj docutils literal notranslate"><span class="pre">JWS</span></code> and check response.</p>
+<p>If the server responded with a badNonce error, the request will
+be retried once.</p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="challenges.html" class="btn btn-neutral float-left" title="Challenges" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="errors.html" class="btn btn-neutral float-right" title="Errors" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2015, Let&#39;s Encrypt Project.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

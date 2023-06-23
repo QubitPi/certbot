@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Welcome to certbot-dns-google’s documentation! &mdash; certbot-dns-google 0 documentation</title>
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/sphinx_highlight.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="API Documentation" href="api.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="#" class="icon icon-home">
+            certbot-dns-google
+          </a>
+              <div class="version">
+                0
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="api.html">API Documentation</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="#">certbot-dns-google</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="#" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Welcome to certbot-dns-google’s documentation!</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/index.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="welcome-to-certbot-dns-google-s-documentation">
+<h1>Welcome to certbot-dns-google’s documentation!<a class="headerlink" href="#welcome-to-certbot-dns-google-s-documentation" title="Permalink to this heading">¶</a></h1>
+<div class="toctree-wrapper compound">
+</div>
+<span class="target" id="module-certbot_dns_google"></span><p>The <code class="xref py py-obj docutils literal notranslate"><span class="pre">dns_google</span></code> plugin automates the process of
+completing a <code class="docutils literal notranslate"><span class="pre">dns-01</span></code> challenge (<a class="reference external" href="https://acme-python.readthedocs.io/en/latest/api/challenges.html#acme.challenges.DNS01" title="(in acme-python v0)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">DNS01</span></code></a>) by creating, and
+subsequently removing, TXT records using the Google Cloud DNS API.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The plugin is not installed by default. It can be installed by heading to
+<a class="reference external" href="https://certbot.eff.org/instructions#wildcard">certbot.eff.org</a>, choosing your system and
+selecting the Wildcard tab.</p>
+</div>
+<section id="named-arguments">
+<h2>Named Arguments<a class="headerlink" href="#named-arguments" title="Permalink to this heading">¶</a></h2>
+<table class="docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">--dns-google-credentials</span></code></p></td>
+<td><p>Google Cloud Platform <a class="reference internal" href="#credentials">credentials</a>
+JSON file.</p>
+<p>(Required if not using <a class="reference external" href="https://cloud.google.com/docs/authentication/application-default-credentials">Application Default
+Credentials</a>.)</p>
+</td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">--dns-google-project</span></code></p></td>
+<td><p>The ID of the Google Cloud project that the Google
+Cloud DNS managed zone(s) reside in.</p>
+<p>(Default: project that the Google <a class="reference internal" href="#credentials">credentials</a> belong to)</p>
+</td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">--dns-google-propagation-seconds</span></code></p></td>
+<td><p>The number of seconds to wait for DNS
+to propagate before asking the ACME
+server to verify the DNS record.
+(Default: 60)</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="credentials">
+<h2>Credentials<a class="headerlink" href="#credentials" title="Permalink to this heading">¶</a></h2>
+<p>Use of this plugin requires Google Cloud Platform credentials with the ability to modify the Cloud
+DNS managed zone(s) for which certificates are being issued.</p>
+<p>In most cases, configuring credentials for Certbot will require <a class="reference external" href="https://cloud.google.com/iam/docs/service-accounts-create">creating a service account</a>, and then either <a class="reference internal" href="#granting-permissions-with-predefined-roles">granting permissions
+with predefined roles</a> or <a class="reference internal" href="#granting-permissions-with-custom-roles">granting permissions with custom roles</a> using IAM.</p>
+<section id="providing-credentials">
+<h3>Providing Credentials<a class="headerlink" href="#providing-credentials" title="Permalink to this heading">¶</a></h3>
+<p>The preferred method of providing credentials is to <a class="reference external" href="https://cloud.google.com/docs/authentication/provide-credentials-adc">set up Application Default Credentials</a> (ADC) in the environment
+that Certbot is running in.</p>
+<p>If you are running Certbot on Google Cloud then a service account can be assigned directly to most
+types of workload, including <a class="reference external" href="https://cloud.google.com/compute/docs/access/create-enable-service-accounts-for-instances">Compute Engine VMs</a>, <a class="reference external" href="https://cloud.google.com/kubernetes-engine/docs/how-to/workload-identity">Kubernetes Engine Pods</a>, <a class="reference external" href="https://cloud.google.com/run/docs/securing/service-identity">Cloud Run jobs</a>, <a class="reference external" href="https://cloud.google.com/functions/docs/securing/function-identity">Cloud Functions</a>, and <a class="reference external" href="https://cloud.google.com/build/docs/securing-builds/configure-user-specified-service-accounts">Cloud Builds</a>.</p>
+<p>If you are not running Certbot on Google Cloud then a credentials file should be provided using the
+<code class="docutils literal notranslate"><span class="pre">--dns-google-credentials</span></code> command-line argument. Google provides documentation for <a class="reference external" href="https://cloud.google.com/iam/docs/keys-create-delete#creating">creating
+service account keys</a>, which is the
+most common method of using a service account outside of Google Cloud.</p>
+<div class="literal-block-wrapper docutils container" id="credentials-sa-json">
+<div class="code-block-caption"><span class="caption-text">Example service account key file:</span><a class="headerlink" href="#credentials-sa-json" title="Permalink to this code">¶</a></div>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="w">   </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;service_account&quot;</span><span class="p">,</span>
+<span class="w">   </span><span class="nt">&quot;project_id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;...&quot;</span><span class="p">,</span>
+<span class="w">   </span><span class="nt">&quot;private_key_id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;...&quot;</span><span class="p">,</span>
+<span class="w">   </span><span class="nt">&quot;private_key&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;...&quot;</span><span class="p">,</span>
+<span class="w">   </span><span class="nt">&quot;client_email&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;...&quot;</span><span class="p">,</span>
+<span class="w">   </span><span class="nt">&quot;client_id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;...&quot;</span><span class="p">,</span>
+<span class="w">   </span><span class="nt">&quot;auth_uri&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;https://accounts.google.com/o/oauth2/auth&quot;</span><span class="p">,</span>
+<span class="w">   </span><span class="nt">&quot;token_uri&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;https://accounts.google.com/o/oauth2/token&quot;</span><span class="p">,</span>
+<span class="w">   </span><span class="nt">&quot;auth_provider_x509_cert_url&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;https://www.googleapis.com/oauth2/v1/certs&quot;</span><span class="p">,</span>
+<span class="w">   </span><span class="nt">&quot;client_x509_cert_url&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;...&quot;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div>
+<div class="admonition caution">
+<p class="admonition-title">Caution</p>
+<p>You should protect these credentials as you would a password. Users who
+can read this file can use these credentials to issue some types of API calls
+on your behalf, limited by the permissions assigned to the account. Users who
+can cause Certbot to run using these credentials can complete a <code class="docutils literal notranslate"><span class="pre">dns-01</span></code>
+challenge to acquire new certificates or revoke existing certificates for
+domains these credentials are authorized to manage.</p>
+</div>
+<p>Certbot will emit a warning if it detects that the credentials file can be
+accessed by other users on your system. The warning reads “Unsafe permissions
+on credentials configuration file”, followed by the path to the credentials
+file. This warning will be emitted each time Certbot uses the credentials file,
+including for renewal, and cannot be silenced except by addressing the issue
+(e.g., by using a command like <code class="docutils literal notranslate"><span class="pre">chmod</span> <span class="pre">600</span></code> to restrict access to the file).</p>
+<p>If you are running Certbot within another cloud platform, a CI platform, or any other platform that
+supports issuing OpenID Connect Tokens, then you may also have the option of securely authenticating
+with <a class="reference external" href="https://cloud.google.com/iam/docs/workload-identity-federation">workload identity federation</a>. Instructions are generally available for most platforms, including <a class="reference external" href="https://cloud.google.com/iam/docs/workload-identity-federation-with-other-clouds">AWS or Azure</a>, <a class="reference external" href="https://cloud.google.com/blog/products/identity-security/enabling-keyless-authentication-from-github-actions">GitHub
+Actions</a>, and <a class="reference external" href="https://docs.gitlab.com/ee/ci/cloud_services/google_cloud/">GitLab CI</a>.</p>
+</section>
+<section id="granting-permissions-with-predefined-roles">
+<h3>Granting Permissions with Predefined Roles<a class="headerlink" href="#granting-permissions-with-predefined-roles" title="Permalink to this heading">¶</a></h3>
+<p>The simplest method of granting the required permissions to the user or service account that Certbot
+is authenticating with is to use either of these predefined role strategies:</p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://cloud.google.com/dns/docs/access-control#dns.admin">dns.admin</a> against the <em>DNS
+zone(s)</em> that Certbot will be issuing certificates for.</p></li>
+<li><p><a class="reference external" href="https://cloud.google.com/dns/docs/access-control#dns.reader">dns.reader</a> against the <em>project</em>
+containing the relevant DNS zones.</p></li>
+</ul>
+<p><em>or</em></p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://cloud.google.com/dns/docs/access-control#dns.admin">dns.admin</a> against the <em>project</em>
+containing the relevant DNS zones</p></li>
+</ul>
+<p>For instructions on how to grant roles, please read the Google provided documentation for <a class="reference external" href="https://cloud.google.com/iam/docs/granting-changing-revoking-access#single-role">granting
+access roles against a project</a> and <a class="reference external" href="https://cloud.google.com/dns/docs/zones/iam-per-resource-zones#set_access_control_policy_for_a_specific_resource">granting access roles against zones</a>.</p>
+<div class="admonition caution">
+<p class="admonition-title">Caution</p>
+<p>Granting the <code class="docutils literal notranslate"><span class="pre">dns.admin</span></code> role at the project level can present a significant security risk. It
+provides full administrative access to all DNS zones within the project, granting the ability to
+perform any action up to and including deleting all zones within a project.</p>
+</div>
+</section>
+<section id="granting-permissions-with-custom-roles">
+<h3>Granting Permissions with Custom Roles<a class="headerlink" href="#granting-permissions-with-custom-roles" title="Permalink to this heading">¶</a></h3>
+<p>Custom roles are an alternative to predefined roles that provide the ability to define fine grained
+permission sets for specific use cases. They should generally be used when it is desirable to adhere
+to the principle of least privilege, such as within production or other security sensitive
+workloads.</p>
+<p>The following is an example strategy for granting granular permissions to Certbot using custom
+roles. If you are not already familiar with how to do so, Google provides documentation for
+<a class="reference external" href="https://cloud.google.com/iam/docs/creating-custom-roles#creating">creating a custom IAM role</a>.</p>
+<p>Firstly, create a custom role containing the permissions required to make DNS record updates. We
+suggest naming the custom role <code class="docutils literal notranslate"><span class="pre">Certbot</span> <span class="pre">-</span> <span class="pre">Zone</span> <span class="pre">Editor</span></code> with the ID <code class="docutils literal notranslate"><span class="pre">certbot.zoneEditor</span></code>. The
+following permissions are required:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">dns.changes.create</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">dns.changes.get</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">dns.changes.list</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">dns.resourceRecordSets.create</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">dns.resourceRecordSets.delete</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">dns.resourceRecordSets.list</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">dns.resourceRecordSets.update</span></code></p></li>
+</ul>
+<p>Next, create a custom role granting Certbot the ability to discover DNS zones. We suggest naming the
+custom role <code class="docutils literal notranslate"><span class="pre">Certbot</span> <span class="pre">-</span> <span class="pre">Zone</span> <span class="pre">Lister</span></code> with the ID <code class="docutils literal notranslate"><span class="pre">certbot.zoneLister</span></code>. The following permissions
+are required:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">dns.managedZones.get</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">dns.managedZones.list</span></code></p></li>
+</ul>
+<p>Finally, grant the custom roles to the user or service account that Certbot is authenticating with:</p>
+<ul class="simple">
+<li><p>Grant your custom <code class="docutils literal notranslate"><span class="pre">Certbot</span> <span class="pre">-</span> <span class="pre">Zone</span> <span class="pre">Editor</span></code> role against the <em>DNS zone(s)</em> that Certbot will be
+issuing certificates for.</p></li>
+<li><p>Grant your custom <code class="docutils literal notranslate"><span class="pre">Certbot</span> <span class="pre">-</span> <span class="pre">Zone</span> <span class="pre">Lister</span></code> role against the <em>project</em> containing the relevant DNS
+zones.</p></li>
+</ul>
+<p>For instructions on how to grant roles, please read the Google provided documentation for <a class="reference external" href="https://cloud.google.com/iam/docs/granting-changing-revoking-access#single-role">granting
+access roles against a project</a> and <a class="reference external" href="https://cloud.google.com/dns/docs/zones/iam-per-resource-zones#set_access_control_policy_for_a_specific_resource">granting access roles against zones</a>.</p>
+</section>
+</section>
+<section id="examples">
+<h2>Examples<a class="headerlink" href="#examples" title="Permalink to this heading">¶</a></h2>
+<div class="literal-block-wrapper docutils container" id="id4">
+<div class="code-block-caption"><span class="caption-text">To acquire a certificate for <code class="docutils literal notranslate"><span class="pre">example.com</span></code>, providing a credentials file</span><a class="headerlink" href="#id4" title="Permalink to this code">¶</a></div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>certbot<span class="w"> </span>certonly<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--dns-google<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--dns-google-credentials<span class="w"> </span>~/.secrets/certbot/google.json<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-d<span class="w"> </span>example.com
+</pre></div>
+</div>
+</div>
+<div class="literal-block-wrapper docutils container" id="id5">
+<div class="code-block-caption"><span class="caption-text">To acquire a certificate for <code class="docutils literal notranslate"><span class="pre">example.com</span></code>, where ADC is available and
+a credentials file is not required</span><a class="headerlink" href="#id5" title="Permalink to this code">¶</a></div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>certbot<span class="w"> </span>certonly<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--dns-google<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-d<span class="w"> </span>example.com
+</pre></div>
+</div>
+</div>
+<div class="literal-block-wrapper docutils container" id="id6">
+<div class="code-block-caption"><span class="caption-text">To acquire a single certificate for both <code class="docutils literal notranslate"><span class="pre">example.com</span></code> and
+<code class="docutils literal notranslate"><span class="pre">www.example.com</span></code></span><a class="headerlink" href="#id6" title="Permalink to this code">¶</a></div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>certbot<span class="w"> </span>certonly<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--dns-google<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-d<span class="w"> </span>example.com<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-d<span class="w"> </span>www.example.com
+</pre></div>
+</div>
+</div>
+<div class="literal-block-wrapper docutils container" id="id7">
+<div class="code-block-caption"><span class="caption-text">To acquire a certificate for <code class="docutils literal notranslate"><span class="pre">example.com</span></code>, where the managed DNS
+zone resides in another Google Cloud project.</span><a class="headerlink" href="#id7" title="Permalink to this code">¶</a></div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>certbot<span class="w"> </span>certonly<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--dns-google<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--dns-google-credentials<span class="w"> </span>~/.secrets/certbot/google-project-test-foo.json<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--dns-google-project<span class="w"> </span>test-bar<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-d<span class="w"> </span>example.com
+</pre></div>
+</div>
+</div>
+<div class="literal-block-wrapper docutils container" id="id8">
+<div class="code-block-caption"><span class="caption-text">To acquire a certificate for <code class="docutils literal notranslate"><span class="pre">example.com</span></code>, waiting 120 seconds
+for DNS propagation</span><a class="headerlink" href="#id8" title="Permalink to this code">¶</a></div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>certbot<span class="w"> </span>certonly<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--dns-google<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--dns-google-propagation-seconds<span class="w"> </span><span class="m">120</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-d<span class="w"> </span>example.com
+</pre></div>
+</div>
+</div>
+</section>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="api.html">API Documentation</a></li>
+</ul>
+</div>
+</section>
+<section id="indices-and-tables">
+<h1>Indices and tables<a class="headerlink" href="#indices-and-tables" title="Permalink to this heading">¶</a></h1>
+<ul class="simple">
+<li><p><a class="reference internal" href="genindex.html"><span class="std std-ref">Index</span></a></p></li>
+<li><p><a class="reference internal" href="py-modindex.html"><span class="std std-ref">Module Index</span></a></p></li>
+<li><p><a class="reference internal" href="search.html"><span class="std std-ref">Search Page</span></a></p></li>
+</ul>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="api.html" class="btn btn-neutral float-right" title="API Documentation" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2017, Certbot Project.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

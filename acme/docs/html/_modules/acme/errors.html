@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>acme.errors &mdash; acme-python 0 documentation</title>
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../../_static/doctools.js"></script>
+        <script src="../../_static/sphinx_highlight.js"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            acme-python
+          </a>
+              <div class="version">
+                0
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../api.html">API Documentation</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">acme-python</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">acme.errors</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for acme.errors</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;ACME errors.&quot;&quot;&quot;</span>
+<span class="kn">import</span> <span class="nn">typing</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">List</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Mapping</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Set</span>
+
+<span class="kn">from</span> <span class="nn">josepy</span> <span class="kn">import</span> <span class="n">errors</span> <span class="k">as</span> <span class="n">jose_errors</span>
+<span class="kn">import</span> <span class="nn">requests</span>
+
+<span class="c1"># We import acme.messages only during type check to avoid circular dependencies. Type references</span>
+<span class="c1"># to acme.message.* must be quoted to be lazily initialized and avoid compilation errors.</span>
+<span class="k">if</span> <span class="n">typing</span><span class="o">.</span><span class="n">TYPE_CHECKING</span><span class="p">:</span>
+    <span class="kn">from</span> <span class="nn">acme</span> <span class="kn">import</span> <span class="n">messages</span>  <span class="c1"># pragma: no cover</span>
+
+
+<div class="viewcode-block" id="Error"><a class="viewcode-back" href="../../api/errors.html#acme.errors.Error">[docs]</a><span class="k">class</span> <span class="nc">Error</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Generic ACME error.&quot;&quot;&quot;</span></div>
+
+
+<div class="viewcode-block" id="DependencyError"><a class="viewcode-back" href="../../api/errors.html#acme.errors.DependencyError">[docs]</a><span class="k">class</span> <span class="nc">DependencyError</span><span class="p">(</span><span class="n">Error</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Dependency error&quot;&quot;&quot;</span></div>
+
+
+<div class="viewcode-block" id="SchemaValidationError"><a class="viewcode-back" href="../../api/errors.html#acme.errors.SchemaValidationError">[docs]</a><span class="k">class</span> <span class="nc">SchemaValidationError</span><span class="p">(</span><span class="n">jose_errors</span><span class="o">.</span><span class="n">DeserializationError</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;JSON schema ACME object validation error.&quot;&quot;&quot;</span></div>
+
+
+<div class="viewcode-block" id="ClientError"><a class="viewcode-back" href="../../api/errors.html#acme.errors.ClientError">[docs]</a><span class="k">class</span> <span class="nc">ClientError</span><span class="p">(</span><span class="n">Error</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Network error.&quot;&quot;&quot;</span></div>
+
+
+<div class="viewcode-block" id="UnexpectedUpdate"><a class="viewcode-back" href="../../api/errors.html#acme.errors.UnexpectedUpdate">[docs]</a><span class="k">class</span> <span class="nc">UnexpectedUpdate</span><span class="p">(</span><span class="n">ClientError</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Unexpected update error.&quot;&quot;&quot;</span></div>
+
+
+<div class="viewcode-block" id="NonceError"><a class="viewcode-back" href="../../api/errors.html#acme.errors.NonceError">[docs]</a><span class="k">class</span> <span class="nc">NonceError</span><span class="p">(</span><span class="n">ClientError</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Server response nonce error.&quot;&quot;&quot;</span></div>
+
+
+<div class="viewcode-block" id="BadNonce"><a class="viewcode-back" href="../../api/errors.html#acme.errors.BadNonce">[docs]</a><span class="k">class</span> <span class="nc">BadNonce</span><span class="p">(</span><span class="n">NonceError</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Bad nonce error.&quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">nonce</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">error</span><span class="p">:</span> <span class="ne">Exception</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">nonce</span> <span class="o">=</span> <span class="n">nonce</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">error</span> <span class="o">=</span> <span class="n">error</span>
+
+    <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="k">return</span> <span class="s1">&#39;Invalid nonce (</span><span class="si">{0!r}</span><span class="s1">): </span><span class="si">{1}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">nonce</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">error</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="MissingNonce"><a class="viewcode-back" href="../../api/errors.html#acme.errors.MissingNonce">[docs]</a><span class="k">class</span> <span class="nc">MissingNonce</span><span class="p">(</span><span class="n">NonceError</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Missing nonce error.</span>
+
+<span class="sd">    According to the specification an &quot;ACME server MUST include an</span>
+<span class="sd">    Replay-Nonce header field in each successful response to a POST it</span>
+<span class="sd">    provides to a client (...)&quot;.</span>
+
+<span class="sd">    :ivar requests.Response ~.response: HTTP Response</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">response</span><span class="p">:</span> <span class="n">requests</span><span class="o">.</span><span class="n">Response</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">response</span> <span class="o">=</span> <span class="n">response</span>
+
+    <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="k">return</span> <span class="p">(</span><span class="s1">&#39;Server </span><span class="si">{0}</span><span class="s1"> response did not include a replay &#39;</span>
+                <span class="s1">&#39;nonce, headers: </span><span class="si">{1}</span><span class="s1"> (This may be a service outage)&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">response</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">method</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">response</span><span class="o">.</span><span class="n">headers</span><span class="p">))</span></div>
+
+
+<div class="viewcode-block" id="PollError"><a class="viewcode-back" href="../../api/errors.html#acme.errors.PollError">[docs]</a><span class="k">class</span> <span class="nc">PollError</span><span class="p">(</span><span class="n">ClientError</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Generic error when polling for authorization fails.</span>
+
+<span class="sd">    This might be caused by either timeout (`exhausted` will be non-empty)</span>
+<span class="sd">    or by some authorization being invalid.</span>
+
+<span class="sd">    :ivar exhausted: Set of `.AuthorizationResource` that didn&#39;t finish</span>
+<span class="sd">        within max allowed attempts.</span>
+<span class="sd">    :ivar updated: Mapping from original `.AuthorizationResource`</span>
+<span class="sd">        to the most recently updated one</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">exhausted</span><span class="p">:</span> <span class="n">Set</span><span class="p">[</span><span class="s1">&#39;messages.AuthorizationResource&#39;</span><span class="p">],</span>
+                 <span class="n">updated</span><span class="p">:</span> <span class="n">Mapping</span><span class="p">[</span><span class="s1">&#39;messages.AuthorizationResource&#39;</span><span class="p">,</span>
+                                  <span class="s1">&#39;messages.AuthorizationResource&#39;</span><span class="p">]</span>
+                 <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">exhausted</span> <span class="o">=</span> <span class="n">exhausted</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">updated</span> <span class="o">=</span> <span class="n">updated</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">timeout</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Was the error caused by timeout?&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="nb">bool</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">exhausted</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="k">return</span> <span class="s1">&#39;</span><span class="si">{0}</span><span class="s1">(exhausted=</span><span class="si">{1!r}</span><span class="s1">, updated=</span><span class="si">{2!r}</span><span class="s1">)&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">exhausted</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">updated</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="ValidationError"><a class="viewcode-back" href="../../api/errors.html#acme.errors.ValidationError">[docs]</a><span class="k">class</span> <span class="nc">ValidationError</span><span class="p">(</span><span class="n">Error</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Error for authorization failures. Contains a list of authorization</span>
+<span class="sd">    resources, each of which is invalid and should have an error field.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">failed_authzrs</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="s1">&#39;messages.AuthorizationResource&#39;</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">failed_authzrs</span> <span class="o">=</span> <span class="n">failed_authzrs</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="TimeoutError"><a class="viewcode-back" href="../../api/errors.html#acme.errors.TimeoutError">[docs]</a><span class="k">class</span> <span class="nc">TimeoutError</span><span class="p">(</span><span class="n">Error</span><span class="p">):</span>  <span class="c1"># pylint: disable=redefined-builtin</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Error for when polling an authorization or an order times out.&quot;&quot;&quot;</span></div>
+
+
+<div class="viewcode-block" id="IssuanceError"><a class="viewcode-back" href="../../api/errors.html#acme.errors.IssuanceError">[docs]</a><span class="k">class</span> <span class="nc">IssuanceError</span><span class="p">(</span><span class="n">Error</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Error sent by the server after requesting issuance of a certificate.&quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">error</span><span class="p">:</span> <span class="s1">&#39;messages.Error&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialize.</span>
+
+<span class="sd">        :param messages.Error error: The error provided by the server.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">error</span> <span class="o">=</span> <span class="n">error</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="ConflictError"><a class="viewcode-back" href="../../api/errors.html#acme.errors.ConflictError">[docs]</a><span class="k">class</span> <span class="nc">ConflictError</span><span class="p">(</span><span class="n">ClientError</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Error for when the server returns a 409 (Conflict) HTTP status.</span>
+
+<span class="sd">    In the version of ACME implemented by Boulder, this is used to find an</span>
+<span class="sd">    account if you only have the private key, but don&#39;t know the account URL.</span>
+
+<span class="sd">    Also used in V2 of the ACME client for the same purpose.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">location</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">location</span> <span class="o">=</span> <span class="n">location</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="WildcardUnsupportedError"><a class="viewcode-back" href="../../api/errors.html#acme.errors.WildcardUnsupportedError">[docs]</a><span class="k">class</span> <span class="nc">WildcardUnsupportedError</span><span class="p">(</span><span class="n">Error</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Error for when a wildcard is requested but is unsupported by ACME CA.&quot;&quot;&quot;</span></div>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2015, Let&#39;s Encrypt Project.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

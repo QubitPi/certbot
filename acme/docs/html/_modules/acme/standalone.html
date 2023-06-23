@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>acme.standalone &mdash; acme-python 0 documentation</title>
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../../_static/doctools.js"></script>
+        <script src="../../_static/sphinx_highlight.js"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            acme-python
+          </a>
+              <div class="version">
+                0
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../api.html">API Documentation</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">acme-python</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">acme.standalone</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for acme.standalone</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;Support for standalone client challenge solvers. &quot;&quot;&quot;</span>
+<span class="kn">import</span> <span class="nn">collections</span>
+<span class="kn">import</span> <span class="nn">functools</span>
+<span class="kn">import</span> <span class="nn">http.client</span> <span class="k">as</span> <span class="nn">http_client</span>
+<span class="kn">import</span> <span class="nn">http.server</span> <span class="k">as</span> <span class="nn">BaseHTTPServer</span>
+<span class="kn">import</span> <span class="nn">logging</span>
+<span class="kn">import</span> <span class="nn">socket</span>
+<span class="kn">import</span> <span class="nn">socketserver</span>
+<span class="kn">import</span> <span class="nn">threading</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">cast</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">List</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Mapping</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Optional</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Set</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Tuple</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Type</span>
+
+<span class="kn">from</span> <span class="nn">OpenSSL</span> <span class="kn">import</span> <span class="n">crypto</span>
+<span class="kn">from</span> <span class="nn">OpenSSL</span> <span class="kn">import</span> <span class="n">SSL</span>
+
+<span class="kn">from</span> <span class="nn">acme</span> <span class="kn">import</span> <span class="n">challenges</span>
+<span class="kn">from</span> <span class="nn">acme</span> <span class="kn">import</span> <span class="n">crypto_util</span>
+
+<span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="TLSServer"><a class="viewcode-back" href="../../api/standalone.html#acme.standalone.TLSServer">[docs]</a><span class="k">class</span> <span class="nc">TLSServer</span><span class="p">(</span><span class="n">socketserver</span><span class="o">.</span><span class="n">TCPServer</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Generic TLS Server.&quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ipv6</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;ipv6&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">ipv6</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">address_family</span> <span class="o">=</span> <span class="n">socket</span><span class="o">.</span><span class="n">AF_INET6</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">address_family</span> <span class="o">=</span> <span class="n">socket</span><span class="o">.</span><span class="n">AF_INET</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">certs</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;certs&quot;</span><span class="p">,</span> <span class="p">{})</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">method</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;method&quot;</span><span class="p">,</span> <span class="n">crypto_util</span><span class="o">.</span><span class="n">_DEFAULT_SSL_METHOD</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">allow_reuse_address</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;allow_reuse_address&quot;</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_wrap_sock</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">socket</span> <span class="o">=</span> <span class="n">cast</span><span class="p">(</span><span class="n">socket</span><span class="o">.</span><span class="n">socket</span><span class="p">,</span> <span class="n">crypto_util</span><span class="o">.</span><span class="n">SSLSocket</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">socket</span><span class="p">,</span> <span class="n">cert_selection</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_cert_selection</span><span class="p">,</span>
+            <span class="n">alpn_selection</span><span class="o">=</span><span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;_alpn_selection&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span>
+            <span class="n">method</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">method</span><span class="p">))</span>
+
+    <span class="k">def</span> <span class="nf">_cert_selection</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">connection</span><span class="p">:</span> <span class="n">SSL</span><span class="o">.</span><span class="n">Connection</span>
+                        <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="n">crypto</span><span class="o">.</span><span class="n">PKey</span><span class="p">,</span> <span class="n">crypto</span><span class="o">.</span><span class="n">X509</span><span class="p">]]:</span>  <span class="c1"># pragma: no cover</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Callback selecting certificate for connection.&quot;&quot;&quot;</span>
+        <span class="n">server_name</span> <span class="o">=</span> <span class="n">connection</span><span class="o">.</span><span class="n">get_servername</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">server_name</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">certs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">server_name</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="k">return</span> <span class="kc">None</span>
+
+<div class="viewcode-block" id="TLSServer.server_bind"><a class="viewcode-back" href="../../api/standalone.html#acme.standalone.TLSServer.server_bind">[docs]</a>    <span class="k">def</span> <span class="nf">server_bind</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_wrap_sock</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">socketserver</span><span class="o">.</span><span class="n">TCPServer</span><span class="o">.</span><span class="n">server_bind</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span></div></div>
+
+
+<div class="viewcode-block" id="ACMEServerMixin"><a class="viewcode-back" href="../../api/standalone.html#acme.standalone.ACMEServerMixin">[docs]</a><span class="k">class</span> <span class="nc">ACMEServerMixin</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;ACME server common settings mixin.&quot;&quot;&quot;</span>
+    <span class="c1"># TODO: c.f. #858</span>
+    <span class="n">server_version</span> <span class="o">=</span> <span class="s2">&quot;ACME client standalone challenge solver&quot;</span>
+    <span class="n">allow_reuse_address</span> <span class="o">=</span> <span class="kc">True</span></div>
+
+
+<div class="viewcode-block" id="BaseDualNetworkedServers"><a class="viewcode-back" href="../../api/standalone.html#acme.standalone.BaseDualNetworkedServers">[docs]</a><span class="k">class</span> <span class="nc">BaseDualNetworkedServers</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Base class for a pair of IPv6 and IPv4 servers that tries to do everything</span>
+<span class="sd">       it&#39;s asked for both servers, but where failures in one server don&#39;t</span>
+<span class="sd">       affect the other.</span>
+
+<span class="sd">       If two servers are instantiated, they will serve on the same port.</span>
+<span class="sd">       &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ServerClass</span><span class="p">:</span> <span class="n">Type</span><span class="p">[</span><span class="n">socketserver</span><span class="o">.</span><span class="n">TCPServer</span><span class="p">],</span> <span class="n">server_address</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">],</span>
+                 <span class="o">*</span><span class="n">remaining_args</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">port</span> <span class="o">=</span> <span class="n">server_address</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">threads</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">threading</span><span class="o">.</span><span class="n">Thread</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">servers</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">socketserver</span><span class="o">.</span><span class="n">BaseServer</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="c1"># Preserve socket error for re-raising, if no servers can be started</span>
+        <span class="n">last_socket_err</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">socket</span><span class="o">.</span><span class="n">error</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="c1"># Must try True first.</span>
+        <span class="c1"># Ubuntu, for example, will fail to bind to IPv4 if we&#39;ve already bound</span>
+        <span class="c1"># to IPv6. But that&#39;s ok, since it will accept IPv4 connections on the IPv6</span>
+        <span class="c1"># socket. On the other hand, FreeBSD will successfully bind to IPv4 on the</span>
+        <span class="c1"># same port, which means that server will accept the IPv4 connections.</span>
+        <span class="c1"># If Python is compiled without IPv6, we&#39;ll error out but (probably) successfully</span>
+        <span class="c1"># create the IPv4 server.</span>
+        <span class="k">for</span> <span class="n">ip_version</span> <span class="ow">in</span> <span class="p">[</span><span class="kc">True</span><span class="p">,</span> <span class="kc">False</span><span class="p">]:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;ipv6&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ip_version</span>
+                <span class="n">new_address</span> <span class="o">=</span> <span class="p">(</span><span class="n">server_address</span><span class="p">[</span><span class="mi">0</span><span class="p">],)</span> <span class="o">+</span> <span class="p">(</span><span class="n">port</span><span class="p">,)</span> <span class="o">+</span> <span class="n">server_address</span><span class="p">[</span><span class="mi">2</span><span class="p">:]</span>
+                <span class="n">new_args</span> <span class="o">=</span> <span class="p">(</span><span class="n">new_address</span><span class="p">,)</span> <span class="o">+</span> <span class="n">remaining_args</span>
+                <span class="n">server</span> <span class="o">=</span> <span class="n">ServerClass</span><span class="p">(</span><span class="o">*</span><span class="n">new_args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
+                    <span class="s2">&quot;Successfully bound to </span><span class="si">%s</span><span class="s2">:</span><span class="si">%s</span><span class="s2"> using </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">new_address</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+                    <span class="n">new_address</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="s2">&quot;IPv6&quot;</span> <span class="k">if</span> <span class="n">ip_version</span> <span class="k">else</span> <span class="s2">&quot;IPv4&quot;</span><span class="p">)</span>
+            <span class="k">except</span> <span class="n">socket</span><span class="o">.</span><span class="n">error</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                <span class="n">last_socket_err</span> <span class="o">=</span> <span class="n">e</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">servers</span><span class="p">:</span>
+                    <span class="c1"># Already bound using IPv6.</span>
+                    <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
+                        <span class="s2">&quot;Certbot wasn&#39;t able to bind to </span><span class="si">%s</span><span class="s2">:</span><span class="si">%s</span><span class="s2"> using </span><span class="si">%s</span><span class="s2">, this &quot;</span>
+                        <span class="s2">&quot;is often expected due to the dual stack nature of &quot;</span>
+                        <span class="s2">&quot;IPv6 socket implementations.&quot;</span><span class="p">,</span>
+                        <span class="n">new_address</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">new_address</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
+                        <span class="s2">&quot;IPv6&quot;</span> <span class="k">if</span> <span class="n">ip_version</span> <span class="k">else</span> <span class="s2">&quot;IPv4&quot;</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
+                        <span class="s2">&quot;Failed to bind to </span><span class="si">%s</span><span class="s2">:</span><span class="si">%s</span><span class="s2"> using </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">new_address</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+                        <span class="n">new_address</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="s2">&quot;IPv6&quot;</span> <span class="k">if</span> <span class="n">ip_version</span> <span class="k">else</span> <span class="s2">&quot;IPv4&quot;</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">servers</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">server</span><span class="p">)</span>
+                <span class="c1"># If two servers are set up and port 0 was passed in, ensure we always</span>
+                <span class="c1"># bind to the same port for both servers.</span>
+                <span class="n">port</span> <span class="o">=</span> <span class="n">server</span><span class="o">.</span><span class="n">socket</span><span class="o">.</span><span class="n">getsockname</span><span class="p">()[</span><span class="mi">1</span><span class="p">]</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">servers</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">last_socket_err</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="n">last_socket_err</span>
+            <span class="k">else</span><span class="p">:</span> <span class="c1"># pragma: no cover</span>
+                <span class="k">raise</span> <span class="n">socket</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;Could not bind to IPv4 or IPv6.&quot;</span><span class="p">)</span>
+
+<div class="viewcode-block" id="BaseDualNetworkedServers.serve_forever"><a class="viewcode-back" href="../../api/standalone.html#acme.standalone.BaseDualNetworkedServers.serve_forever">[docs]</a>    <span class="k">def</span> <span class="nf">serve_forever</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Wraps socketserver.TCPServer.serve_forever&quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">server</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">servers</span><span class="p">:</span>
+            <span class="n">thread</span> <span class="o">=</span> <span class="n">threading</span><span class="o">.</span><span class="n">Thread</span><span class="p">(</span>
+                <span class="n">target</span><span class="o">=</span><span class="n">server</span><span class="o">.</span><span class="n">serve_forever</span><span class="p">)</span>
+            <span class="n">thread</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">threads</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">thread</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="BaseDualNetworkedServers.getsocknames"><a class="viewcode-back" href="../../api/standalone.html#acme.standalone.BaseDualNetworkedServers.getsocknames">[docs]</a>    <span class="k">def</span> <span class="nf">getsocknames</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">]]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Wraps socketserver.TCPServer.socket.getsockname&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="p">[</span><span class="n">server</span><span class="o">.</span><span class="n">socket</span><span class="o">.</span><span class="n">getsockname</span><span class="p">()</span> <span class="k">for</span> <span class="n">server</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">servers</span><span class="p">]</span></div>
+
+<div class="viewcode-block" id="BaseDualNetworkedServers.shutdown_and_server_close"><a class="viewcode-back" href="../../api/standalone.html#acme.standalone.BaseDualNetworkedServers.shutdown_and_server_close">[docs]</a>    <span class="k">def</span> <span class="nf">shutdown_and_server_close</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Wraps socketserver.TCPServer.shutdown, socketserver.TCPServer.server_close, and</span>
+<span class="sd">           threading.Thread.join&quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">server</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">servers</span><span class="p">:</span>
+            <span class="n">server</span><span class="o">.</span><span class="n">shutdown</span><span class="p">()</span>
+            <span class="n">server</span><span class="o">.</span><span class="n">server_close</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">thread</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">threads</span><span class="p">:</span>
+            <span class="n">thread</span><span class="o">.</span><span class="n">join</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">threads</span> <span class="o">=</span> <span class="p">[]</span></div></div>
+
+
+<div class="viewcode-block" id="TLSALPN01Server"><a class="viewcode-back" href="../../api/standalone.html#acme.standalone.TLSALPN01Server">[docs]</a><span class="k">class</span> <span class="nc">TLSALPN01Server</span><span class="p">(</span><span class="n">TLSServer</span><span class="p">,</span> <span class="n">ACMEServerMixin</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;TLSALPN01 Server.&quot;&quot;&quot;</span>
+
+    <span class="n">ACME_TLS_1_PROTOCOL</span> <span class="o">=</span> <span class="sa">b</span><span class="s2">&quot;acme-tls/1&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">server_address</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">],</span>
+                 <span class="n">certs</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="n">crypto</span><span class="o">.</span><span class="n">PKey</span><span class="p">,</span> <span class="n">crypto</span><span class="o">.</span><span class="n">X509</span><span class="p">]],</span>
+                 <span class="n">challenge_certs</span><span class="p">:</span> <span class="n">Mapping</span><span class="p">[</span><span class="nb">bytes</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">crypto</span><span class="o">.</span><span class="n">PKey</span><span class="p">,</span> <span class="n">crypto</span><span class="o">.</span><span class="n">X509</span><span class="p">]],</span>
+                 <span class="n">ipv6</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="c1"># We don&#39;t need to implement a request handler here because the work</span>
+        <span class="c1"># (including logging) is being done by wrapped socket set up in the</span>
+        <span class="c1"># parent TLSServer class.</span>
+        <span class="n">TLSServer</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
+            <span class="bp">self</span><span class="p">,</span> <span class="n">server_address</span><span class="p">,</span> <span class="n">socketserver</span><span class="o">.</span><span class="n">BaseRequestHandler</span><span class="p">,</span> <span class="n">certs</span><span class="o">=</span><span class="n">certs</span><span class="p">,</span>
+            <span class="n">ipv6</span><span class="o">=</span><span class="n">ipv6</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">challenge_certs</span> <span class="o">=</span> <span class="n">challenge_certs</span>
+
+    <span class="k">def</span> <span class="nf">_cert_selection</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">connection</span><span class="p">:</span> <span class="n">SSL</span><span class="o">.</span><span class="n">Connection</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="n">crypto</span><span class="o">.</span><span class="n">PKey</span><span class="p">,</span>
+                                                                            <span class="n">crypto</span><span class="o">.</span><span class="n">X509</span><span class="p">]]:</span>
+        <span class="c1"># TODO: We would like to serve challenge cert only if asked for it via</span>
+        <span class="c1"># ALPN. To do this, we need to retrieve the list of protos from client</span>
+        <span class="c1"># hello, but this is currently impossible with openssl [0], and ALPN</span>
+        <span class="c1"># negotiation is done after cert selection.</span>
+        <span class="c1"># Therefore, currently we always return challenge cert, and terminate</span>
+        <span class="c1"># handshake in alpn_selection() if ALPN protos are not what we expect.</span>
+        <span class="c1"># [0] https://github.com/openssl/openssl/issues/4952</span>
+        <span class="n">server_name</span> <span class="o">=</span> <span class="n">connection</span><span class="o">.</span><span class="n">get_servername</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">server_name</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Serving challenge cert for server name </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">server_name</span><span class="p">)</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">challenge_certs</span><span class="p">[</span><span class="n">server_name</span><span class="p">]</span>
+        <span class="k">return</span> <span class="kc">None</span> <span class="c1"># pragma: no cover</span>
+
+    <span class="k">def</span> <span class="nf">_alpn_selection</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">_connection</span><span class="p">:</span> <span class="n">SSL</span><span class="o">.</span><span class="n">Connection</span><span class="p">,</span> <span class="n">alpn_protos</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">bytes</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">bytes</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Callback to select alpn protocol.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">alpn_protos</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span> <span class="ow">and</span> <span class="n">alpn_protos</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">ACME_TLS_1_PROTOCOL</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Agreed on </span><span class="si">%s</span><span class="s2"> ALPN&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ACME_TLS_1_PROTOCOL</span><span class="p">)</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">ACME_TLS_1_PROTOCOL</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Cannot agree on ALPN proto. Got: </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">alpn_protos</span><span class="p">))</span>
+        <span class="c1"># Explicitly close the connection now, by returning an empty string.</span>
+        <span class="c1"># See https://www.pyopenssl.org/en/stable/api/ssl.html#OpenSSL.SSL.Context.set_alpn_select_callback  # pylint: disable=line-too-long</span>
+        <span class="k">return</span> <span class="sa">b</span><span class="s2">&quot;&quot;</span></div>
+
+
+<div class="viewcode-block" id="HTTPServer"><a class="viewcode-back" href="../../api/standalone.html#acme.standalone.HTTPServer">[docs]</a><span class="k">class</span> <span class="nc">HTTPServer</span><span class="p">(</span><span class="n">BaseHTTPServer</span><span class="o">.</span><span class="n">HTTPServer</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Generic HTTP Server.&quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ipv6</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;ipv6&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">ipv6</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">address_family</span> <span class="o">=</span> <span class="n">socket</span><span class="o">.</span><span class="n">AF_INET6</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">address_family</span> <span class="o">=</span> <span class="n">socket</span><span class="o">.</span><span class="n">AF_INET</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="HTTP01Server"><a class="viewcode-back" href="../../api/standalone.html#acme.standalone.HTTP01Server">[docs]</a><span class="k">class</span> <span class="nc">HTTP01Server</span><span class="p">(</span><span class="n">HTTPServer</span><span class="p">,</span> <span class="n">ACMEServerMixin</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;HTTP01 Server.&quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">server_address</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">],</span> <span class="n">resources</span><span class="p">:</span> <span class="n">Set</span><span class="p">[</span><span class="n">challenges</span><span class="o">.</span><span class="n">HTTP01</span><span class="p">],</span>
+                 <span class="n">ipv6</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">timeout</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">30</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
+            <span class="n">server_address</span><span class="p">,</span> <span class="n">HTTP01RequestHandler</span><span class="o">.</span><span class="n">partial_init</span><span class="p">(</span>
+                <span class="n">simple_http_resources</span><span class="o">=</span><span class="n">resources</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="n">timeout</span><span class="p">),</span> <span class="n">ipv6</span><span class="o">=</span><span class="n">ipv6</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="HTTP01DualNetworkedServers"><a class="viewcode-back" href="../../api/standalone.html#acme.standalone.HTTP01DualNetworkedServers">[docs]</a><span class="k">class</span> <span class="nc">HTTP01DualNetworkedServers</span><span class="p">(</span><span class="n">BaseDualNetworkedServers</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;HTTP01Server Wrapper. Tries everything for both. Failures for one don&#39;t</span>
+<span class="sd">       affect the other.&quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">HTTP01Server</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="HTTP01RequestHandler"><a class="viewcode-back" href="../../api/standalone.html#acme.standalone.HTTP01RequestHandler">[docs]</a><span class="k">class</span> <span class="nc">HTTP01RequestHandler</span><span class="p">(</span><span class="n">BaseHTTPServer</span><span class="o">.</span><span class="n">BaseHTTPRequestHandler</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;HTTP01 challenge handler.</span>
+
+<span class="sd">    Adheres to the stdlib&#39;s `socketserver.BaseRequestHandler` interface.</span>
+
+<span class="sd">    :ivar set simple_http_resources: A set of `HTTP01Resource`</span>
+<span class="sd">        objects. TODO: better name?</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">HTTP01Resource</span> <span class="o">=</span> <span class="n">collections</span><span class="o">.</span><span class="n">namedtuple</span><span class="p">(</span>
+        <span class="s2">&quot;HTTP01Resource&quot;</span><span class="p">,</span> <span class="s2">&quot;chall response validation&quot;</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">simple_http_resources</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;simple_http_resources&quot;</span><span class="p">,</span> <span class="nb">set</span><span class="p">())</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_timeout</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;timeout&#39;</span><span class="p">,</span> <span class="mi">30</span><span class="p">)</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">server</span><span class="p">:</span> <span class="n">HTTP01Server</span>
+
+    <span class="c1"># In parent class BaseHTTPRequestHandler, &#39;timeout&#39; is a class-level property but we</span>
+    <span class="c1"># need to define its value during the initialization phase in HTTP01RequestHandler.</span>
+    <span class="c1"># However MyPy does not appreciate that we dynamically shadow a class-level property</span>
+    <span class="c1"># with an instance-level property (eg. self.timeout = ... in __init__()). So to make</span>
+    <span class="c1"># everyone happy, we statically redefine &#39;timeout&#39; as a method property, and set the</span>
+    <span class="c1"># timeout value in a new internal instance-level property _timeout.</span>
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">timeout</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>  <span class="c1"># type: ignore[override]</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        The default timeout this server should apply to requests.</span>
+<span class="sd">        :return: timeout to apply</span>
+<span class="sd">        :rtype: int</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_timeout</span>
+
+<div class="viewcode-block" id="HTTP01RequestHandler.log_message"><a class="viewcode-back" href="../../api/standalone.html#acme.standalone.HTTP01RequestHandler.log_message">[docs]</a>    <span class="k">def</span> <span class="nf">log_message</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">format</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>  <span class="c1"># pylint: disable=redefined-builtin</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Log arbitrary message.&quot;&quot;&quot;</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">%s</span><span class="s2"> - - </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">client_address</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="nb">format</span> <span class="o">%</span> <span class="n">args</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="HTTP01RequestHandler.handle"><a class="viewcode-back" href="../../api/standalone.html#acme.standalone.HTTP01RequestHandler.handle">[docs]</a>    <span class="k">def</span> <span class="nf">handle</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Handle request.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">log_message</span><span class="p">(</span><span class="s2">&quot;Incoming request&quot;</span><span class="p">)</span>
+        <span class="n">BaseHTTPServer</span><span class="o">.</span><span class="n">BaseHTTPRequestHandler</span><span class="o">.</span><span class="n">handle</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span></div>
+
+    <span class="k">def</span> <span class="nf">do_GET</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>  <span class="c1"># pylint: disable=invalid-name,missing-function-docstring</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">path</span> <span class="o">==</span> <span class="s2">&quot;/&quot;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">handle_index</span><span class="p">()</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;/&quot;</span> <span class="o">+</span> <span class="n">challenges</span><span class="o">.</span><span class="n">HTTP01</span><span class="o">.</span><span class="n">URI_ROOT_PATH</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">handle_simple_http_resource</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">handle_404</span><span class="p">()</span>
+
+<div class="viewcode-block" id="HTTP01RequestHandler.handle_index"><a class="viewcode-back" href="../../api/standalone.html#acme.standalone.HTTP01RequestHandler.handle_index">[docs]</a>    <span class="k">def</span> <span class="nf">handle_index</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Handle index page.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">send_response</span><span class="p">(</span><span class="mi">200</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">send_header</span><span class="p">(</span><span class="s2">&quot;Content-Type&quot;</span><span class="p">,</span> <span class="s2">&quot;text/html&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">end_headers</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">wfile</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">server</span><span class="o">.</span><span class="n">server_version</span><span class="o">.</span><span class="n">encode</span><span class="p">())</span></div>
+
+<div class="viewcode-block" id="HTTP01RequestHandler.handle_404"><a class="viewcode-back" href="../../api/standalone.html#acme.standalone.HTTP01RequestHandler.handle_404">[docs]</a>    <span class="k">def</span> <span class="nf">handle_404</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Handler 404 Not Found errors.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">send_response</span><span class="p">(</span><span class="n">http_client</span><span class="o">.</span><span class="n">NOT_FOUND</span><span class="p">,</span> <span class="n">message</span><span class="o">=</span><span class="s2">&quot;Not Found&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">send_header</span><span class="p">(</span><span class="s2">&quot;Content-type&quot;</span><span class="p">,</span> <span class="s2">&quot;text/html&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">end_headers</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">wfile</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">b</span><span class="s2">&quot;404&quot;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="HTTP01RequestHandler.handle_simple_http_resource"><a class="viewcode-back" href="../../api/standalone.html#acme.standalone.HTTP01RequestHandler.handle_simple_http_resource">[docs]</a>    <span class="k">def</span> <span class="nf">handle_simple_http_resource</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Handle HTTP01 provisioned resources.&quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">resource</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">simple_http_resources</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">resource</span><span class="o">.</span><span class="n">chall</span><span class="o">.</span><span class="n">path</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">path</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">log_message</span><span class="p">(</span><span class="s2">&quot;Serving HTTP01 with token </span><span class="si">%r</span><span class="s2">&quot;</span><span class="p">,</span>
+                                 <span class="n">resource</span><span class="o">.</span><span class="n">chall</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s2">&quot;token&quot;</span><span class="p">))</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">send_response</span><span class="p">(</span><span class="n">http_client</span><span class="o">.</span><span class="n">OK</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">end_headers</span><span class="p">()</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">wfile</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">resource</span><span class="o">.</span><span class="n">validation</span><span class="o">.</span><span class="n">encode</span><span class="p">())</span>
+                <span class="k">return</span>
+        <span class="k">else</span><span class="p">:</span>  <span class="c1"># pylint: disable=useless-else-on-loop</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">log_message</span><span class="p">(</span><span class="s2">&quot;No resources to serve&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">log_message</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">%s</span><span class="s2"> does not correspond to any resource. ignoring&quot;</span><span class="p">,</span>
+                         <span class="bp">self</span><span class="o">.</span><span class="n">path</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="HTTP01RequestHandler.partial_init"><a class="viewcode-back" href="../../api/standalone.html#acme.standalone.HTTP01RequestHandler.partial_init">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">partial_init</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">simple_http_resources</span><span class="p">:</span> <span class="n">Set</span><span class="p">[</span><span class="n">challenges</span><span class="o">.</span><span class="n">HTTP01</span><span class="p">],</span>
+                     <span class="n">timeout</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;functools.partial[HTTP01RequestHandler]&#39;</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Partially initialize this handler.</span>
+
+<span class="sd">        This is useful because `socketserver.BaseServer` takes</span>
+<span class="sd">        uninitialized handler and initializes it with the current</span>
+<span class="sd">        request.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">functools</span><span class="o">.</span><span class="n">partial</span><span class="p">(</span>
+            <span class="bp">cls</span><span class="p">,</span> <span class="n">simple_http_resources</span><span class="o">=</span><span class="n">simple_http_resources</span><span class="p">,</span>
+            <span class="n">timeout</span><span class="o">=</span><span class="n">timeout</span><span class="p">)</span></div></div>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2015, Let&#39;s Encrypt Project.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

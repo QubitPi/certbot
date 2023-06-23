@@ -1,0 +1,515 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>certbot.tests.util module &mdash; Certbot 2.7.0.dev0 documentation</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+    <link rel="canonical" href="https://QubitPi.github.io/certbot/api/certbot.tests.util.html" />
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/sphinx_highlight.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="certbot.achallenges module" href="certbot.achallenges.html" />
+    <link rel="prev" title="certbot.tests.acme_util module" href="certbot.tests.acme_util.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            Certbot
+          </a>
+              <div class="version">
+                2.7
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../intro.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../what.html">What is a Certificate?</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../install.html">Get Certbot</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../using.html">User Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../contributing.html">Developer Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../packaging.html">Packaging Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../compatibility.html">Backwards Compatibility</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../resources.html">Resources</a></li>
+</ul>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="../api.html">API Documentation</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="certbot.html">certbot package</a><ul class="current">
+<li class="toctree-l3 current"><a class="reference internal" href="certbot.html#subpackages">Subpackages</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="certbot.compat.html">certbot.compat package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="certbot.display.html">certbot.display package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="certbot.plugins.html">certbot.plugins package</a></li>
+<li class="toctree-l4 current"><a class="reference internal" href="certbot.tests.html">certbot.tests package</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="certbot.html#submodules">Submodules</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Certbot</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../api.html">API Documentation</a></li>
+          <li class="breadcrumb-item"><a href="certbot.html">certbot package</a></li>
+          <li class="breadcrumb-item"><a href="certbot.tests.html">certbot.tests package</a></li>
+      <li class="breadcrumb-item active">certbot.tests.util module</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/api/certbot.tests.util.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="module-certbot.tests.util">
+<span id="certbot-tests-util-module"></span><h1>certbot.tests.util module<a class="headerlink" href="#module-certbot.tests.util" title="Permalink to this heading">¶</a></h1>
+<p>Test utilities.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="certbot.tests.util.DummyInstaller">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">certbot.tests.util.</span></span><span class="sig-name descname"><span class="pre">DummyInstaller</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.11)"><span class="pre">Any</span></a></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.11)"><span class="pre">Any</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/certbot/tests/util.html#DummyInstaller"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#certbot.tests.util.DummyInstaller" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="certbot.plugins.common.html#certbot.plugins.common.Installer" title="certbot.plugins.common.Installer"><code class="xref py py-class docutils literal notranslate"><span class="pre">Installer</span></code></a></p>
+<p>Dummy installer plugin for test purpose.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="certbot.tests.util.DummyInstaller.get_all_names">
+<span class="sig-name descname"><span class="pre">get_all_names</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Iterable" title="(in Python v3.11)"><span class="pre">Iterable</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/certbot/tests/util.html#DummyInstaller.get_all_names"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#certbot.tests.util.DummyInstaller.get_all_names" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns all names that may be authenticated.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">collections.Iterable</span></code> of <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="certbot.tests.util.DummyInstaller.deploy_cert">
+<span class="sig-name descname"><span class="pre">deploy_cert</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">domain</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">cert_path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">key_path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">chain_path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">fullchain_path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.11)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/certbot/tests/util.html#DummyInstaller.deploy_cert"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#certbot.tests.util.DummyInstaller.deploy_cert" title="Permalink to this definition">¶</a></dt>
+<dd><p>Deploy certificate.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>domain</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a>) – domain to deploy certificate file</p></li>
+<li><p><strong>cert_path</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a>) – absolute path to the certificate file</p></li>
+<li><p><strong>key_path</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a>) – absolute path to the private key file</p></li>
+<li><p><strong>chain_path</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a>) – absolute path to the certificate chain file</p></li>
+<li><p><strong>fullchain_path</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a>) – absolute path to the certificate fullchain
+file (cert plus chain)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>.PluginError</strong> – when cert cannot be deployed</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="certbot.tests.util.DummyInstaller.enhance">
+<span class="sig-name descname"><span class="pre">enhance</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">domain</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">enhancement</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">options</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.11)"><span class="pre">Optional</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Union" title="(in Python v3.11)"><span class="pre">Union</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.List" title="(in Python v3.11)"><span class="pre">List</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.11)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/certbot/tests/util.html#DummyInstaller.enhance"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#certbot.tests.util.DummyInstaller.enhance" title="Permalink to this definition">¶</a></dt>
+<dd><p>Perform a configuration enhancement.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>domain</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a>) – domain for which to provide enhancement</p></li>
+<li><p><strong>enhancement</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a>) – An enhancement as defined in
+<a class="reference internal" href="certbot.plugins.enhancements.html#certbot.plugins.enhancements.ENHANCEMENTS" title="certbot.plugins.enhancements.ENHANCEMENTS"><code class="xref py py-const docutils literal notranslate"><span class="pre">ENHANCEMENTS</span></code></a></p></li>
+<li><p><strong>options</strong> – Flexible options parameter for enhancement.
+Check documentation of
+<a class="reference internal" href="certbot.plugins.enhancements.html#certbot.plugins.enhancements.ENHANCEMENTS" title="certbot.plugins.enhancements.ENHANCEMENTS"><code class="xref py py-const docutils literal notranslate"><span class="pre">ENHANCEMENTS</span></code></a>
+for expected options for each enhancement.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>.PluginError</strong> – If Enhancement is not supported, or if
+an error occurs during the enhancement.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="certbot.tests.util.DummyInstaller.supported_enhancements">
+<span class="sig-name descname"><span class="pre">supported_enhancements</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.List" title="(in Python v3.11)"><span class="pre">List</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/certbot/tests/util.html#DummyInstaller.supported_enhancements"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#certbot.tests.util.DummyInstaller.supported_enhancements" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a <code class="xref py py-obj docutils literal notranslate"><span class="pre">collections.Iterable</span></code> of supported enhancements.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>supported enhancements which should be a subset of
+<a class="reference internal" href="certbot.plugins.enhancements.html#certbot.plugins.enhancements.ENHANCEMENTS" title="certbot.plugins.enhancements.ENHANCEMENTS"><code class="xref py py-const docutils literal notranslate"><span class="pre">ENHANCEMENTS</span></code></a></p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">collections.Iterable</span></code> of <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="certbot.tests.util.DummyInstaller.save">
+<span class="sig-name descname"><span class="pre">save</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">title</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.11)"><span class="pre">Optional</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">temporary</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.11)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/certbot/tests/util.html#DummyInstaller.save"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#certbot.tests.util.DummyInstaller.save" title="Permalink to this definition">¶</a></dt>
+<dd><p>Saves all changes to the configuration files.</p>
+<p>Both title and temporary are needed because a save may be
+intended to be permanent, but the save is not ready to be a full
+checkpoint.</p>
+<p>It is assumed that at most one checkpoint is finalized by this
+method. Additionally, if an exception is raised, it is assumed a
+new checkpoint was not finalized.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>title</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a>) – The title of the save. If a title is given, the
+configuration will be saved as a new checkpoint and put in a
+timestamped directory. <code class="xref py py-obj docutils literal notranslate"><span class="pre">title</span></code> has no effect if temporary is true.</p></li>
+<li><p><strong>temporary</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><em>bool</em></a>) – Indicates whether the changes made will
+be quickly reversed in the future (challenges)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>.PluginError</strong> – when save is unsuccessful</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="certbot.tests.util.DummyInstaller.config_test">
+<span class="sig-name descname"><span class="pre">config_test</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.11)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/certbot/tests/util.html#DummyInstaller.config_test"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#certbot.tests.util.DummyInstaller.config_test" title="Permalink to this definition">¶</a></dt>
+<dd><p>Make sure the configuration is valid.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>.MisconfigurationError</strong> – when the config is not in a usable state</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="certbot.tests.util.DummyInstaller.restart">
+<span class="sig-name descname"><span class="pre">restart</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.11)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/certbot/tests/util.html#DummyInstaller.restart"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#certbot.tests.util.DummyInstaller.restart" title="Permalink to this definition">¶</a></dt>
+<dd><p>Restart or refresh the server content.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>.PluginError</strong> – when server cannot be restarted</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="certbot.tests.util.DummyInstaller.add_parser_arguments">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">add_parser_arguments</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">add</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Callable" title="(in Python v3.11)"><span class="pre">Callable</span></a><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">...</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.11)"><span class="pre">None</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.11)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/certbot/tests/util.html#DummyInstaller.add_parser_arguments"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#certbot.tests.util.DummyInstaller.add_parser_arguments" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add plugin arguments to the CLI argument parser.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>add</strong> (<em>callable</em>) – Function that proxies calls to
+<a class="reference external" href="https://docs.python.org/3/library/argparse.html#argparse.ArgumentParser.add_argument" title="(in Python v3.11)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">argparse.ArgumentParser.add_argument</span></code></a> prepending options
+with unique plugin name prefix.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="certbot.tests.util.DummyInstaller.prepare">
+<span class="sig-name descname"><span class="pre">prepare</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.11)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/certbot/tests/util.html#DummyInstaller.prepare"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#certbot.tests.util.DummyInstaller.prepare" title="Permalink to this definition">¶</a></dt>
+<dd><p>Prepare the plugin.</p>
+<p>Finish up any additional initialization.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>.PluginError</strong> – when full initialization cannot be completed.</p></li>
+<li><p><strong>.MisconfigurationError</strong> – when full initialization cannot be completed. Plugin will
+be displayed on a list of available plugins.</p></li>
+<li><p><strong>.NoInstallationError</strong> – when the necessary programs/files cannot be located. Plugin
+will NOT be displayed on a list of available plugins.</p></li>
+<li><p><strong>.NotSupportedError</strong> – when the installation is recognized, but the version is not
+currently supported.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="certbot.tests.util.DummyInstaller.more_info">
+<span class="sig-name descname"><span class="pre">more_info</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a></span></span><a class="reference internal" href="../_modules/certbot/tests/util.html#DummyInstaller.more_info"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#certbot.tests.util.DummyInstaller.more_info" title="Permalink to this definition">¶</a></dt>
+<dd><p>Human-readable string to help the user.</p>
+<p>Should describe the steps taken and any relevant info to help the user
+decide which plugin to use.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Rtype str<span class="colon">:</span></dt>
+<dd class="field-odd"><p></p></dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="certbot.tests.util.vector_path">
+<span class="sig-prename descclassname"><span class="pre">certbot.tests.util.</span></span><span class="sig-name descname"><span class="pre">vector_path</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">names</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a></span></span><a class="reference internal" href="../_modules/certbot/tests/util.html#vector_path"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#certbot.tests.util.vector_path" title="Permalink to this definition">¶</a></dt>
+<dd><p>Path to a test vector.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="certbot.tests.util.load_vector">
+<span class="sig-prename descclassname"><span class="pre">certbot.tests.util.</span></span><span class="sig-name descname"><span class="pre">load_vector</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">names</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#bytes" title="(in Python v3.11)"><span class="pre">bytes</span></a></span></span><a class="reference internal" href="../_modules/certbot/tests/util.html#load_vector"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#certbot.tests.util.load_vector" title="Permalink to this definition">¶</a></dt>
+<dd><p>Load contents of a test vector.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="certbot.tests.util.load_cert">
+<span class="sig-prename descclassname"><span class="pre">certbot.tests.util.</span></span><span class="sig-name descname"><span class="pre">load_cert</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">names</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">X509</span></span></span><a class="reference internal" href="../_modules/certbot/tests/util.html#load_cert"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#certbot.tests.util.load_cert" title="Permalink to this definition">¶</a></dt>
+<dd><p>Load certificate.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="certbot.tests.util.load_csr">
+<span class="sig-prename descclassname"><span class="pre">certbot.tests.util.</span></span><span class="sig-name descname"><span class="pre">load_csr</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">names</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">X509Req</span></span></span><a class="reference internal" href="../_modules/certbot/tests/util.html#load_csr"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#certbot.tests.util.load_csr" title="Permalink to this definition">¶</a></dt>
+<dd><p>Load certificate request.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="certbot.tests.util.load_comparable_csr">
+<span class="sig-prename descclassname"><span class="pre">certbot.tests.util.</span></span><span class="sig-name descname"><span class="pre">load_comparable_csr</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">names</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ComparableX509</span></span></span><a class="reference internal" href="../_modules/certbot/tests/util.html#load_comparable_csr"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#certbot.tests.util.load_comparable_csr" title="Permalink to this definition">¶</a></dt>
+<dd><p>Load ComparableX509 certificate request.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="certbot.tests.util.load_rsa_private_key">
+<span class="sig-prename descclassname"><span class="pre">certbot.tests.util.</span></span><span class="sig-name descname"><span class="pre">load_rsa_private_key</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">names</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ComparableRSAKey</span></span></span><a class="reference internal" href="../_modules/certbot/tests/util.html#load_rsa_private_key"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#certbot.tests.util.load_rsa_private_key" title="Permalink to this definition">¶</a></dt>
+<dd><p>Load RSA private key.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="certbot.tests.util.load_pyopenssl_private_key">
+<span class="sig-prename descclassname"><span class="pre">certbot.tests.util.</span></span><span class="sig-name descname"><span class="pre">load_pyopenssl_private_key</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">names</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">PKey</span></span></span><a class="reference internal" href="../_modules/certbot/tests/util.html#load_pyopenssl_private_key"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#certbot.tests.util.load_pyopenssl_private_key" title="Permalink to this definition">¶</a></dt>
+<dd><p>Load pyOpenSSL private key.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="certbot.tests.util.make_lineage">
+<span class="sig-prename descclassname"><span class="pre">certbot.tests.util.</span></span><span class="sig-name descname"><span class="pre">make_lineage</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config_dir</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">testfile</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">ec</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a></span></span><a class="reference internal" href="../_modules/certbot/tests/util.html#make_lineage"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#certbot.tests.util.make_lineage" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates a lineage defined by testfile.</p>
+<p>This creates the archive, live, and renewal directories if
+necessary and creates a simple lineage.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>config_dir</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a>) – path to the configuration directory</p></li>
+<li><p><strong>testfile</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a>) – configuration file to base the lineage on</p></li>
+<li><p><strong>ec</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><em>bool</em></a>) – True if we generate the lineage with an ECDSA key</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>path to the renewal conf file for the created lineage</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)">str</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="certbot.tests.util.patch_display_util">
+<span class="sig-prename descclassname"><span class="pre">certbot.tests.util.</span></span><span class="sig-name descname"><span class="pre">patch_display_util</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/unittest.mock.html#unittest.mock.MagicMock" title="(in Python v3.11)"><span class="pre">MagicMock</span></a></span></span><a class="reference internal" href="../_modules/certbot/tests/util.html#patch_display_util"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#certbot.tests.util.patch_display_util" title="Permalink to this definition">¶</a></dt>
+<dd><p>Patch certbot.display.util to use a special mock display utility.</p>
+<p>The mock display utility works like a regular mock object, except it also
+also asserts that methods are called with valid arguments.</p>
+<p>The mock created by this patch mocks out Certbot internals. That is, the
+mock object will be called by the certbot.display.util functions and the
+mock returned by that call will be used as the display utility. This was
+done to simplify the transition from zope.component and mocking
+certbot.display.util functions directly in test code should be preferred
+over using this function in the future.</p>
+<p>See <a class="reference external" href="https://github.com/certbot/certbot/issues/8948">https://github.com/certbot/certbot/issues/8948</a></p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>patch on the function used internally by certbot.display.util to
+get a display utility instance</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>mock.MagicMock</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="certbot.tests.util.patch_display_util_with_stdout">
+<span class="sig-prename descclassname"><span class="pre">certbot.tests.util.</span></span><span class="sig-name descname"><span class="pre">patch_display_util_with_stdout</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">stdout</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.11)"><span class="pre">Optional</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.IO" title="(in Python v3.11)"><span class="pre">IO</span></a><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/unittest.mock.html#unittest.mock.MagicMock" title="(in Python v3.11)"><span class="pre">MagicMock</span></a></span></span><a class="reference internal" href="../_modules/certbot/tests/util.html#patch_display_util_with_stdout"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#certbot.tests.util.patch_display_util_with_stdout" title="Permalink to this definition">¶</a></dt>
+<dd><p>Patch certbot.display.util to use a special mock display utility.</p>
+<p>The mock display utility works like a regular mock object, except it also
+asserts that methods are called with valid arguments.</p>
+<p>The mock created by this patch mocks out Certbot internals. That is, the
+mock object will be called by the certbot.display.util functions and the
+mock returned by that call will be used as the display utility. This was
+done to simplify the transition from zope.component and mocking
+certbot.display.util functions directly in test code should be preferred
+over using this function in the future.</p>
+<p>See <a class="reference external" href="https://github.com/certbot/certbot/issues/8948">https://github.com/certbot/certbot/issues/8948</a></p>
+<p>The <code class="xref py py-obj docutils literal notranslate"><span class="pre">message</span></code> argument passed to the display utility methods is passed to
+stdout’s write method.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>stdout</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.11)"><em>object</em></a>) – object to write standard output to; it is
+expected to have a <code class="xref py py-obj docutils literal notranslate"><span class="pre">write</span></code> method</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>patch on the function used internally by certbot.display.util to
+get a display utility instance</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>mock.MagicMock</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="certbot.tests.util.FreezableMock">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">certbot.tests.util.</span></span><span class="sig-name descname"><span class="pre">FreezableMock</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">frozen</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">func</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.11)"><span class="pre">Optional</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Callable" title="(in Python v3.11)"><span class="pre">Callable</span></a><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">...</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.11)"><span class="pre">Any</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">return_value</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.11)"><span class="pre">Any</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">sentinel.DEFAULT</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/certbot/tests/util.html#FreezableMock"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#certbot.tests.util.FreezableMock" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<p>Mock object with the ability to freeze attributes.</p>
+<p>This class works like a regular mock.MagicMock object, except
+attributes and behavior set before the object is frozen cannot
+be changed during tests.</p>
+<p>If a func argument is provided to the constructor, this function
+is called first when an instance of FreezableMock is called,
+followed by the usual behavior defined by MagicMock. The return
+value of func is ignored.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="certbot.tests.util.FreezableMock.freeze">
+<span class="sig-name descname"><span class="pre">freeze</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.11)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/certbot/tests/util.html#FreezableMock.freeze"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#certbot.tests.util.FreezableMock.freeze" title="Permalink to this definition">¶</a></dt>
+<dd><p>Freeze object preventing further changes.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="certbot.tests.util.TempDirTestCase">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">certbot.tests.util.</span></span><span class="sig-name descname"><span class="pre">TempDirTestCase</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">methodName</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'runTest'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/certbot/tests/util.html#TempDirTestCase"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#certbot.tests.util.TempDirTestCase" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">TestCase</span></code></p>
+<p>Base test class which sets up and tears down a temporary directory</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="certbot.tests.util.TempDirTestCase.setUp">
+<span class="sig-name descname"><span class="pre">setUp</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.11)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/certbot/tests/util.html#TempDirTestCase.setUp"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#certbot.tests.util.TempDirTestCase.setUp" title="Permalink to this definition">¶</a></dt>
+<dd><p>Execute before test</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="certbot.tests.util.TempDirTestCase.tearDown">
+<span class="sig-name descname"><span class="pre">tearDown</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.11)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/certbot/tests/util.html#TempDirTestCase.tearDown"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#certbot.tests.util.TempDirTestCase.tearDown" title="Permalink to this definition">¶</a></dt>
+<dd><p>Execute after test</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="certbot.tests.util.ConfigTestCase">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">certbot.tests.util.</span></span><span class="sig-name descname"><span class="pre">ConfigTestCase</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">methodName</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'runTest'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/certbot/tests/util.html#ConfigTestCase"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#certbot.tests.util.ConfigTestCase" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#certbot.tests.util.TempDirTestCase" title="certbot.tests.util.TempDirTestCase"><code class="xref py py-class docutils literal notranslate"><span class="pre">TempDirTestCase</span></code></a></p>
+<p>Test class which sets up a NamespaceConfig object.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="certbot.tests.util.ConfigTestCase.setUp">
+<span class="sig-name descname"><span class="pre">setUp</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.11)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/certbot/tests/util.html#ConfigTestCase.setUp"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#certbot.tests.util.ConfigTestCase.setUp" title="Permalink to this definition">¶</a></dt>
+<dd><p>Execute before test</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="certbot.tests.util.lock_and_call">
+<span class="sig-prename descclassname"><span class="pre">certbot.tests.util.</span></span><span class="sig-name descname"><span class="pre">lock_and_call</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">callback</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Callable" title="(in Python v3.11)"><span class="pre">Callable</span></a><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.11)"><span class="pre">Any</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">path_to_lock</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.11)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/certbot/tests/util.html#lock_and_call"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#certbot.tests.util.lock_and_call" title="Permalink to this definition">¶</a></dt>
+<dd><p>Grab a lock on path_to_lock from a foreign process then execute the callback.
+:param callable callback: object to call after acquiring the lock
+:param str path_to_lock: path to file or directory to lock</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="certbot.tests.util.skip_on_windows">
+<span class="sig-prename descclassname"><span class="pre">certbot.tests.util.</span></span><span class="sig-name descname"><span class="pre">skip_on_windows</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">reason</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Callable" title="(in Python v3.11)"><span class="pre">Callable</span></a><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Callable" title="(in Python v3.11)"><span class="pre">Callable</span></a><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">...</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.11)"><span class="pre">Any</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Callable" title="(in Python v3.11)"><span class="pre">Callable</span></a><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">...</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.11)"><span class="pre">Any</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/certbot/tests/util.html#skip_on_windows"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#certbot.tests.util.skip_on_windows" title="Permalink to this definition">¶</a></dt>
+<dd><p>Decorator to skip permanently a test on Windows. A reason is required.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="certbot.tests.util.temp_join">
+<span class="sig-prename descclassname"><span class="pre">certbot.tests.util.</span></span><span class="sig-name descname"><span class="pre">temp_join</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a></span></span><a class="reference internal" href="../_modules/certbot/tests/util.html#temp_join"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#certbot.tests.util.temp_join" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the given path joined to the tempdir path for the current platform
+Eg.: ‘cert’ =&gt; /tmp/cert (Linux) or ‘C:UserscurrentuserAppDataTempcert’ (Windows)</p>
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="certbot.achallenges.html" class="btn btn-neutral float-right" title="certbot.achallenges module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="certbot.tests.acme_util.html" class="btn btn-neutral" title="certbot.tests.acme_util module" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+    <span class="copyright">
+    &copy; Copyright 2014-2018 - The Certbot software and documentation are licensed under the Apache 2.0 license as described at <a href="https://eff.org/cb-license">https://eff.org/cb-license</a>.
+    </span>
+    <br>
+    <br>
+    <span class="status">
+        <a href="https://letsencrypt.status.io/">Let's Encrypt Status</a>
+    </span>
+
+    </p>
+  </div>
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>certbot.reverter module &mdash; Certbot 2.7.0.dev0 documentation</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+    <link rel="canonical" href="https://QubitPi.github.io/certbot/api/certbot.reverter.html" />
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/sphinx_highlight.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="certbot.util module" href="certbot.util.html" />
+    <link rel="prev" title="certbot.ocsp package" href="certbot.ocsp.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            Certbot
+          </a>
+              <div class="version">
+                2.7
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../intro.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../what.html">What is a Certificate?</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../install.html">Get Certbot</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../using.html">User Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../contributing.html">Developer Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../packaging.html">Packaging Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../compatibility.html">Backwards Compatibility</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../resources.html">Resources</a></li>
+</ul>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="../api.html">API Documentation</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="certbot.html">certbot package</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="certbot.html#subpackages">Subpackages</a></li>
+<li class="toctree-l3 current"><a class="reference internal" href="certbot.html#submodules">Submodules</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="certbot.achallenges.html">certbot.achallenges module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="certbot.crypto_util.html">certbot.crypto_util module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="certbot.errors.html">certbot.errors module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="certbot.interfaces.html">certbot.interfaces module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="certbot.main.html">certbot.main module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="certbot.ocsp.html">certbot.ocsp package</a></li>
+<li class="toctree-l4 current"><a class="current reference internal" href="#">certbot.reverter module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="certbot.util.html">certbot.util module</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Certbot</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../api.html">API Documentation</a></li>
+          <li class="breadcrumb-item"><a href="certbot.html">certbot package</a></li>
+      <li class="breadcrumb-item active">certbot.reverter module</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/api/certbot.reverter.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="module-certbot.reverter">
+<span id="certbot-reverter-module"></span><h1>certbot.reverter module<a class="headerlink" href="#module-certbot.reverter" title="Permalink to this heading">¶</a></h1>
+<p>Reverter class saves configuration checkpoints and allows for recovery.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="certbot.reverter.Reverter">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">certbot.reverter.</span></span><span class="sig-name descname"><span class="pre">Reverter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">NamespaceConfig</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/certbot/reverter.html#Reverter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#certbot.reverter.Reverter" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<p>Reverter Class - save and revert configuration checkpoints.</p>
+<p>This class can be used by the plugins, especially Installers, to
+undo changes made to the user’s system. Modifications to files and
+commands to do undo actions taken by the plugin should be registered
+with this class before the action is taken.</p>
+<p>Once a change has been registered with this class, there are three
+states the change can be in. First, the change can be a temporary
+change. This should be used for changes that will soon be reverted,
+such as config changes for the purpose of solving a challenge.
+Changes are added to this state through calls to
+<a class="reference internal" href="#certbot.reverter.Reverter.add_to_temp_checkpoint" title="certbot.reverter.Reverter.add_to_temp_checkpoint"><code class="xref py py-func docutils literal notranslate"><span class="pre">add_to_temp_checkpoint()</span></code></a> and reverted when
+<a class="reference internal" href="#certbot.reverter.Reverter.revert_temporary_config" title="certbot.reverter.Reverter.revert_temporary_config"><code class="xref py py-func docutils literal notranslate"><span class="pre">revert_temporary_config()</span></code></a> or <a class="reference internal" href="#certbot.reverter.Reverter.recovery_routine" title="certbot.reverter.Reverter.recovery_routine"><code class="xref py py-func docutils literal notranslate"><span class="pre">recovery_routine()</span></code></a> is
+called.</p>
+<p>The second state a change can be in is in progress. These changes
+are not temporary, however, they also have not been finalized in a
+checkpoint. A change must become in progress before it can be
+finalized. Changes are added to this state through calls to
+<a class="reference internal" href="#certbot.reverter.Reverter.add_to_checkpoint" title="certbot.reverter.Reverter.add_to_checkpoint"><code class="xref py py-func docutils literal notranslate"><span class="pre">add_to_checkpoint()</span></code></a> and reverted when
+<a class="reference internal" href="#certbot.reverter.Reverter.recovery_routine" title="certbot.reverter.Reverter.recovery_routine"><code class="xref py py-func docutils literal notranslate"><span class="pre">recovery_routine()</span></code></a> is called.</p>
+<p>The last state a change can be in is finalized in a checkpoint. A
+change is put into this state by first becoming an in progress
+change and then calling <a class="reference internal" href="#certbot.reverter.Reverter.finalize_checkpoint" title="certbot.reverter.Reverter.finalize_checkpoint"><code class="xref py py-func docutils literal notranslate"><span class="pre">finalize_checkpoint()</span></code></a>. Changes
+in this state can be reverted through calls to
+<a class="reference internal" href="#certbot.reverter.Reverter.rollback_checkpoints" title="certbot.reverter.Reverter.rollback_checkpoints"><code class="xref py py-func docutils literal notranslate"><span class="pre">rollback_checkpoints()</span></code></a>.</p>
+<p>As a final note, creating new files and registering undo commands
+are handled specially and use the methods
+<a class="reference internal" href="#certbot.reverter.Reverter.register_file_creation" title="certbot.reverter.Reverter.register_file_creation"><code class="xref py py-func docutils literal notranslate"><span class="pre">register_file_creation()</span></code></a> and <a class="reference internal" href="#certbot.reverter.Reverter.register_undo_command" title="certbot.reverter.Reverter.register_undo_command"><code class="xref py py-func docutils literal notranslate"><span class="pre">register_undo_command()</span></code></a>
+respectively. Both of these methods can be used to create either
+temporary or in progress changes.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Consider moving everything over to CSV format.</p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>config</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">certbot.configuration.NamespaceConfig</span></code>) – Configuration.</p>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="certbot.reverter.Reverter.revert_temporary_config">
+<span class="sig-name descname"><span class="pre">revert_temporary_config</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.11)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/certbot/reverter.html#Reverter.revert_temporary_config"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#certbot.reverter.Reverter.revert_temporary_config" title="Permalink to this definition">¶</a></dt>
+<dd><p>Reload users original configuration files after a temporary save.</p>
+<p>This function should reinstall the users original configuration files
+for all saves with temporary=True</p>
+<dl class="field-list simple">
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>.ReverterError</strong> – when unable to revert config</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="certbot.reverter.Reverter.rollback_checkpoints">
+<span class="sig-name descname"><span class="pre">rollback_checkpoints</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">rollback</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><span class="pre">int</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.11)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/certbot/reverter.html#Reverter.rollback_checkpoints"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#certbot.reverter.Reverter.rollback_checkpoints" title="Permalink to this definition">¶</a></dt>
+<dd><p>Revert ‘rollback’ number of configuration checkpoints.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>rollback</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a>) – Number of checkpoints to reverse. A str num will be
+cast to an integer. So “2” is also acceptable.</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>.ReverterError</strong> – if there is a problem with the input or if the function is
+unable to correctly revert the configuration checkpoints</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="certbot.reverter.Reverter.add_to_temp_checkpoint">
+<span class="sig-name descname"><span class="pre">add_to_temp_checkpoint</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">save_files</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Set" title="(in Python v3.11)"><span class="pre">Set</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">save_notes</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.11)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/certbot/reverter.html#Reverter.add_to_temp_checkpoint"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#certbot.reverter.Reverter.add_to_temp_checkpoint" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add files to temporary checkpoint.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>save_files</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#set" title="(in Python v3.11)"><em>set</em></a>) – set of filepaths to save</p></li>
+<li><p><strong>save_notes</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a>) – notes about changes during the save</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="certbot.reverter.Reverter.add_to_checkpoint">
+<span class="sig-name descname"><span class="pre">add_to_checkpoint</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">save_files</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Set" title="(in Python v3.11)"><span class="pre">Set</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">save_notes</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.11)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/certbot/reverter.html#Reverter.add_to_checkpoint"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#certbot.reverter.Reverter.add_to_checkpoint" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add files to a permanent checkpoint.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>save_files</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#set" title="(in Python v3.11)"><em>set</em></a>) – set of filepaths to save</p></li>
+<li><p><strong>save_notes</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a>) – notes about changes during the save</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="certbot.reverter.Reverter.register_file_creation">
+<span class="sig-name descname"><span class="pre">register_file_creation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">temporary</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><span class="pre">bool</span></a></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">files</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.11)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/certbot/reverter.html#Reverter.register_file_creation"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#certbot.reverter.Reverter.register_file_creation" title="Permalink to this definition">¶</a></dt>
+<dd><p>Register the creation of all files during certbot execution.</p>
+<p>Call this method before writing to the file to make sure that the
+file will be cleaned up if the program exits unexpectedly.
+(Before a save occurs)</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>temporary</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><em>bool</em></a>) – If the file creation registry is for
+a temp or permanent save.</p></li>
+<li><p><strong>*files</strong> – file paths (str) to be registered</p></li>
+</ul>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference internal" href="certbot.errors.html#certbot.errors.ReverterError" title="certbot.errors.ReverterError"><strong>certbot.errors.ReverterError</strong></a> – If
+call does not contain necessary parameters or if the file creation
+is unable to be registered.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="certbot.reverter.Reverter.register_undo_command">
+<span class="sig-name descname"><span class="pre">register_undo_command</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">temporary</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><span class="pre">bool</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">command</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Iterable" title="(in Python v3.11)"><span class="pre">Iterable</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.11)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/certbot/reverter.html#Reverter.register_undo_command"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#certbot.reverter.Reverter.register_undo_command" title="Permalink to this definition">¶</a></dt>
+<dd><p>Register a command to be run to undo actions taken.</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>This function does not enforce order of operations in terms
+of file modification vs. command registration.  All undo commands
+are run first before all normal files are reverted to their previous
+state.  If you need to maintain strict order, you may create
+checkpoints before and after the the command registration. This
+function may be improved in the future based on demand.</p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>temporary</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><em>bool</em></a>) – Whether the command should be saved in the
+IN_PROGRESS or TEMPORARY checkpoints.</p></li>
+<li><p><strong>command</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.11)"><em>list</em></a><em> of </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a>) – Command to be run.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="certbot.reverter.Reverter.recovery_routine">
+<span class="sig-name descname"><span class="pre">recovery_routine</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.11)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/certbot/reverter.html#Reverter.recovery_routine"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#certbot.reverter.Reverter.recovery_routine" title="Permalink to this definition">¶</a></dt>
+<dd><p>Revert configuration to most recent finalized checkpoint.</p>
+<p>Remove all changes (temporary and permanent) that have not been
+finalized. This is useful to protect against crashes and other
+execution interruptions.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>.errors.ReverterError</strong> – If unable to recover the configuration</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="certbot.reverter.Reverter.finalize_checkpoint">
+<span class="sig-name descname"><span class="pre">finalize_checkpoint</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">title</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.11)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/certbot/reverter.html#Reverter.finalize_checkpoint"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#certbot.reverter.Reverter.finalize_checkpoint" title="Permalink to this definition">¶</a></dt>
+<dd><p>Finalize the checkpoint.</p>
+<p>Timestamps and permanently saves all changes made through the use
+of <a class="reference internal" href="#certbot.reverter.Reverter.add_to_checkpoint" title="certbot.reverter.Reverter.add_to_checkpoint"><code class="xref py py-func docutils literal notranslate"><span class="pre">add_to_checkpoint()</span></code></a> and <a class="reference internal" href="#certbot.reverter.Reverter.register_file_creation" title="certbot.reverter.Reverter.register_file_creation"><code class="xref py py-func docutils literal notranslate"><span class="pre">register_file_creation()</span></code></a></p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>title</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a>) – Title describing checkpoint</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference internal" href="certbot.errors.html#certbot.errors.ReverterError" title="certbot.errors.ReverterError"><strong>certbot.errors.ReverterError</strong></a> – when the
+checkpoint is not able to be finalized.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="certbot.util.html" class="btn btn-neutral float-right" title="certbot.util module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="certbot.ocsp.html" class="btn btn-neutral" title="certbot.ocsp package" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+    <span class="copyright">
+    &copy; Copyright 2014-2018 - The Certbot software and documentation are licensed under the Apache 2.0 license as described at <a href="https://eff.org/cb-license">https://eff.org/cb-license</a>.
+    </span>
+    <br>
+    <br>
+    <span class="status">
+        <a href="https://letsencrypt.status.io/">Let's Encrypt Status</a>
+    </span>
+
+    </p>
+  </div>
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

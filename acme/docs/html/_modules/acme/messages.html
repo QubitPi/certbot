@@ -1,0 +1,785 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>acme.messages &mdash; acme-python 0 documentation</title>
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../../_static/doctools.js"></script>
+        <script src="../../_static/sphinx_highlight.js"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            acme-python
+          </a>
+              <div class="version">
+                0
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../api.html">API Documentation</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">acme-python</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">acme.messages</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for acme.messages</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;ACME protocol messages.&quot;&quot;&quot;</span>
+<span class="kn">from</span> <span class="nn">collections.abc</span> <span class="kn">import</span> <span class="n">Hashable</span>
+<span class="kn">import</span> <span class="nn">datetime</span>
+<span class="kn">import</span> <span class="nn">json</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Dict</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Iterator</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">List</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Mapping</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">MutableMapping</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Optional</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Tuple</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Type</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">TypeVar</span>
+
+<span class="kn">import</span> <span class="nn">josepy</span> <span class="k">as</span> <span class="nn">jose</span>
+
+<span class="kn">from</span> <span class="nn">acme</span> <span class="kn">import</span> <span class="n">challenges</span>
+<span class="kn">from</span> <span class="nn">acme</span> <span class="kn">import</span> <span class="n">errors</span>
+<span class="kn">from</span> <span class="nn">acme</span> <span class="kn">import</span> <span class="n">fields</span>
+<span class="kn">from</span> <span class="nn">acme</span> <span class="kn">import</span> <span class="n">jws</span>
+<span class="kn">from</span> <span class="nn">acme</span> <span class="kn">import</span> <span class="n">util</span>
+
+<span class="n">ERROR_PREFIX</span> <span class="o">=</span> <span class="s2">&quot;urn:ietf:params:acme:error:&quot;</span>
+
+<span class="n">ERROR_CODES</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s1">&#39;accountDoesNotExist&#39;</span><span class="p">:</span> <span class="s1">&#39;The request specified an account that does not exist&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;alreadyRevoked&#39;</span><span class="p">:</span> <span class="s1">&#39;The request specified a certificate to be revoked that has&#39;</span> \
+    <span class="s1">&#39; already been revoked&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;badCSR&#39;</span><span class="p">:</span> <span class="s1">&#39;The CSR is unacceptable (e.g., due to a short key)&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;badNonce&#39;</span><span class="p">:</span> <span class="s1">&#39;The client sent an unacceptable anti-replay nonce&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;badPublicKey&#39;</span><span class="p">:</span> <span class="s1">&#39;The JWS was signed by a public key the server does not support&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;badRevocationReason&#39;</span><span class="p">:</span> <span class="s1">&#39;The revocation reason provided is not allowed by the server&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;badSignatureAlgorithm&#39;</span><span class="p">:</span> <span class="s1">&#39;The JWS was signed with an algorithm the server does not support&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;caa&#39;</span><span class="p">:</span> <span class="s1">&#39;Certification Authority Authorization (CAA) records forbid the CA from issuing&#39;</span> \
+    <span class="s1">&#39; a certificate&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;compound&#39;</span><span class="p">:</span> <span class="s1">&#39;Specific error conditions are indicated in the &quot;subproblems&quot; array&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;connection&#39;</span><span class="p">:</span> <span class="p">(</span><span class="s1">&#39;The server could not connect to the client to verify the&#39;</span>
+                   <span class="s1">&#39; domain&#39;</span><span class="p">),</span>
+    <span class="s1">&#39;dns&#39;</span><span class="p">:</span> <span class="s1">&#39;There was a problem with a DNS query during identifier validation&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;dnssec&#39;</span><span class="p">:</span> <span class="s1">&#39;The server could not validate a DNSSEC signed domain&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;incorrectResponse&#39;</span><span class="p">:</span> <span class="s1">&#39;Response received didn</span><span class="se">\&#39;</span><span class="s1">t match the challenge</span><span class="se">\&#39;</span><span class="s1">s requirements&#39;</span><span class="p">,</span>
+    <span class="c1"># deprecate invalidEmail</span>
+    <span class="s1">&#39;invalidEmail&#39;</span><span class="p">:</span> <span class="s1">&#39;The provided email for a registration was invalid&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;invalidContact&#39;</span><span class="p">:</span> <span class="s1">&#39;The provided contact URI was invalid&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;malformed&#39;</span><span class="p">:</span> <span class="s1">&#39;The request message was malformed&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;rejectedIdentifier&#39;</span><span class="p">:</span> <span class="s1">&#39;The server will not issue certificates for the identifier&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;orderNotReady&#39;</span><span class="p">:</span> <span class="s1">&#39;The request attempted to finalize an order that is not ready to be finalized&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;rateLimited&#39;</span><span class="p">:</span> <span class="s1">&#39;There were too many requests of a given type&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;serverInternal&#39;</span><span class="p">:</span> <span class="s1">&#39;The server experienced an internal error&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;tls&#39;</span><span class="p">:</span> <span class="s1">&#39;The server experienced a TLS error during domain verification&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;unauthorized&#39;</span><span class="p">:</span> <span class="s1">&#39;The client lacks sufficient authorization&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;unsupportedContact&#39;</span><span class="p">:</span> <span class="s1">&#39;A contact URL for an account used an unsupported protocol scheme&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;unknownHost&#39;</span><span class="p">:</span> <span class="s1">&#39;The server could not resolve a domain name&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;unsupportedIdentifier&#39;</span><span class="p">:</span> <span class="s1">&#39;An identifier is of an unsupported type&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;externalAccountRequired&#39;</span><span class="p">:</span> <span class="s1">&#39;The server requires external account binding&#39;</span><span class="p">,</span>
+<span class="p">}</span>
+
+<span class="n">ERROR_TYPE_DESCRIPTIONS</span> <span class="o">=</span> <span class="p">{</span><span class="o">**</span><span class="p">{</span>
+    <span class="n">ERROR_PREFIX</span> <span class="o">+</span> <span class="n">name</span><span class="p">:</span> <span class="n">desc</span> <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">desc</span> <span class="ow">in</span> <span class="n">ERROR_CODES</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
+<span class="p">}}</span>
+
+
+<div class="viewcode-block" id="is_acme_error"><a class="viewcode-back" href="../../api/messages.html#acme.messages.is_acme_error">[docs]</a><span class="k">def</span> <span class="nf">is_acme_error</span><span class="p">(</span><span class="n">err</span><span class="p">:</span> <span class="ne">BaseException</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Check if argument is an ACME error.&quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">err</span><span class="p">,</span> <span class="n">Error</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="n">err</span><span class="o">.</span><span class="n">typ</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">ERROR_PREFIX</span> <span class="ow">in</span> <span class="n">err</span><span class="o">.</span><span class="n">typ</span>
+    <span class="k">return</span> <span class="kc">False</span></div>
+
+
+<span class="k">class</span> <span class="nc">_Constant</span><span class="p">(</span><span class="n">jose</span><span class="o">.</span><span class="n">JSONDeSerializable</span><span class="p">,</span> <span class="n">Hashable</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;ACME constant.&quot;&quot;&quot;</span>
+    <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;name&#39;</span><span class="p">,)</span>
+    <span class="n">POSSIBLE_NAMES</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="s1">&#39;_Constant&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">NotImplemented</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">POSSIBLE_NAMES</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span>  <span class="c1"># pylint: disable=unsupported-assignment-operation</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">name</span>
+
+    <span class="k">def</span> <span class="nf">to_partial_json</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span>
+
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">from_json</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">jobj</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;_Constant&#39;</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">jobj</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">cls</span><span class="o">.</span><span class="n">POSSIBLE_NAMES</span><span class="p">:</span>  <span class="c1"># pylint: disable=unsupported-membership-test</span>
+            <span class="k">raise</span> <span class="n">jose</span><span class="o">.</span><span class="n">DeserializationError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="bp">cls</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s1"> not recognized&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">cls</span><span class="o">.</span><span class="n">POSSIBLE_NAMES</span><span class="p">[</span><span class="n">jobj</span><span class="p">]</span>
+
+    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s1">(</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s1">)&#39;</span>
+
+    <span class="k">def</span> <span class="fm">__eq__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+        <span class="k">return</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">))</span> <span class="ow">and</span> <span class="n">other</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span>
+
+    <span class="k">def</span> <span class="fm">__hash__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+        <span class="k">return</span> <span class="nb">hash</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">))</span>
+
+
+<div class="viewcode-block" id="IdentifierType"><a class="viewcode-back" href="../../api/messages.html#acme.messages.IdentifierType">[docs]</a><span class="k">class</span> <span class="nc">IdentifierType</span><span class="p">(</span><span class="n">_Constant</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;ACME identifier type.&quot;&quot;&quot;</span>
+    <span class="n">POSSIBLE_NAMES</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">_Constant</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span></div>
+
+
+<span class="n">IDENTIFIER_FQDN</span> <span class="o">=</span> <span class="n">IdentifierType</span><span class="p">(</span><span class="s1">&#39;dns&#39;</span><span class="p">)</span>  <span class="c1"># IdentifierDNS in Boulder</span>
+<span class="n">IDENTIFIER_IP</span> <span class="o">=</span> <span class="n">IdentifierType</span><span class="p">(</span><span class="s1">&#39;ip&#39;</span><span class="p">)</span> <span class="c1"># IdentifierIP in pebble - not in Boulder yet</span>
+
+
+<div class="viewcode-block" id="Identifier"><a class="viewcode-back" href="../../api/messages.html#acme.messages.Identifier">[docs]</a><span class="k">class</span> <span class="nc">Identifier</span><span class="p">(</span><span class="n">jose</span><span class="o">.</span><span class="n">JSONObjectWithFields</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;ACME identifier.</span>
+
+<span class="sd">    :ivar IdentifierType typ:</span>
+<span class="sd">    :ivar str value:</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">typ</span><span class="p">:</span> <span class="n">IdentifierType</span> <span class="o">=</span> <span class="n">jose</span><span class="o">.</span><span class="n">field</span><span class="p">(</span><span class="s1">&#39;type&#39;</span><span class="p">,</span> <span class="n">decoder</span><span class="o">=</span><span class="n">IdentifierType</span><span class="o">.</span><span class="n">from_json</span><span class="p">)</span>
+    <span class="n">value</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">jose</span><span class="o">.</span><span class="n">field</span><span class="p">(</span><span class="s1">&#39;value&#39;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Error"><a class="viewcode-back" href="../../api/messages.html#acme.messages.Error">[docs]</a><span class="k">class</span> <span class="nc">Error</span><span class="p">(</span><span class="n">jose</span><span class="o">.</span><span class="n">JSONObjectWithFields</span><span class="p">,</span> <span class="n">errors</span><span class="o">.</span><span class="n">Error</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;ACME error.</span>
+
+<span class="sd">    https://datatracker.ietf.org/doc/html/rfc7807</span>
+
+<span class="sd">    Note: Although Error inherits from JSONObjectWithFields, which is immutable,</span>
+<span class="sd">    we add mutability for Error to comply with the Python exception API.</span>
+
+<span class="sd">    :ivar str typ:</span>
+<span class="sd">    :ivar str title:</span>
+<span class="sd">    :ivar str detail:</span>
+<span class="sd">    :ivar Identifier identifier:</span>
+<span class="sd">    :ivar tuple subproblems: An array of ACME Errors which may be present when the CA</span>
+<span class="sd">            returns multiple errors related to the same request, `tuple` of `Error`.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">typ</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">jose</span><span class="o">.</span><span class="n">field</span><span class="p">(</span><span class="s1">&#39;type&#39;</span><span class="p">,</span> <span class="n">omitempty</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="s1">&#39;about:blank&#39;</span><span class="p">)</span>
+    <span class="n">title</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">jose</span><span class="o">.</span><span class="n">field</span><span class="p">(</span><span class="s1">&#39;title&#39;</span><span class="p">,</span> <span class="n">omitempty</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">detail</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">jose</span><span class="o">.</span><span class="n">field</span><span class="p">(</span><span class="s1">&#39;detail&#39;</span><span class="p">,</span> <span class="n">omitempty</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">identifier</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="s1">&#39;Identifier&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">jose</span><span class="o">.</span><span class="n">field</span><span class="p">(</span>
+        <span class="s1">&#39;identifier&#39;</span><span class="p">,</span> <span class="n">decoder</span><span class="o">=</span><span class="n">Identifier</span><span class="o">.</span><span class="n">from_json</span><span class="p">,</span> <span class="n">omitempty</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">subproblems</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="s1">&#39;Error&#39;</span><span class="p">,</span> <span class="o">...</span><span class="p">]]</span> <span class="o">=</span> <span class="n">jose</span><span class="o">.</span><span class="n">field</span><span class="p">(</span><span class="s1">&#39;subproblems&#39;</span><span class="p">,</span> <span class="n">omitempty</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+    <span class="c1"># Mypy does not understand the josepy magic happening here, and falsely claims</span>
+    <span class="c1"># that subproblems is redefined. Let&#39;s ignore the type check here.</span>
+    <span class="nd">@subproblems</span><span class="o">.</span><span class="n">decoder</span>  <span class="c1"># type: ignore</span>
+    <span class="k">def</span> <span class="nf">subproblems</span><span class="p">(</span><span class="n">value</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]])</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="s1">&#39;Error&#39;</span><span class="p">,</span> <span class="o">...</span><span class="p">]:</span>  <span class="c1"># pylint: disable=no-self-argument,missing-function-docstring</span>
+        <span class="k">return</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">Error</span><span class="o">.</span><span class="n">from_json</span><span class="p">(</span><span class="n">subproblem</span><span class="p">)</span> <span class="k">for</span> <span class="n">subproblem</span> <span class="ow">in</span> <span class="n">value</span><span class="p">)</span>
+
+<div class="viewcode-block" id="Error.with_code"><a class="viewcode-back" href="../../api/messages.html#acme.messages.Error.with_code">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">with_code</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">code</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;Error&#39;</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Create an Error instance with an ACME Error code.</span>
+
+<span class="sd">        :str code: An ACME error code, like &#39;dnssec&#39;.</span>
+<span class="sd">        :kwargs: kwargs to pass to Error.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">code</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">ERROR_CODES</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;The supplied code: </span><span class="si">%s</span><span class="s2"> is not a known ACME error&quot;</span>
+                             <span class="s2">&quot; code&quot;</span> <span class="o">%</span> <span class="n">code</span><span class="p">)</span>
+        <span class="n">typ</span> <span class="o">=</span> <span class="n">ERROR_PREFIX</span> <span class="o">+</span> <span class="n">code</span>
+        <span class="c1"># Mypy will not understand that the Error constructor accepts a named argument</span>
+        <span class="c1"># &quot;typ&quot; because of josepy magic. Let&#39;s ignore the type check here.</span>
+        <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="n">typ</span><span class="o">=</span><span class="n">typ</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">description</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Hardcoded error description based on its type.</span>
+
+<span class="sd">        :returns: Description if standard ACME error or ``None``.</span>
+<span class="sd">        :rtype: str</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">ERROR_TYPE_DESCRIPTIONS</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">typ</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">code</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;ACME error code.</span>
+
+<span class="sd">        Basically self.typ without the ERROR_PREFIX.</span>
+
+<span class="sd">        :returns: error code if standard ACME code or ``None``.</span>
+<span class="sd">        :rtype: str</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">code</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">typ</span><span class="p">)</span><span class="o">.</span><span class="n">rsplit</span><span class="p">(</span><span class="s1">&#39;:&#39;</span><span class="p">,</span> <span class="n">maxsplit</span><span class="o">=</span><span class="mi">1</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">code</span> <span class="ow">in</span> <span class="n">ERROR_CODES</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">code</span>
+        <span class="k">return</span> <span class="kc">None</span>
+
+    <span class="c1"># Hack to allow mutability on Errors (see GH #9539)</span>
+    <span class="k">def</span> <span class="fm">__setattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">return</span> <span class="nb">object</span><span class="o">.</span><span class="fm">__setattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="sa">b</span><span class="s1">&#39; :: &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
+            <span class="n">part</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s1">&#39;ascii&#39;</span><span class="p">,</span> <span class="s1">&#39;backslashreplace&#39;</span><span class="p">)</span> <span class="k">for</span> <span class="n">part</span> <span class="ow">in</span>
+            <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">typ</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">description</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">detail</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">title</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">part</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">)</span><span class="o">.</span><span class="n">decode</span><span class="p">()</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">identifier</span><span class="p">:</span>
+            <span class="n">result</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;Problem for </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">identifier</span><span class="o">.</span><span class="n">value</span><span class="si">}</span><span class="s1">: &#39;</span> <span class="o">+</span> <span class="n">result</span> <span class="c1"># pylint: disable=no-member</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">subproblems</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">subproblems</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">subproblem</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">subproblems</span><span class="p">:</span>
+                <span class="n">result</span> <span class="o">+=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="se">\n</span><span class="si">{</span><span class="n">subproblem</span><span class="si">}</span><span class="s1">&#39;</span>
+        <span class="k">return</span> <span class="n">result</span></div>
+
+
+<div class="viewcode-block" id="Status"><a class="viewcode-back" href="../../api/messages.html#acme.messages.Status">[docs]</a><span class="k">class</span> <span class="nc">Status</span><span class="p">(</span><span class="n">_Constant</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;ACME &quot;status&quot; field.&quot;&quot;&quot;</span>
+    <span class="n">POSSIBLE_NAMES</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">_Constant</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span></div>
+
+
+<span class="n">STATUS_UNKNOWN</span> <span class="o">=</span> <span class="n">Status</span><span class="p">(</span><span class="s1">&#39;unknown&#39;</span><span class="p">)</span>
+<span class="n">STATUS_PENDING</span> <span class="o">=</span> <span class="n">Status</span><span class="p">(</span><span class="s1">&#39;pending&#39;</span><span class="p">)</span>
+<span class="n">STATUS_PROCESSING</span> <span class="o">=</span> <span class="n">Status</span><span class="p">(</span><span class="s1">&#39;processing&#39;</span><span class="p">)</span>
+<span class="n">STATUS_VALID</span> <span class="o">=</span> <span class="n">Status</span><span class="p">(</span><span class="s1">&#39;valid&#39;</span><span class="p">)</span>
+<span class="n">STATUS_INVALID</span> <span class="o">=</span> <span class="n">Status</span><span class="p">(</span><span class="s1">&#39;invalid&#39;</span><span class="p">)</span>
+<span class="n">STATUS_REVOKED</span> <span class="o">=</span> <span class="n">Status</span><span class="p">(</span><span class="s1">&#39;revoked&#39;</span><span class="p">)</span>
+<span class="n">STATUS_READY</span> <span class="o">=</span> <span class="n">Status</span><span class="p">(</span><span class="s1">&#39;ready&#39;</span><span class="p">)</span>
+<span class="n">STATUS_DEACTIVATED</span> <span class="o">=</span> <span class="n">Status</span><span class="p">(</span><span class="s1">&#39;deactivated&#39;</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="Directory"><a class="viewcode-back" href="../../api/messages.html#acme.messages.Directory">[docs]</a><span class="k">class</span> <span class="nc">Directory</span><span class="p">(</span><span class="n">jose</span><span class="o">.</span><span class="n">JSONDeSerializable</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Directory.</span>
+
+<span class="sd">    Directory resources must be accessed by the exact field name in RFC8555 (section 9.7.5).</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="Directory.Meta"><a class="viewcode-back" href="../../api/messages.html#acme.messages.Directory.Meta">[docs]</a>    <span class="k">class</span> <span class="nc">Meta</span><span class="p">(</span><span class="n">jose</span><span class="o">.</span><span class="n">JSONObjectWithFields</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Directory Meta.&quot;&quot;&quot;</span>
+        <span class="n">_terms_of_service</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">jose</span><span class="o">.</span><span class="n">field</span><span class="p">(</span><span class="s1">&#39;termsOfService&#39;</span><span class="p">,</span> <span class="n">omitempty</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">website</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">jose</span><span class="o">.</span><span class="n">field</span><span class="p">(</span><span class="s1">&#39;website&#39;</span><span class="p">,</span> <span class="n">omitempty</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">caa_identities</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">jose</span><span class="o">.</span><span class="n">field</span><span class="p">(</span><span class="s1">&#39;caaIdentities&#39;</span><span class="p">,</span> <span class="n">omitempty</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">external_account_required</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="n">jose</span><span class="o">.</span><span class="n">field</span><span class="p">(</span><span class="s1">&#39;externalAccountRequired&#39;</span><span class="p">,</span> <span class="n">omitempty</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+        <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">kwargs</span> <span class="o">=</span> <span class="p">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_internal_name</span><span class="p">(</span><span class="n">k</span><span class="p">):</span> <span class="n">v</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">items</span><span class="p">()}</span>
+            <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+        <span class="nd">@property</span>
+        <span class="k">def</span> <span class="nf">terms_of_service</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">            </span><span class="sd">&quot;&quot;&quot;URL for the CA TOS&quot;&quot;&quot;</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_terms_of_service</span>
+
+        <span class="k">def</span> <span class="fm">__iter__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Iterator</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+            <span class="c1"># When iterating over fields, use the external name &#39;terms_of_service&#39; instead of</span>
+            <span class="c1"># the internal &#39;_terms_of_service&#39;.</span>
+            <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__iter__</span><span class="p">():</span>
+                <span class="k">yield</span> <span class="n">name</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span> <span class="k">if</span> <span class="n">name</span> <span class="o">==</span> <span class="s1">&#39;_terms_of_service&#39;</span> <span class="k">else</span> <span class="n">name</span>
+
+        <span class="k">def</span> <span class="nf">_internal_name</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s1">&#39;_&#39;</span> <span class="o">+</span> <span class="n">name</span> <span class="k">if</span> <span class="n">name</span> <span class="o">==</span> <span class="s1">&#39;terms_of_service&#39;</span> <span class="k">else</span> <span class="n">name</span></div>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">jobj</span><span class="p">:</span> <span class="n">Mapping</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_jobj</span> <span class="o">=</span> <span class="n">jobj</span>
+
+    <span class="k">def</span> <span class="fm">__getattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="p">[</span><span class="n">name</span><span class="p">]</span>
+        <span class="k">except</span> <span class="ne">KeyError</span> <span class="k">as</span> <span class="n">error</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">error</span><span class="p">))</span>
+
+    <span class="k">def</span> <span class="fm">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_jobj</span><span class="p">[</span><span class="n">name</span><span class="p">]</span>
+        <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">KeyError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Directory field &quot;</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s1">&quot; not found&#39;</span><span class="p">)</span>
+
+<div class="viewcode-block" id="Directory.to_partial_json"><a class="viewcode-back" href="../../api/messages.html#acme.messages.Directory.to_partial_json">[docs]</a>    <span class="k">def</span> <span class="nf">to_partial_json</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
+        <span class="k">return</span> <span class="n">util</span><span class="o">.</span><span class="n">map_keys</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_jobj</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">k</span><span class="p">:</span> <span class="n">k</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Directory.from_json"><a class="viewcode-back" href="../../api/messages.html#acme.messages.Directory.from_json">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">from_json</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">jobj</span><span class="p">:</span> <span class="n">MutableMapping</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="s1">&#39;Directory&#39;</span><span class="p">:</span>
+        <span class="n">jobj</span><span class="p">[</span><span class="s1">&#39;meta&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">Meta</span><span class="o">.</span><span class="n">from_json</span><span class="p">(</span><span class="n">jobj</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;meta&#39;</span><span class="p">,</span> <span class="p">{}))</span>
+        <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="n">jobj</span><span class="p">)</span></div></div>
+
+
+<div class="viewcode-block" id="Resource"><a class="viewcode-back" href="../../api/messages.html#acme.messages.Resource">[docs]</a><span class="k">class</span> <span class="nc">Resource</span><span class="p">(</span><span class="n">jose</span><span class="o">.</span><span class="n">JSONObjectWithFields</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;ACME Resource.</span>
+
+<span class="sd">    :ivar acme.messages.ResourceBody body: Resource body.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">body</span><span class="p">:</span> <span class="s2">&quot;ResourceBody&quot;</span> <span class="o">=</span> <span class="n">jose</span><span class="o">.</span><span class="n">field</span><span class="p">(</span><span class="s1">&#39;body&#39;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="ResourceWithURI"><a class="viewcode-back" href="../../api/messages.html#acme.messages.ResourceWithURI">[docs]</a><span class="k">class</span> <span class="nc">ResourceWithURI</span><span class="p">(</span><span class="n">Resource</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;ACME Resource with URI.</span>
+
+<span class="sd">    :ivar str uri: Location of the resource.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">uri</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">jose</span><span class="o">.</span><span class="n">field</span><span class="p">(</span><span class="s1">&#39;uri&#39;</span><span class="p">)</span>  <span class="c1"># no ChallengeResource.uri</span></div>
+
+
+<div class="viewcode-block" id="ResourceBody"><a class="viewcode-back" href="../../api/messages.html#acme.messages.ResourceBody">[docs]</a><span class="k">class</span> <span class="nc">ResourceBody</span><span class="p">(</span><span class="n">jose</span><span class="o">.</span><span class="n">JSONObjectWithFields</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;ACME Resource Body.&quot;&quot;&quot;</span></div>
+
+
+<div class="viewcode-block" id="ExternalAccountBinding"><a class="viewcode-back" href="../../api/messages.html#acme.messages.ExternalAccountBinding">[docs]</a><span class="k">class</span> <span class="nc">ExternalAccountBinding</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;ACME External Account Binding&quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="ExternalAccountBinding.from_data"><a class="viewcode-back" href="../../api/messages.html#acme.messages.ExternalAccountBinding.from_data">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">from_data</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">account_public_key</span><span class="p">:</span> <span class="n">jose</span><span class="o">.</span><span class="n">JWK</span><span class="p">,</span> <span class="n">kid</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">hmac_key</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+                  <span class="n">directory</span><span class="p">:</span> <span class="n">Directory</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Create External Account Binding Resource from contact details, kid and hmac.&quot;&quot;&quot;</span>
+
+        <span class="n">key_json</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">account_public_key</span><span class="o">.</span><span class="n">to_partial_json</span><span class="p">())</span><span class="o">.</span><span class="n">encode</span><span class="p">()</span>
+        <span class="n">decoded_hmac_key</span> <span class="o">=</span> <span class="n">jose</span><span class="o">.</span><span class="n">b64</span><span class="o">.</span><span class="n">b64decode</span><span class="p">(</span><span class="n">hmac_key</span><span class="p">)</span>
+        <span class="n">url</span> <span class="o">=</span> <span class="n">directory</span><span class="p">[</span><span class="s2">&quot;newAccount&quot;</span><span class="p">]</span>
+
+        <span class="n">eab</span> <span class="o">=</span> <span class="n">jws</span><span class="o">.</span><span class="n">JWS</span><span class="o">.</span><span class="n">sign</span><span class="p">(</span><span class="n">key_json</span><span class="p">,</span> <span class="n">jose</span><span class="o">.</span><span class="n">jwk</span><span class="o">.</span><span class="n">JWKOct</span><span class="p">(</span><span class="n">key</span><span class="o">=</span><span class="n">decoded_hmac_key</span><span class="p">),</span>
+                           <span class="n">jose</span><span class="o">.</span><span class="n">jwa</span><span class="o">.</span><span class="n">HS256</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span>
+                           <span class="n">url</span><span class="p">,</span> <span class="n">kid</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">eab</span><span class="o">.</span><span class="n">to_partial_json</span><span class="p">()</span></div></div>
+
+
+<span class="n">GenericRegistration</span> <span class="o">=</span> <span class="n">TypeVar</span><span class="p">(</span><span class="s1">&#39;GenericRegistration&#39;</span><span class="p">,</span> <span class="n">bound</span><span class="o">=</span><span class="s1">&#39;Registration&#39;</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="Registration"><a class="viewcode-back" href="../../api/messages.html#acme.messages.Registration">[docs]</a><span class="k">class</span> <span class="nc">Registration</span><span class="p">(</span><span class="n">ResourceBody</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Registration Resource Body.</span>
+
+<span class="sd">    :ivar jose.JWK key: Public key.</span>
+<span class="sd">    :ivar tuple contact: Contact information following ACME spec,</span>
+<span class="sd">        `tuple` of `str`.</span>
+<span class="sd">    :ivar str agreement:</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># on new-reg key server ignores &#39;key&#39; and populates it based on</span>
+    <span class="c1"># JWS.signature.combined.jwk</span>
+    <span class="n">key</span><span class="p">:</span> <span class="n">jose</span><span class="o">.</span><span class="n">JWK</span> <span class="o">=</span> <span class="n">jose</span><span class="o">.</span><span class="n">field</span><span class="p">(</span><span class="s1">&#39;key&#39;</span><span class="p">,</span> <span class="n">omitempty</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">decoder</span><span class="o">=</span><span class="n">jose</span><span class="o">.</span><span class="n">JWK</span><span class="o">.</span><span class="n">from_json</span><span class="p">)</span>
+    <span class="c1"># Contact field implements special behavior to allow messages that clear existing</span>
+    <span class="c1"># contacts while not expecting the `contact` field when loading from json.</span>
+    <span class="c1"># This is implemented in the constructor and *_json methods.</span>
+    <span class="n">contact</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="o">...</span><span class="p">]</span> <span class="o">=</span> <span class="n">jose</span><span class="o">.</span><span class="n">field</span><span class="p">(</span><span class="s1">&#39;contact&#39;</span><span class="p">,</span> <span class="n">omitempty</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="p">())</span>
+    <span class="n">agreement</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">jose</span><span class="o">.</span><span class="n">field</span><span class="p">(</span><span class="s1">&#39;agreement&#39;</span><span class="p">,</span> <span class="n">omitempty</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">status</span><span class="p">:</span> <span class="n">Status</span> <span class="o">=</span> <span class="n">jose</span><span class="o">.</span><span class="n">field</span><span class="p">(</span><span class="s1">&#39;status&#39;</span><span class="p">,</span> <span class="n">omitempty</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">terms_of_service_agreed</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="n">jose</span><span class="o">.</span><span class="n">field</span><span class="p">(</span><span class="s1">&#39;termsOfServiceAgreed&#39;</span><span class="p">,</span> <span class="n">omitempty</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">only_return_existing</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="n">jose</span><span class="o">.</span><span class="n">field</span><span class="p">(</span><span class="s1">&#39;onlyReturnExisting&#39;</span><span class="p">,</span> <span class="n">omitempty</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">external_account_binding</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="n">jose</span><span class="o">.</span><span class="n">field</span><span class="p">(</span><span class="s1">&#39;externalAccountBinding&#39;</span><span class="p">,</span>
+                                                          <span class="n">omitempty</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+    <span class="n">phone_prefix</span> <span class="o">=</span> <span class="s1">&#39;tel:&#39;</span>
+    <span class="n">email_prefix</span> <span class="o">=</span> <span class="s1">&#39;mailto:&#39;</span>
+
+<div class="viewcode-block" id="Registration.from_data"><a class="viewcode-back" href="../../api/messages.html#acme.messages.Registration.from_data">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">from_data</span><span class="p">(</span><span class="bp">cls</span><span class="p">:</span> <span class="n">Type</span><span class="p">[</span><span class="n">GenericRegistration</span><span class="p">],</span> <span class="n">phone</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                  <span class="n">email</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                  <span class="n">external_account_binding</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                  <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">GenericRegistration</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Create registration resource from contact details.</span>
+
+<span class="sd">        The `contact` keyword being passed to a Registration object is meaningful, so</span>
+<span class="sd">        this function represents empty iterables in its kwargs by passing on an empty</span>
+<span class="sd">        `tuple`.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="c1"># Note if `contact` was in kwargs.</span>
+        <span class="n">contact_provided</span> <span class="o">=</span> <span class="s1">&#39;contact&#39;</span> <span class="ow">in</span> <span class="n">kwargs</span>
+
+        <span class="c1"># Pop `contact` from kwargs and add formatted email or phone numbers</span>
+        <span class="n">details</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;contact&#39;</span><span class="p">,</span> <span class="p">()))</span>
+        <span class="k">if</span> <span class="n">phone</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">details</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">cls</span><span class="o">.</span><span class="n">phone_prefix</span> <span class="o">+</span> <span class="n">phone</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">email</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">details</span><span class="o">.</span><span class="n">extend</span><span class="p">([</span><span class="bp">cls</span><span class="o">.</span><span class="n">email_prefix</span> <span class="o">+</span> <span class="n">mail</span> <span class="k">for</span> <span class="n">mail</span> <span class="ow">in</span> <span class="n">email</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">)])</span>
+
+        <span class="c1"># Insert formatted contact information back into kwargs</span>
+        <span class="c1"># or insert an empty tuple if `contact` provided.</span>
+        <span class="k">if</span> <span class="n">details</span> <span class="ow">or</span> <span class="n">contact_provided</span><span class="p">:</span>
+            <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;contact&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">details</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">external_account_binding</span><span class="p">:</span>
+            <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;external_account_binding&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">external_account_binding</span>
+
+        <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Note if the user provides a value for the `contact` member.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="s1">&#39;contact&#39;</span> <span class="ow">in</span> <span class="n">kwargs</span> <span class="ow">and</span> <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;contact&#39;</span><span class="p">]</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="c1"># Avoid the __setattr__ used by jose.TypedJSONObjectWithFields</span>
+            <span class="nb">object</span><span class="o">.</span><span class="fm">__setattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;_add_contact&#39;</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_filter_contact</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">prefix</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="o">...</span><span class="p">]:</span>
+        <span class="k">return</span> <span class="nb">tuple</span><span class="p">(</span>
+            <span class="n">detail</span><span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="n">prefix</span><span class="p">):]</span> <span class="k">for</span> <span class="n">detail</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">contact</span>  <span class="c1"># pylint: disable=not-an-iterable</span>
+            <span class="k">if</span> <span class="n">detail</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="n">prefix</span><span class="p">))</span>
+
+    <span class="k">def</span> <span class="nf">_add_contact_if_appropriate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">jobj</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        The `contact` member of Registration objects should not be required when</span>
+<span class="sd">        de-serializing (as it would be if the Fields&#39; `omitempty` flag were `False`), but</span>
+<span class="sd">        it should be included in serializations if it was provided.</span>
+
+<span class="sd">        :param jobj: Dictionary containing this Registrations&#39; data</span>
+<span class="sd">        :type jobj: dict</span>
+
+<span class="sd">        :returns: Dictionary containing Registrations data to transmit to the server</span>
+<span class="sd">        :rtype: dict</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;_add_contact&#39;</span><span class="p">,</span> <span class="kc">False</span><span class="p">):</span>
+            <span class="n">jobj</span><span class="p">[</span><span class="s1">&#39;contact&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s1">&#39;contact&#39;</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">jobj</span>
+
+<div class="viewcode-block" id="Registration.to_partial_json"><a class="viewcode-back" href="../../api/messages.html#acme.messages.Registration.to_partial_json">[docs]</a>    <span class="k">def</span> <span class="nf">to_partial_json</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Modify josepy.JSONDeserializable.to_partial_json()&quot;&quot;&quot;</span>
+        <span class="n">jobj</span> <span class="o">=</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">to_partial_json</span><span class="p">()</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_add_contact_if_appropriate</span><span class="p">(</span><span class="n">jobj</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Registration.fields_to_partial_json"><a class="viewcode-back" href="../../api/messages.html#acme.messages.Registration.fields_to_partial_json">[docs]</a>    <span class="k">def</span> <span class="nf">fields_to_partial_json</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Modify josepy.JSONObjectWithFields.fields_to_partial_json()&quot;&quot;&quot;</span>
+        <span class="n">jobj</span> <span class="o">=</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">fields_to_partial_json</span><span class="p">()</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_add_contact_if_appropriate</span><span class="p">(</span><span class="n">jobj</span><span class="p">)</span></div>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">phones</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="o">...</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;All phones found in the ``contact`` field.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_filter_contact</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">phone_prefix</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">emails</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="o">...</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;All emails found in the ``contact`` field.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_filter_contact</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">email_prefix</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="NewRegistration"><a class="viewcode-back" href="../../api/messages.html#acme.messages.NewRegistration">[docs]</a><span class="k">class</span> <span class="nc">NewRegistration</span><span class="p">(</span><span class="n">Registration</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;New registration.&quot;&quot;&quot;</span></div>
+
+
+<div class="viewcode-block" id="UpdateRegistration"><a class="viewcode-back" href="../../api/messages.html#acme.messages.UpdateRegistration">[docs]</a><span class="k">class</span> <span class="nc">UpdateRegistration</span><span class="p">(</span><span class="n">Registration</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Update registration.&quot;&quot;&quot;</span></div>
+
+
+<div class="viewcode-block" id="RegistrationResource"><a class="viewcode-back" href="../../api/messages.html#acme.messages.RegistrationResource">[docs]</a><span class="k">class</span> <span class="nc">RegistrationResource</span><span class="p">(</span><span class="n">ResourceWithURI</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Registration Resource.</span>
+
+<span class="sd">    :ivar acme.messages.Registration body:</span>
+<span class="sd">    :ivar str new_authzr_uri: Deprecated. Do not use.</span>
+<span class="sd">    :ivar str terms_of_service: URL for the CA TOS.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">body</span><span class="p">:</span> <span class="n">Registration</span> <span class="o">=</span> <span class="n">jose</span><span class="o">.</span><span class="n">field</span><span class="p">(</span><span class="s1">&#39;body&#39;</span><span class="p">,</span> <span class="n">decoder</span><span class="o">=</span><span class="n">Registration</span><span class="o">.</span><span class="n">from_json</span><span class="p">)</span>
+    <span class="n">new_authzr_uri</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">jose</span><span class="o">.</span><span class="n">field</span><span class="p">(</span><span class="s1">&#39;new_authzr_uri&#39;</span><span class="p">,</span> <span class="n">omitempty</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">terms_of_service</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">jose</span><span class="o">.</span><span class="n">field</span><span class="p">(</span><span class="s1">&#39;terms_of_service&#39;</span><span class="p">,</span> <span class="n">omitempty</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="ChallengeBody"><a class="viewcode-back" href="../../api/messages.html#acme.messages.ChallengeBody">[docs]</a><span class="k">class</span> <span class="nc">ChallengeBody</span><span class="p">(</span><span class="n">ResourceBody</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Challenge Resource Body.</span>
+
+<span class="sd">    .. todo::</span>
+<span class="sd">       Confusingly, this has a similar name to `.challenges.Challenge`,</span>
+<span class="sd">       as well as `.achallenges.AnnotatedChallenge`. Please use names</span>
+<span class="sd">       such as ``challb`` to distinguish instances of this class from</span>
+<span class="sd">       ``achall``.</span>
+
+<span class="sd">    :ivar acme.challenges.Challenge: Wrapped challenge.</span>
+<span class="sd">        Conveniently, all challenge fields are proxied, i.e. you can</span>
+<span class="sd">        call ``challb.x`` to get ``challb.chall.x`` contents.</span>
+<span class="sd">    :ivar acme.messages.Status status:</span>
+<span class="sd">    :ivar datetime.datetime validated:</span>
+<span class="sd">    :ivar messages.Error error:</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;chall&#39;</span><span class="p">,)</span>
+    <span class="c1"># ACMEv1 has a &quot;uri&quot; field in challenges. ACMEv2 has a &quot;url&quot; field. This</span>
+    <span class="c1"># challenge object supports either one, but should be accessed through the</span>
+    <span class="c1"># name &quot;uri&quot;. In Client.answer_challenge, whichever one is set will be</span>
+    <span class="c1"># used.</span>
+    <span class="n">_url</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">jose</span><span class="o">.</span><span class="n">field</span><span class="p">(</span><span class="s1">&#39;url&#39;</span><span class="p">,</span> <span class="n">omitempty</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+    <span class="n">status</span><span class="p">:</span> <span class="n">Status</span> <span class="o">=</span> <span class="n">jose</span><span class="o">.</span><span class="n">field</span><span class="p">(</span><span class="s1">&#39;status&#39;</span><span class="p">,</span> <span class="n">decoder</span><span class="o">=</span><span class="n">Status</span><span class="o">.</span><span class="n">from_json</span><span class="p">,</span>
+                        <span class="n">omitempty</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="n">STATUS_PENDING</span><span class="p">)</span>
+    <span class="n">validated</span><span class="p">:</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span> <span class="o">=</span> <span class="n">fields</span><span class="o">.</span><span class="n">rfc3339</span><span class="p">(</span><span class="s1">&#39;validated&#39;</span><span class="p">,</span> <span class="n">omitempty</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">error</span><span class="p">:</span> <span class="n">Error</span> <span class="o">=</span> <span class="n">jose</span><span class="o">.</span><span class="n">field</span><span class="p">(</span><span class="s1">&#39;error&#39;</span><span class="p">,</span> <span class="n">decoder</span><span class="o">=</span><span class="n">Error</span><span class="o">.</span><span class="n">from_json</span><span class="p">,</span>
+                       <span class="n">omitempty</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">kwargs</span> <span class="o">=</span> <span class="p">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_internal_name</span><span class="p">(</span><span class="n">k</span><span class="p">):</span> <span class="n">v</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">items</span><span class="p">()}</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+<div class="viewcode-block" id="ChallengeBody.encode"><a class="viewcode-back" href="../../api/messages.html#acme.messages.ChallengeBody.encode">[docs]</a>    <span class="k">def</span> <span class="nf">encode</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
+        <span class="k">return</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_internal_name</span><span class="p">(</span><span class="n">name</span><span class="p">))</span></div>
+
+<div class="viewcode-block" id="ChallengeBody.to_partial_json"><a class="viewcode-back" href="../../api/messages.html#acme.messages.ChallengeBody.to_partial_json">[docs]</a>    <span class="k">def</span> <span class="nf">to_partial_json</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
+        <span class="n">jobj</span> <span class="o">=</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">to_partial_json</span><span class="p">()</span>
+        <span class="n">jobj</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">chall</span><span class="o">.</span><span class="n">to_partial_json</span><span class="p">())</span>
+        <span class="k">return</span> <span class="n">jobj</span></div>
+
+<div class="viewcode-block" id="ChallengeBody.fields_from_json"><a class="viewcode-back" href="../../api/messages.html#acme.messages.ChallengeBody.fields_from_json">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">fields_from_json</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">jobj</span><span class="p">:</span> <span class="n">Mapping</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
+        <span class="n">jobj_fields</span> <span class="o">=</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">fields_from_json</span><span class="p">(</span><span class="n">jobj</span><span class="p">)</span>
+        <span class="n">jobj_fields</span><span class="p">[</span><span class="s1">&#39;chall&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">challenges</span><span class="o">.</span><span class="n">Challenge</span><span class="o">.</span><span class="n">from_json</span><span class="p">(</span><span class="n">jobj</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">jobj_fields</span></div>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">uri</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;The URL of this challenge.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_url</span>
+
+    <span class="k">def</span> <span class="fm">__getattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
+        <span class="k">return</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">chall</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="fm">__iter__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Iterator</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+        <span class="c1"># When iterating over fields, use the external name &#39;uri&#39; instead of</span>
+        <span class="c1"># the internal &#39;_uri&#39;.</span>
+        <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__iter__</span><span class="p">():</span>
+            <span class="k">yield</span> <span class="s1">&#39;uri&#39;</span> <span class="k">if</span> <span class="n">name</span> <span class="o">==</span> <span class="s1">&#39;_url&#39;</span> <span class="k">else</span> <span class="n">name</span>
+
+    <span class="k">def</span> <span class="nf">_internal_name</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="k">return</span> <span class="s1">&#39;_url&#39;</span> <span class="k">if</span> <span class="n">name</span> <span class="o">==</span> <span class="s1">&#39;uri&#39;</span> <span class="k">else</span> <span class="n">name</span></div>
+
+
+<div class="viewcode-block" id="ChallengeResource"><a class="viewcode-back" href="../../api/messages.html#acme.messages.ChallengeResource">[docs]</a><span class="k">class</span> <span class="nc">ChallengeResource</span><span class="p">(</span><span class="n">Resource</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Challenge Resource.</span>
+
+<span class="sd">    :ivar acme.messages.ChallengeBody body:</span>
+<span class="sd">    :ivar str authzr_uri: URI found in the &#39;up&#39; ``Link`` header.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">body</span><span class="p">:</span> <span class="n">ChallengeBody</span> <span class="o">=</span> <span class="n">jose</span><span class="o">.</span><span class="n">field</span><span class="p">(</span><span class="s1">&#39;body&#39;</span><span class="p">,</span> <span class="n">decoder</span><span class="o">=</span><span class="n">ChallengeBody</span><span class="o">.</span><span class="n">from_json</span><span class="p">)</span>
+    <span class="n">authzr_uri</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">jose</span><span class="o">.</span><span class="n">field</span><span class="p">(</span><span class="s1">&#39;authzr_uri&#39;</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">uri</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;The URL of the challenge body.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">body</span><span class="o">.</span><span class="n">uri</span>  <span class="c1"># pylint: disable=no-member</span></div>
+
+
+<div class="viewcode-block" id="Authorization"><a class="viewcode-back" href="../../api/messages.html#acme.messages.Authorization">[docs]</a><span class="k">class</span> <span class="nc">Authorization</span><span class="p">(</span><span class="n">ResourceBody</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Authorization Resource Body.</span>
+
+<span class="sd">    :ivar acme.messages.Identifier identifier:</span>
+<span class="sd">    :ivar list challenges: `list` of `.ChallengeBody`</span>
+<span class="sd">    :ivar acme.messages.Status status:</span>
+<span class="sd">    :ivar datetime.datetime expires:</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">identifier</span><span class="p">:</span> <span class="n">Identifier</span> <span class="o">=</span> <span class="n">jose</span><span class="o">.</span><span class="n">field</span><span class="p">(</span><span class="s1">&#39;identifier&#39;</span><span class="p">,</span> <span class="n">decoder</span><span class="o">=</span><span class="n">Identifier</span><span class="o">.</span><span class="n">from_json</span><span class="p">,</span> <span class="n">omitempty</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">challenges</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">ChallengeBody</span><span class="p">]</span> <span class="o">=</span> <span class="n">jose</span><span class="o">.</span><span class="n">field</span><span class="p">(</span><span class="s1">&#39;challenges&#39;</span><span class="p">,</span> <span class="n">omitempty</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+    <span class="n">status</span><span class="p">:</span> <span class="n">Status</span> <span class="o">=</span> <span class="n">jose</span><span class="o">.</span><span class="n">field</span><span class="p">(</span><span class="s1">&#39;status&#39;</span><span class="p">,</span> <span class="n">omitempty</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">decoder</span><span class="o">=</span><span class="n">Status</span><span class="o">.</span><span class="n">from_json</span><span class="p">)</span>
+    <span class="c1"># TODO: &#39;expires&#39; is allowed for Authorization Resources in</span>
+    <span class="c1"># general, but for Key Authorization &#39;[t]he &quot;expires&quot; field MUST</span>
+    <span class="c1"># be absent&#39;... then acme-spec gives example with &#39;expires&#39;</span>
+    <span class="c1"># present... That&#39;s confusing!</span>
+    <span class="n">expires</span><span class="p">:</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span> <span class="o">=</span> <span class="n">fields</span><span class="o">.</span><span class="n">rfc3339</span><span class="p">(</span><span class="s1">&#39;expires&#39;</span><span class="p">,</span> <span class="n">omitempty</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">wildcard</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="n">jose</span><span class="o">.</span><span class="n">field</span><span class="p">(</span><span class="s1">&#39;wildcard&#39;</span><span class="p">,</span> <span class="n">omitempty</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+    <span class="c1"># Mypy does not understand the josepy magic happening here, and falsely claims</span>
+    <span class="c1"># that challenge is redefined. Let&#39;s ignore the type check here.</span>
+    <span class="nd">@challenges</span><span class="o">.</span><span class="n">decoder</span>  <span class="c1"># type: ignore</span>
+    <span class="k">def</span> <span class="nf">challenges</span><span class="p">(</span><span class="n">value</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]])</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">ChallengeBody</span><span class="p">,</span> <span class="o">...</span><span class="p">]:</span>  <span class="c1"># pylint: disable=no-self-argument,missing-function-docstring</span>
+        <span class="k">return</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">ChallengeBody</span><span class="o">.</span><span class="n">from_json</span><span class="p">(</span><span class="n">chall</span><span class="p">)</span> <span class="k">for</span> <span class="n">chall</span> <span class="ow">in</span> <span class="n">value</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="NewAuthorization"><a class="viewcode-back" href="../../api/messages.html#acme.messages.NewAuthorization">[docs]</a><span class="k">class</span> <span class="nc">NewAuthorization</span><span class="p">(</span><span class="n">Authorization</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;New authorization.&quot;&quot;&quot;</span></div>
+
+
+<div class="viewcode-block" id="UpdateAuthorization"><a class="viewcode-back" href="../../api/messages.html#acme.messages.UpdateAuthorization">[docs]</a><span class="k">class</span> <span class="nc">UpdateAuthorization</span><span class="p">(</span><span class="n">Authorization</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Update authorization.&quot;&quot;&quot;</span></div>
+
+
+<div class="viewcode-block" id="AuthorizationResource"><a class="viewcode-back" href="../../api/messages.html#acme.messages.AuthorizationResource">[docs]</a><span class="k">class</span> <span class="nc">AuthorizationResource</span><span class="p">(</span><span class="n">ResourceWithURI</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Authorization Resource.</span>
+
+<span class="sd">    :ivar acme.messages.Authorization body:</span>
+<span class="sd">    :ivar str new_cert_uri: Deprecated. Do not use.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">body</span><span class="p">:</span> <span class="n">Authorization</span> <span class="o">=</span> <span class="n">jose</span><span class="o">.</span><span class="n">field</span><span class="p">(</span><span class="s1">&#39;body&#39;</span><span class="p">,</span> <span class="n">decoder</span><span class="o">=</span><span class="n">Authorization</span><span class="o">.</span><span class="n">from_json</span><span class="p">)</span>
+    <span class="n">new_cert_uri</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">jose</span><span class="o">.</span><span class="n">field</span><span class="p">(</span><span class="s1">&#39;new_cert_uri&#39;</span><span class="p">,</span> <span class="n">omitempty</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="CertificateRequest"><a class="viewcode-back" href="../../api/messages.html#acme.messages.CertificateRequest">[docs]</a><span class="k">class</span> <span class="nc">CertificateRequest</span><span class="p">(</span><span class="n">jose</span><span class="o">.</span><span class="n">JSONObjectWithFields</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;ACME newOrder request.</span>
+
+<span class="sd">    :ivar jose.ComparableX509 csr:</span>
+<span class="sd">        `OpenSSL.crypto.X509Req` wrapped in `.ComparableX509`</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">csr</span><span class="p">:</span> <span class="n">jose</span><span class="o">.</span><span class="n">ComparableX509</span> <span class="o">=</span> <span class="n">jose</span><span class="o">.</span><span class="n">field</span><span class="p">(</span><span class="s1">&#39;csr&#39;</span><span class="p">,</span> <span class="n">decoder</span><span class="o">=</span><span class="n">jose</span><span class="o">.</span><span class="n">decode_csr</span><span class="p">,</span> <span class="n">encoder</span><span class="o">=</span><span class="n">jose</span><span class="o">.</span><span class="n">encode_csr</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="CertificateResource"><a class="viewcode-back" href="../../api/messages.html#acme.messages.CertificateResource">[docs]</a><span class="k">class</span> <span class="nc">CertificateResource</span><span class="p">(</span><span class="n">ResourceWithURI</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Certificate Resource.</span>
+
+<span class="sd">    :ivar josepy.util.ComparableX509 body:</span>
+<span class="sd">        `OpenSSL.crypto.X509` wrapped in `.ComparableX509`</span>
+<span class="sd">    :ivar str cert_chain_uri: URI found in the &#39;up&#39; ``Link`` header</span>
+<span class="sd">    :ivar tuple authzrs: `tuple` of `AuthorizationResource`.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">cert_chain_uri</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">jose</span><span class="o">.</span><span class="n">field</span><span class="p">(</span><span class="s1">&#39;cert_chain_uri&#39;</span><span class="p">)</span>
+    <span class="n">authzrs</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">AuthorizationResource</span><span class="p">,</span> <span class="o">...</span><span class="p">]</span> <span class="o">=</span> <span class="n">jose</span><span class="o">.</span><span class="n">field</span><span class="p">(</span><span class="s1">&#39;authzrs&#39;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Revocation"><a class="viewcode-back" href="../../api/messages.html#acme.messages.Revocation">[docs]</a><span class="k">class</span> <span class="nc">Revocation</span><span class="p">(</span><span class="n">jose</span><span class="o">.</span><span class="n">JSONObjectWithFields</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Revocation message.</span>
+
+<span class="sd">    :ivar jose.ComparableX509 certificate: `OpenSSL.crypto.X509` wrapped in</span>
+<span class="sd">        `jose.ComparableX509`</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">certificate</span><span class="p">:</span> <span class="n">jose</span><span class="o">.</span><span class="n">ComparableX509</span> <span class="o">=</span> <span class="n">jose</span><span class="o">.</span><span class="n">field</span><span class="p">(</span>
+        <span class="s1">&#39;certificate&#39;</span><span class="p">,</span> <span class="n">decoder</span><span class="o">=</span><span class="n">jose</span><span class="o">.</span><span class="n">decode_cert</span><span class="p">,</span> <span class="n">encoder</span><span class="o">=</span><span class="n">jose</span><span class="o">.</span><span class="n">encode_cert</span><span class="p">)</span>
+    <span class="n">reason</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">jose</span><span class="o">.</span><span class="n">field</span><span class="p">(</span><span class="s1">&#39;reason&#39;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Order"><a class="viewcode-back" href="../../api/messages.html#acme.messages.Order">[docs]</a><span class="k">class</span> <span class="nc">Order</span><span class="p">(</span><span class="n">ResourceBody</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Order Resource Body.</span>
+
+<span class="sd">    :ivar identifiers: List of identifiers for the certificate.</span>
+<span class="sd">    :vartype identifiers: `list` of `.Identifier`</span>
+<span class="sd">    :ivar acme.messages.Status status:</span>
+<span class="sd">    :ivar authorizations: URLs of authorizations.</span>
+<span class="sd">    :vartype authorizations: `list` of `str`</span>
+<span class="sd">    :ivar str certificate: URL to download certificate as a fullchain PEM.</span>
+<span class="sd">    :ivar str finalize: URL to POST to to request issuance once all</span>
+<span class="sd">        authorizations have &quot;valid&quot; status.</span>
+<span class="sd">    :ivar datetime.datetime expires: When the order expires.</span>
+<span class="sd">    :ivar ~.Error error: Any error that occurred during finalization, if applicable.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">identifiers</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Identifier</span><span class="p">]</span> <span class="o">=</span> <span class="n">jose</span><span class="o">.</span><span class="n">field</span><span class="p">(</span><span class="s1">&#39;identifiers&#39;</span><span class="p">,</span> <span class="n">omitempty</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">status</span><span class="p">:</span> <span class="n">Status</span> <span class="o">=</span> <span class="n">jose</span><span class="o">.</span><span class="n">field</span><span class="p">(</span><span class="s1">&#39;status&#39;</span><span class="p">,</span> <span class="n">decoder</span><span class="o">=</span><span class="n">Status</span><span class="o">.</span><span class="n">from_json</span><span class="p">,</span> <span class="n">omitempty</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">authorizations</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">jose</span><span class="o">.</span><span class="n">field</span><span class="p">(</span><span class="s1">&#39;authorizations&#39;</span><span class="p">,</span> <span class="n">omitempty</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">certificate</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">jose</span><span class="o">.</span><span class="n">field</span><span class="p">(</span><span class="s1">&#39;certificate&#39;</span><span class="p">,</span> <span class="n">omitempty</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">finalize</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">jose</span><span class="o">.</span><span class="n">field</span><span class="p">(</span><span class="s1">&#39;finalize&#39;</span><span class="p">,</span> <span class="n">omitempty</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">expires</span><span class="p">:</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span> <span class="o">=</span> <span class="n">fields</span><span class="o">.</span><span class="n">rfc3339</span><span class="p">(</span><span class="s1">&#39;expires&#39;</span><span class="p">,</span> <span class="n">omitempty</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">error</span><span class="p">:</span> <span class="n">Error</span> <span class="o">=</span> <span class="n">jose</span><span class="o">.</span><span class="n">field</span><span class="p">(</span><span class="s1">&#39;error&#39;</span><span class="p">,</span> <span class="n">omitempty</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">decoder</span><span class="o">=</span><span class="n">Error</span><span class="o">.</span><span class="n">from_json</span><span class="p">)</span>
+
+    <span class="c1"># Mypy does not understand the josepy magic happening here, and falsely claims</span>
+    <span class="c1"># that identifiers is redefined. Let&#39;s ignore the type check here.</span>
+    <span class="nd">@identifiers</span><span class="o">.</span><span class="n">decoder</span>  <span class="c1"># type: ignore</span>
+    <span class="k">def</span> <span class="nf">identifiers</span><span class="p">(</span><span class="n">value</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]])</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">Identifier</span><span class="p">,</span> <span class="o">...</span><span class="p">]:</span>  <span class="c1"># pylint: disable=no-self-argument,missing-function-docstring</span>
+        <span class="k">return</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">Identifier</span><span class="o">.</span><span class="n">from_json</span><span class="p">(</span><span class="n">identifier</span><span class="p">)</span> <span class="k">for</span> <span class="n">identifier</span> <span class="ow">in</span> <span class="n">value</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="OrderResource"><a class="viewcode-back" href="../../api/messages.html#acme.messages.OrderResource">[docs]</a><span class="k">class</span> <span class="nc">OrderResource</span><span class="p">(</span><span class="n">ResourceWithURI</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Order Resource.</span>
+
+<span class="sd">    :ivar acme.messages.Order body:</span>
+<span class="sd">    :ivar bytes csr_pem: The CSR this Order will be finalized with.</span>
+<span class="sd">    :ivar authorizations: Fully-fetched AuthorizationResource objects.</span>
+<span class="sd">    :vartype authorizations: `list` of `acme.messages.AuthorizationResource`</span>
+<span class="sd">    :ivar str fullchain_pem: The fetched contents of the certificate URL</span>
+<span class="sd">        produced once the order was finalized, if it&#39;s present.</span>
+<span class="sd">    :ivar alternative_fullchains_pem: The fetched contents of alternative certificate</span>
+<span class="sd">        chain URLs produced once the order was finalized, if present and requested during</span>
+<span class="sd">        finalization.</span>
+<span class="sd">    :vartype alternative_fullchains_pem: `list` of `str`</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">body</span><span class="p">:</span> <span class="n">Order</span> <span class="o">=</span> <span class="n">jose</span><span class="o">.</span><span class="n">field</span><span class="p">(</span><span class="s1">&#39;body&#39;</span><span class="p">,</span> <span class="n">decoder</span><span class="o">=</span><span class="n">Order</span><span class="o">.</span><span class="n">from_json</span><span class="p">)</span>
+    <span class="n">csr_pem</span><span class="p">:</span> <span class="nb">bytes</span> <span class="o">=</span> <span class="n">jose</span><span class="o">.</span><span class="n">field</span><span class="p">(</span><span class="s1">&#39;csr_pem&#39;</span><span class="p">,</span> <span class="n">omitempty</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                                <span class="c1"># This looks backwards, but it&#39;s not -</span>
+                                <span class="c1"># we want the deserialized value to be</span>
+                                <span class="c1"># `bytes`, but anything we put into</span>
+                                <span class="c1"># JSON needs to be `str`, so we encode</span>
+                                <span class="c1"># to decode and decode to</span>
+                                <span class="c1"># encode. Otherwise we end up with an</span>
+                                <span class="c1"># array of ints on serialization</span>
+                                <span class="n">decoder</span><span class="o">=</span><span class="k">lambda</span> <span class="n">s</span><span class="p">:</span> <span class="n">s</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s2">&quot;utf-8&quot;</span><span class="p">),</span>
+                                <span class="n">encoder</span><span class="o">=</span><span class="k">lambda</span> <span class="n">b</span><span class="p">:</span> <span class="n">b</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s2">&quot;utf-8&quot;</span><span class="p">))</span>
+
+    <span class="n">authorizations</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">AuthorizationResource</span><span class="p">]</span> <span class="o">=</span> <span class="n">jose</span><span class="o">.</span><span class="n">field</span><span class="p">(</span><span class="s1">&#39;authorizations&#39;</span><span class="p">)</span>
+    <span class="n">fullchain_pem</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">jose</span><span class="o">.</span><span class="n">field</span><span class="p">(</span><span class="s1">&#39;fullchain_pem&#39;</span><span class="p">,</span> <span class="n">omitempty</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">alternative_fullchains_pem</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">jose</span><span class="o">.</span><span class="n">field</span><span class="p">(</span><span class="s1">&#39;alternative_fullchains_pem&#39;</span><span class="p">,</span>
+                                                       <span class="n">omitempty</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+    <span class="c1"># Mypy does not understand the josepy magic happening here, and falsely claims</span>
+    <span class="c1"># that authorizations is redefined. Let&#39;s ignore the type check here.</span>
+    <span class="nd">@authorizations</span><span class="o">.</span><span class="n">decoder</span>  <span class="c1"># type: ignore</span>
+    <span class="k">def</span> <span class="nf">authorizations</span><span class="p">(</span><span class="n">value</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]])</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">AuthorizationResource</span><span class="p">,</span> <span class="o">...</span><span class="p">]:</span> <span class="c1"># pylint: disable=no-self-argument,missing-function-docstring</span>
+        <span class="k">return</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">AuthorizationResource</span><span class="o">.</span><span class="n">from_json</span><span class="p">(</span><span class="n">authz</span><span class="p">)</span> <span class="k">for</span> <span class="n">authz</span> <span class="ow">in</span> <span class="n">value</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="NewOrder"><a class="viewcode-back" href="../../api/messages.html#acme.messages.NewOrder">[docs]</a><span class="k">class</span> <span class="nc">NewOrder</span><span class="p">(</span><span class="n">Order</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;New order.&quot;&quot;&quot;</span></div>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2015, Let&#39;s Encrypt Project.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

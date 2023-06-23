@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>certbot.achallenges &mdash; Certbot 2.7.0.dev0 documentation</title>
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+    <link rel="canonical" href="https://QubitPi.github.io/certbot/_modules/certbot/achallenges.html" />
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../../_static/doctools.js"></script>
+        <script src="../../_static/sphinx_highlight.js"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            Certbot
+          </a>
+              <div class="version">
+                2.7
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../intro.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../what.html">What is a Certificate?</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../install.html">Get Certbot</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../using.html">User Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../contributing.html">Developer Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../packaging.html">Packaging Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../compatibility.html">Backwards Compatibility</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../resources.html">Resources</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../api.html">API Documentation</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">Certbot</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">certbot.achallenges</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for certbot.achallenges</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;Client annotated ACME challenges.</span>
+
+<span class="sd">Please use names such as ``achall`` to distinguish from variables &quot;of type&quot;</span>
+<span class="sd">:class:`acme.challenges.Challenge` (denoted by ``chall``)</span>
+<span class="sd">and :class:`.ChallengeBody` (denoted by ``challb``)::</span>
+
+<span class="sd">  from acme import challenges</span>
+<span class="sd">  from acme import messages</span>
+<span class="sd">  from certbot import achallenges</span>
+
+<span class="sd">  chall = challenges.DNS(token=&#39;foo&#39;)</span>
+<span class="sd">  challb = messages.ChallengeBody(chall=chall)</span>
+<span class="sd">  achall = achallenges.DNS(chall=challb, domain=&#39;example.com&#39;)</span>
+
+<span class="sd">Note, that all annotated challenges act as a proxy objects::</span>
+
+<span class="sd">  achall.token == challb.token</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">import</span> <span class="nn">logging</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Type</span>
+
+<span class="kn">import</span> <span class="nn">josepy</span> <span class="k">as</span> <span class="nn">jose</span>
+
+<span class="kn">from</span> <span class="nn">acme</span> <span class="kn">import</span> <span class="n">challenges</span>
+<span class="kn">from</span> <span class="nn">acme.challenges</span> <span class="kn">import</span> <span class="n">Challenge</span>
+
+<span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="AnnotatedChallenge"><a class="viewcode-back" href="../../api/certbot.achallenges.html#certbot.achallenges.AnnotatedChallenge">[docs]</a><span class="k">class</span> <span class="nc">AnnotatedChallenge</span><span class="p">(</span><span class="n">jose</span><span class="o">.</span><span class="n">ImmutableMap</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Client annotated challenge.</span>
+
+<span class="sd">    Wraps around server provided challenge and annotates with data</span>
+<span class="sd">    useful for the client.</span>
+
+<span class="sd">    :ivar ~.challb: Wrapped `~.ChallengeBody`.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;challb&#39;</span><span class="p">,)</span>
+    <span class="n">_acme_type</span><span class="p">:</span> <span class="n">Type</span><span class="p">[</span><span class="n">Challenge</span><span class="p">]</span> <span class="o">=</span> <span class="bp">NotImplemented</span>
+
+    <span class="k">def</span> <span class="fm">__getattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
+        <span class="k">return</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">challb</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="KeyAuthorizationAnnotatedChallenge"><a class="viewcode-back" href="../../api/certbot.achallenges.html#certbot.achallenges.KeyAuthorizationAnnotatedChallenge">[docs]</a><span class="k">class</span> <span class="nc">KeyAuthorizationAnnotatedChallenge</span><span class="p">(</span><span class="n">AnnotatedChallenge</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Client annotated `KeyAuthorizationChallenge` challenge.&quot;&quot;&quot;</span>
+    <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;challb&#39;</span><span class="p">,</span> <span class="s1">&#39;domain&#39;</span><span class="p">,</span> <span class="s1">&#39;account_key&#39;</span><span class="p">)</span> <span class="c1"># pylint: disable=redefined-slots-in-subclass</span>
+
+<div class="viewcode-block" id="KeyAuthorizationAnnotatedChallenge.response_and_validation"><a class="viewcode-back" href="../../api/certbot.achallenges.html#certbot.achallenges.KeyAuthorizationAnnotatedChallenge.response_and_validation">[docs]</a>    <span class="k">def</span> <span class="nf">response_and_validation</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Generate response and validation.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">challb</span><span class="o">.</span><span class="n">chall</span><span class="o">.</span><span class="n">response_and_validation</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">account_key</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div></div>
+
+
+<div class="viewcode-block" id="DNS"><a class="viewcode-back" href="../../api/certbot.achallenges.html#certbot.achallenges.DNS">[docs]</a><span class="k">class</span> <span class="nc">DNS</span><span class="p">(</span><span class="n">AnnotatedChallenge</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Client annotated &quot;dns&quot; ACME challenge.&quot;&quot;&quot;</span>
+    <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;challb&#39;</span><span class="p">,</span> <span class="s1">&#39;domain&#39;</span><span class="p">)</span> <span class="c1"># pylint: disable=redefined-slots-in-subclass</span>
+    <span class="n">acme_type</span> <span class="o">=</span> <span class="n">challenges</span><span class="o">.</span><span class="n">DNS</span></div>
+
+
+<div class="viewcode-block" id="Other"><a class="viewcode-back" href="../../api/certbot.achallenges.html#certbot.achallenges.Other">[docs]</a><span class="k">class</span> <span class="nc">Other</span><span class="p">(</span><span class="n">AnnotatedChallenge</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Client annotated ACME challenge of an unknown type.&quot;&quot;&quot;</span>
+    <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;challb&#39;</span><span class="p">,</span> <span class="s1">&#39;domain&#39;</span><span class="p">)</span> <span class="c1"># pylint: disable=redefined-slots-in-subclass</span>
+    <span class="n">acme_type</span> <span class="o">=</span> <span class="n">challenges</span><span class="o">.</span><span class="n">Challenge</span></div>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+    <span class="copyright">
+    &copy; Copyright 2014-2018 - The Certbot software and documentation are licensed under the Apache 2.0 license as described at <a href="https://eff.org/cb-license">https://eff.org/cb-license</a>.
+    </span>
+    <br>
+    <br>
+    <span class="status">
+        <a href="https://letsencrypt.status.io/">Let's Encrypt Status</a>
+    </span>
+
+    </p>
+  </div>
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

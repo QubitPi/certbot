@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>certbot.plugins.enhancements &mdash; Certbot 2.7.0.dev0 documentation</title>
+      <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+    <link rel="canonical" href="https://QubitPi.github.io/certbot/_modules/certbot/plugins/enhancements.html" />
+  <!--[if lt IE 9]>
+    <script src="../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
+        <script src="../../../_static/jquery.js"></script>
+        <script src="../../../_static/underscore.js"></script>
+        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../../../_static/doctools.js"></script>
+        <script src="../../../_static/sphinx_highlight.js"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            Certbot
+          </a>
+              <div class="version">
+                2.7
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../intro.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../what.html">What is a Certificate?</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../install.html">Get Certbot</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../using.html">User Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../contributing.html">Developer Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../packaging.html">Packaging Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../compatibility.html">Backwards Compatibility</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../resources.html">Resources</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../api.html">API Documentation</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">Certbot</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">certbot.plugins.enhancements</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for certbot.plugins.enhancements</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;New interface style Certbot enhancements&quot;&quot;&quot;</span>
+<span class="kn">import</span> <span class="nn">abc</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Callable</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Dict</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Generator</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Iterable</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">List</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Optional</span>
+
+<span class="kn">from</span> <span class="nn">certbot</span> <span class="kn">import</span> <span class="n">configuration</span>
+<span class="kn">from</span> <span class="nn">certbot</span> <span class="kn">import</span> <span class="n">interfaces</span>
+<span class="kn">from</span> <span class="nn">certbot._internal</span> <span class="kn">import</span> <span class="n">constants</span>
+
+<span class="n">ENHANCEMENTS</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;redirect&quot;</span><span class="p">,</span> <span class="s2">&quot;ensure-http-header&quot;</span><span class="p">,</span> <span class="s2">&quot;ocsp-stapling&quot;</span><span class="p">]</span>
+<span class="sd">&quot;&quot;&quot;List of possible :class:`certbot.interfaces.Installer`</span>
+<span class="sd">enhancements.</span>
+
+<span class="sd">List of expected options parameters:</span>
+<span class="sd">- redirect: None</span>
+<span class="sd">- ensure-http-header: name of header (i.e. Strict-Transport-Security)</span>
+<span class="sd">- ocsp-stapling: certificate chain file path</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+
+
+<div class="viewcode-block" id="enabled_enhancements"><a class="viewcode-back" href="../../../api/certbot.plugins.enhancements.html#certbot.plugins.enhancements.enabled_enhancements">[docs]</a><span class="k">def</span> <span class="nf">enabled_enhancements</span><span class="p">(</span>
+        <span class="n">config</span><span class="p">:</span> <span class="n">configuration</span><span class="o">.</span><span class="n">NamespaceConfig</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Generator</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">],</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Generator to yield the enabled new style enhancements.</span>
+
+<span class="sd">    :param config: Configuration.</span>
+<span class="sd">    :type config: certbot.configuration.NamespaceConfig</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">for</span> <span class="n">enh</span> <span class="ow">in</span> <span class="n">_INDEX</span><span class="p">:</span>
+        <span class="k">if</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">config</span><span class="p">,</span> <span class="n">enh</span><span class="p">[</span><span class="s2">&quot;cli_dest&quot;</span><span class="p">]):</span>
+            <span class="k">yield</span> <span class="n">enh</span></div>
+
+
+<div class="viewcode-block" id="are_requested"><a class="viewcode-back" href="../../../api/certbot.plugins.enhancements.html#certbot.plugins.enhancements.are_requested">[docs]</a><span class="k">def</span> <span class="nf">are_requested</span><span class="p">(</span><span class="n">config</span><span class="p">:</span> <span class="n">configuration</span><span class="o">.</span><span class="n">NamespaceConfig</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Checks if one or more of the requested enhancements are those of the new</span>
+<span class="sd">    enhancement interfaces.</span>
+
+<span class="sd">    :param config: Configuration.</span>
+<span class="sd">    :type config: certbot.configuration.NamespaceConfig</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="nb">any</span><span class="p">(</span><span class="n">enabled_enhancements</span><span class="p">(</span><span class="n">config</span><span class="p">))</span></div>
+
+
+<div class="viewcode-block" id="are_supported"><a class="viewcode-back" href="../../../api/certbot.plugins.enhancements.html#certbot.plugins.enhancements.are_supported">[docs]</a><span class="k">def</span> <span class="nf">are_supported</span><span class="p">(</span><span class="n">config</span><span class="p">:</span> <span class="n">configuration</span><span class="o">.</span><span class="n">NamespaceConfig</span><span class="p">,</span>
+                  <span class="n">installer</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">interfaces</span><span class="o">.</span><span class="n">Installer</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Checks that all of the requested enhancements are supported by the</span>
+<span class="sd">    installer.</span>
+
+<span class="sd">    :param config: Configuration.</span>
+<span class="sd">    :type config: certbot.configuration.NamespaceConfig</span>
+
+<span class="sd">    :param installer: Installer object</span>
+<span class="sd">    :type installer: interfaces.Installer</span>
+
+<span class="sd">    :returns: If all the requested enhancements are supported by the installer</span>
+<span class="sd">    :rtype: bool</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">for</span> <span class="n">enh</span> <span class="ow">in</span> <span class="n">enabled_enhancements</span><span class="p">(</span><span class="n">config</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">installer</span><span class="p">,</span> <span class="n">enh</span><span class="p">[</span><span class="s2">&quot;class&quot;</span><span class="p">]):</span>
+            <span class="k">return</span> <span class="kc">False</span>
+    <span class="k">return</span> <span class="kc">True</span></div>
+
+
+<div class="viewcode-block" id="enable"><a class="viewcode-back" href="../../../api/certbot.plugins.enhancements.html#certbot.plugins.enhancements.enable">[docs]</a><span class="k">def</span> <span class="nf">enable</span><span class="p">(</span><span class="n">lineage</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">interfaces</span><span class="o">.</span><span class="n">RenewableCert</span><span class="p">],</span> <span class="n">domains</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span>
+           <span class="n">installer</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">interfaces</span><span class="o">.</span><span class="n">Installer</span><span class="p">],</span>
+           <span class="n">config</span><span class="p">:</span> <span class="n">configuration</span><span class="o">.</span><span class="n">NamespaceConfig</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Run enable method for each requested enhancement that is supported.</span>
+
+<span class="sd">    :param lineage: Certificate lineage object</span>
+<span class="sd">    :type lineage: certbot.interfaces.RenewableCert</span>
+
+<span class="sd">    :param domains: List of domains in certificate to enhance</span>
+<span class="sd">    :type domains: str</span>
+
+<span class="sd">    :param installer: Installer object</span>
+<span class="sd">    :type installer: interfaces.Installer</span>
+
+<span class="sd">    :param config: Configuration.</span>
+<span class="sd">    :type config: certbot.configuration.NamespaceConfig</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">installer</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">enh</span> <span class="ow">in</span> <span class="n">enabled_enhancements</span><span class="p">(</span><span class="n">config</span><span class="p">):</span>
+            <span class="nb">getattr</span><span class="p">(</span><span class="n">installer</span><span class="p">,</span> <span class="n">enh</span><span class="p">[</span><span class="s2">&quot;enable_function&quot;</span><span class="p">])(</span><span class="n">lineage</span><span class="p">,</span> <span class="n">domains</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="populate_cli"><a class="viewcode-back" href="../../../api/certbot.plugins.enhancements.html#certbot.plugins.enhancements.populate_cli">[docs]</a><span class="k">def</span> <span class="nf">populate_cli</span><span class="p">(</span><span class="n">add</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="kc">None</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Populates the command line flags for certbot._internal.cli.HelpfulParser</span>
+
+<span class="sd">    :param add: Add function of certbot._internal.cli.HelpfulParser</span>
+<span class="sd">    :type add: func</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">for</span> <span class="n">enh</span> <span class="ow">in</span> <span class="n">_INDEX</span><span class="p">:</span>
+        <span class="n">add</span><span class="p">(</span><span class="n">enh</span><span class="p">[</span><span class="s2">&quot;cli_groups&quot;</span><span class="p">],</span> <span class="n">enh</span><span class="p">[</span><span class="s2">&quot;cli_flag&quot;</span><span class="p">],</span> <span class="n">action</span><span class="o">=</span><span class="n">enh</span><span class="p">[</span><span class="s2">&quot;cli_action&quot;</span><span class="p">],</span>
+            <span class="n">dest</span><span class="o">=</span><span class="n">enh</span><span class="p">[</span><span class="s2">&quot;cli_dest&quot;</span><span class="p">],</span> <span class="n">default</span><span class="o">=</span><span class="n">enh</span><span class="p">[</span><span class="s2">&quot;cli_flag_default&quot;</span><span class="p">],</span>
+            <span class="n">help</span><span class="o">=</span><span class="n">enh</span><span class="p">[</span><span class="s2">&quot;cli_help&quot;</span><span class="p">])</span></div>
+
+
+<div class="viewcode-block" id="AutoHSTSEnhancement"><a class="viewcode-back" href="../../../api/certbot.plugins.enhancements.html#certbot.plugins.enhancements.AutoHSTSEnhancement">[docs]</a><span class="k">class</span> <span class="nc">AutoHSTSEnhancement</span><span class="p">(</span><span class="nb">object</span><span class="p">,</span> <span class="n">metaclass</span><span class="o">=</span><span class="n">abc</span><span class="o">.</span><span class="n">ABCMeta</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Enhancement interface that installer plugins can implement in order to</span>
+<span class="sd">    provide functionality that configures the software to have a</span>
+<span class="sd">    &#39;Strict-Transport-Security&#39; with initially low max-age value that will</span>
+<span class="sd">    increase over time.</span>
+
+<span class="sd">    The plugins implementing new style enhancements are responsible of handling</span>
+<span class="sd">    the saving of configuration checkpoints as well as calling possible restarts</span>
+<span class="sd">    of managed software themselves. For update_autohsts method, the installer may</span>
+<span class="sd">    have to call prepare() to finalize the plugin initialization.</span>
+
+<span class="sd">    Methods:</span>
+<span class="sd">        enable_autohsts is called when the header is initially installed using a</span>
+<span class="sd">        low max-age value.</span>
+
+<span class="sd">        update_autohsts is called every time when Certbot is run using &#39;renew&#39;</span>
+<span class="sd">        verb. The max-age value should be increased over time using this method.</span>
+
+<span class="sd">        deploy_autohsts is called for every lineage that has had its certificate</span>
+<span class="sd">        renewed. A long HSTS max-age value should be set here, as we should be</span>
+<span class="sd">        confident that the user is able to automatically renew their certificates.</span>
+
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="AutoHSTSEnhancement.update_autohsts"><a class="viewcode-back" href="../../../api/certbot.plugins.enhancements.html#certbot.plugins.enhancements.AutoHSTSEnhancement.update_autohsts">[docs]</a>    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
+    <span class="k">def</span> <span class="nf">update_autohsts</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">lineage</span><span class="p">:</span> <span class="n">interfaces</span><span class="o">.</span><span class="n">RenewableCert</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Gets called for each lineage every time Certbot is run with &#39;renew&#39; verb.</span>
+<span class="sd">        Implementation of this method should increase the max-age value.</span>
+
+<span class="sd">        :param lineage: Certificate lineage object</span>
+<span class="sd">        :type lineage: certbot.interfaces.RenewableCert</span>
+
+<span class="sd">        .. note:: prepare() method inherited from `interfaces.Plugin` might need</span>
+<span class="sd">            to be called manually within implementation of this interface method</span>
+<span class="sd">            to finalize the plugin initialization.</span>
+<span class="sd">        &quot;&quot;&quot;</span></div>
+
+<div class="viewcode-block" id="AutoHSTSEnhancement.deploy_autohsts"><a class="viewcode-back" href="../../../api/certbot.plugins.enhancements.html#certbot.plugins.enhancements.AutoHSTSEnhancement.deploy_autohsts">[docs]</a>    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
+    <span class="k">def</span> <span class="nf">deploy_autohsts</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">lineage</span><span class="p">:</span> <span class="n">interfaces</span><span class="o">.</span><span class="n">RenewableCert</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Gets called for a lineage when its certificate is successfully renewed.</span>
+<span class="sd">        Long max-age value should be set in implementation of this method.</span>
+
+<span class="sd">        :param lineage: Certificate lineage object</span>
+<span class="sd">        :type lineage: certbot.interfaces.RenewableCert</span>
+<span class="sd">        &quot;&quot;&quot;</span></div>
+
+<div class="viewcode-block" id="AutoHSTSEnhancement.enable_autohsts"><a class="viewcode-back" href="../../../api/certbot.plugins.enhancements.html#certbot.plugins.enhancements.AutoHSTSEnhancement.enable_autohsts">[docs]</a>    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
+    <span class="k">def</span> <span class="nf">enable_autohsts</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">lineage</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">interfaces</span><span class="o">.</span><span class="n">RenewableCert</span><span class="p">],</span> <span class="n">domains</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span>
+                        <span class="o">*</span><span class="n">args</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Enables the AutoHSTS enhancement, installing</span>
+<span class="sd">        Strict-Transport-Security header with a low initial value to be increased</span>
+<span class="sd">        over the subsequent runs of Certbot renew.</span>
+
+<span class="sd">        :param lineage: Certificate lineage object</span>
+<span class="sd">        :type lineage: certbot.interfaces.RenewableCert</span>
+
+<span class="sd">        :param domains: List of domains in certificate to enhance</span>
+<span class="sd">        :type domains: `list` of `str`</span>
+<span class="sd">        &quot;&quot;&quot;</span></div></div>
+
+
+<span class="c1"># This is used to configure internal new style enhancements in Certbot. These</span>
+<span class="c1"># enhancement interfaces need to be defined in this file. Please do not modify</span>
+<span class="c1"># this list from plugin code.</span>
+<span class="n">_INDEX</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="p">{</span>
+        <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;AutoHSTS&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;cli_help&quot;</span><span class="p">:</span> <span class="s2">&quot;Gradually increasing max-age value for HTTP Strict Transport &quot;</span><span class="o">+</span>
+                    <span class="s2">&quot;Security security header&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;cli_flag&quot;</span><span class="p">:</span> <span class="s2">&quot;--auto-hsts&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;cli_flag_default&quot;</span><span class="p">:</span> <span class="n">constants</span><span class="o">.</span><span class="n">CLI_DEFAULTS</span><span class="p">[</span><span class="s2">&quot;auto_hsts&quot;</span><span class="p">],</span>
+        <span class="s2">&quot;cli_groups&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;security&quot;</span><span class="p">,</span> <span class="s2">&quot;enhance&quot;</span><span class="p">],</span>
+        <span class="s2">&quot;cli_dest&quot;</span><span class="p">:</span> <span class="s2">&quot;auto_hsts&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;cli_action&quot;</span><span class="p">:</span> <span class="s2">&quot;store_true&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;class&quot;</span><span class="p">:</span> <span class="n">AutoHSTSEnhancement</span><span class="p">,</span>
+        <span class="s2">&quot;updater_function&quot;</span><span class="p">:</span> <span class="s2">&quot;update_autohsts&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;deployer_function&quot;</span><span class="p">:</span> <span class="s2">&quot;deploy_autohsts&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;enable_function&quot;</span><span class="p">:</span> <span class="s2">&quot;enable_autohsts&quot;</span>
+    <span class="p">}</span>
+<span class="p">]</span>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+    <span class="copyright">
+    &copy; Copyright 2014-2018 - The Certbot software and documentation are licensed under the Apache 2.0 license as described at <a href="https://eff.org/cb-license">https://eff.org/cb-license</a>.
+    </span>
+    <br>
+    <br>
+    <span class="status">
+        <a href="https://letsencrypt.status.io/">Let's Encrypt Status</a>
+    </span>
+
+    </p>
+  </div>
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

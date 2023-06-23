@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Standalone &mdash; acme-python 0 documentation</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/sphinx_highlight.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="prev" title="Messages" href="messages.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            acme-python
+          </a>
+              <div class="version">
+                0
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="../api.html">API Documentation</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="challenges.html">Challenges</a></li>
+<li class="toctree-l2"><a class="reference internal" href="client.html">Client</a></li>
+<li class="toctree-l2"><a class="reference internal" href="errors.html">Errors</a></li>
+<li class="toctree-l2"><a class="reference internal" href="fields.html">Fields</a></li>
+<li class="toctree-l2"><a class="reference internal" href="jose.html">JOSE</a></li>
+<li class="toctree-l2"><a class="reference internal" href="messages.html">Messages</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Standalone</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#acme.standalone.TLSServer"><code class="docutils literal notranslate"><span class="pre">TLSServer</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#acme.standalone.TLSServer.server_bind"><code class="docutils literal notranslate"><span class="pre">TLSServer.server_bind()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#acme.standalone.ACMEServerMixin"><code class="docutils literal notranslate"><span class="pre">ACMEServerMixin</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#acme.standalone.BaseDualNetworkedServers"><code class="docutils literal notranslate"><span class="pre">BaseDualNetworkedServers</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#acme.standalone.BaseDualNetworkedServers.serve_forever"><code class="docutils literal notranslate"><span class="pre">BaseDualNetworkedServers.serve_forever()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#acme.standalone.BaseDualNetworkedServers.getsocknames"><code class="docutils literal notranslate"><span class="pre">BaseDualNetworkedServers.getsocknames()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#acme.standalone.BaseDualNetworkedServers.shutdown_and_server_close"><code class="docutils literal notranslate"><span class="pre">BaseDualNetworkedServers.shutdown_and_server_close()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#acme.standalone.TLSALPN01Server"><code class="docutils literal notranslate"><span class="pre">TLSALPN01Server</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#acme.standalone.HTTPServer"><code class="docutils literal notranslate"><span class="pre">HTTPServer</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#acme.standalone.HTTP01Server"><code class="docutils literal notranslate"><span class="pre">HTTP01Server</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#acme.standalone.HTTP01DualNetworkedServers"><code class="docutils literal notranslate"><span class="pre">HTTP01DualNetworkedServers</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#acme.standalone.HTTP01RequestHandler"><code class="docutils literal notranslate"><span class="pre">HTTP01RequestHandler</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#acme.standalone.HTTP01RequestHandler.HTTP01Resource"><code class="docutils literal notranslate"><span class="pre">HTTP01RequestHandler.HTTP01Resource</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#acme.standalone.HTTP01RequestHandler.timeout"><code class="docutils literal notranslate"><span class="pre">HTTP01RequestHandler.timeout</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#acme.standalone.HTTP01RequestHandler.log_message"><code class="docutils literal notranslate"><span class="pre">HTTP01RequestHandler.log_message()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#acme.standalone.HTTP01RequestHandler.handle"><code class="docutils literal notranslate"><span class="pre">HTTP01RequestHandler.handle()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#acme.standalone.HTTP01RequestHandler.handle_index"><code class="docutils literal notranslate"><span class="pre">HTTP01RequestHandler.handle_index()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#acme.standalone.HTTP01RequestHandler.handle_404"><code class="docutils literal notranslate"><span class="pre">HTTP01RequestHandler.handle_404()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#acme.standalone.HTTP01RequestHandler.handle_simple_http_resource"><code class="docutils literal notranslate"><span class="pre">HTTP01RequestHandler.handle_simple_http_resource()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#acme.standalone.HTTP01RequestHandler.partial_init"><code class="docutils literal notranslate"><span class="pre">HTTP01RequestHandler.partial_init()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">acme-python</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../api.html">API Documentation</a></li>
+      <li class="breadcrumb-item active">Standalone</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/api/standalone.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="module-acme.standalone">
+<span id="standalone"></span><h1>Standalone<a class="headerlink" href="#module-acme.standalone" title="Permalink to this heading">¶</a></h1>
+<p>Support for standalone client challenge solvers.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="acme.standalone.TLSServer">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">acme.standalone.</span></span><span class="sig-name descname"><span class="pre">TLSServer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.11)"><span class="pre">Any</span></a></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.11)"><span class="pre">Any</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/acme/standalone.html#TLSServer"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#acme.standalone.TLSServer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generic TLS Server.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="acme.standalone.TLSServer.server_bind">
+<span class="sig-name descname"><span class="pre">server_bind</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.11)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/acme/standalone.html#TLSServer.server_bind"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#acme.standalone.TLSServer.server_bind" title="Permalink to this definition">¶</a></dt>
+<dd><p>Called by constructor to bind the socket.</p>
+<p>May be overridden.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="acme.standalone.ACMEServerMixin">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">acme.standalone.</span></span><span class="sig-name descname"><span class="pre">ACMEServerMixin</span></span><a class="reference internal" href="../_modules/acme/standalone.html#ACMEServerMixin"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#acme.standalone.ACMEServerMixin" title="Permalink to this definition">¶</a></dt>
+<dd><p>ACME server common settings mixin.</p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="acme.standalone.BaseDualNetworkedServers">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">acme.standalone.</span></span><span class="sig-name descname"><span class="pre">BaseDualNetworkedServers</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ServerClass</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Type" title="(in Python v3.11)"><span class="pre">Type</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/socketserver.html#socketserver.TCPServer" title="(in Python v3.11)"><span class="pre">TCPServer</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">server_address</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Tuple" title="(in Python v3.11)"><span class="pre">Tuple</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><span class="pre">int</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">remaining_args</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.11)"><span class="pre">Any</span></a></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.11)"><span class="pre">Any</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/acme/standalone.html#BaseDualNetworkedServers"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#acme.standalone.BaseDualNetworkedServers" title="Permalink to this definition">¶</a></dt>
+<dd><p>Base class for a pair of IPv6 and IPv4 servers that tries to do everything
+it’s asked for both servers, but where failures in one server don’t
+affect the other.</p>
+<p>If two servers are instantiated, they will serve on the same port.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="acme.standalone.BaseDualNetworkedServers.serve_forever">
+<span class="sig-name descname"><span class="pre">serve_forever</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.11)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/acme/standalone.html#BaseDualNetworkedServers.serve_forever"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#acme.standalone.BaseDualNetworkedServers.serve_forever" title="Permalink to this definition">¶</a></dt>
+<dd><p>Wraps socketserver.TCPServer.serve_forever</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="acme.standalone.BaseDualNetworkedServers.getsocknames">
+<span class="sig-name descname"><span class="pre">getsocknames</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.List" title="(in Python v3.11)"><span class="pre">List</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Tuple" title="(in Python v3.11)"><span class="pre">Tuple</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><span class="pre">int</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/acme/standalone.html#BaseDualNetworkedServers.getsocknames"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#acme.standalone.BaseDualNetworkedServers.getsocknames" title="Permalink to this definition">¶</a></dt>
+<dd><p>Wraps socketserver.TCPServer.socket.getsockname</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="acme.standalone.BaseDualNetworkedServers.shutdown_and_server_close">
+<span class="sig-name descname"><span class="pre">shutdown_and_server_close</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.11)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/acme/standalone.html#BaseDualNetworkedServers.shutdown_and_server_close"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#acme.standalone.BaseDualNetworkedServers.shutdown_and_server_close" title="Permalink to this definition">¶</a></dt>
+<dd><p>Wraps socketserver.TCPServer.shutdown, socketserver.TCPServer.server_close, and
+threading.Thread.join</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="acme.standalone.TLSALPN01Server">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">acme.standalone.</span></span><span class="sig-name descname"><span class="pre">TLSALPN01Server</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">server_address</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Tuple" title="(in Python v3.11)"><span class="pre">Tuple</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><span class="pre">int</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">certs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.List" title="(in Python v3.11)"><span class="pre">List</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Tuple" title="(in Python v3.11)"><span class="pre">Tuple</span></a><span class="p"><span class="pre">[</span></span><span class="pre">PKey</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">X509</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">challenge_certs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Mapping" title="(in Python v3.11)"><span class="pre">Mapping</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#bytes" title="(in Python v3.11)"><span class="pre">bytes</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Tuple" title="(in Python v3.11)"><span class="pre">Tuple</span></a><span class="p"><span class="pre">[</span></span><span class="pre">PKey</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">X509</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ipv6</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/acme/standalone.html#TLSALPN01Server"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#acme.standalone.TLSALPN01Server" title="Permalink to this definition">¶</a></dt>
+<dd><p>TLSALPN01 Server.</p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="acme.standalone.HTTPServer">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">acme.standalone.</span></span><span class="sig-name descname"><span class="pre">HTTPServer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.11)"><span class="pre">Any</span></a></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.11)"><span class="pre">Any</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/acme/standalone.html#HTTPServer"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#acme.standalone.HTTPServer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generic HTTP Server.</p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="acme.standalone.HTTP01Server">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">acme.standalone.</span></span><span class="sig-name descname"><span class="pre">HTTP01Server</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">server_address</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Tuple" title="(in Python v3.11)"><span class="pre">Tuple</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><span class="pre">int</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">resources</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Set" title="(in Python v3.11)"><span class="pre">Set</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="challenges.html#acme.challenges.HTTP01" title="acme.challenges.HTTP01"><span class="pre">HTTP01</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ipv6</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">timeout</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><span class="pre">int</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">30</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/acme/standalone.html#HTTP01Server"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#acme.standalone.HTTP01Server" title="Permalink to this definition">¶</a></dt>
+<dd><p>HTTP01 Server.</p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="acme.standalone.HTTP01DualNetworkedServers">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">acme.standalone.</span></span><span class="sig-name descname"><span class="pre">HTTP01DualNetworkedServers</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.11)"><span class="pre">Any</span></a></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.11)"><span class="pre">Any</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/acme/standalone.html#HTTP01DualNetworkedServers"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#acme.standalone.HTTP01DualNetworkedServers" title="Permalink to this definition">¶</a></dt>
+<dd><p>HTTP01Server Wrapper. Tries everything for both. Failures for one don’t
+affect the other.</p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="acme.standalone.HTTP01RequestHandler">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">acme.standalone.</span></span><span class="sig-name descname"><span class="pre">HTTP01RequestHandler</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.11)"><span class="pre">Any</span></a></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.11)"><span class="pre">Any</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/acme/standalone.html#HTTP01RequestHandler"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#acme.standalone.HTTP01RequestHandler" title="Permalink to this definition">¶</a></dt>
+<dd><p>HTTP01 challenge handler.</p>
+<p>Adheres to the stdlib’s <a class="reference external" href="https://docs.python.org/3/library/socketserver.html#socketserver.BaseRequestHandler" title="(in Python v3.11)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">socketserver.BaseRequestHandler</span></code></a> interface.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Variables<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>simple_http_resources</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#set" title="(in Python v3.11)"><em>set</em></a>) – A set of <a class="reference internal" href="#acme.standalone.HTTP01RequestHandler.HTTP01Resource" title="acme.standalone.HTTP01Resource"><code class="xref py py-obj docutils literal notranslate"><span class="pre">HTTP01Resource</span></code></a>
+objects. TODO: better name?</p>
+</dd>
+</dl>
+<dl class="py class">
+<dt class="sig sig-object py" id="acme.standalone.HTTP01RequestHandler.HTTP01Resource">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">HTTP01Resource</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">chall</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">response</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">validation</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#acme.standalone.HTTP01RequestHandler.HTTP01Resource" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="py attribute">
+<dt class="sig sig-object py" id="acme.standalone.HTTP01RequestHandler.HTTP01Resource.chall">
+<span class="sig-name descname"><span class="pre">chall</span></span><a class="headerlink" href="#acme.standalone.HTTP01RequestHandler.HTTP01Resource.chall" title="Permalink to this definition">¶</a></dt>
+<dd><p>Alias for field number 0</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="acme.standalone.HTTP01RequestHandler.HTTP01Resource.response">
+<span class="sig-name descname"><span class="pre">response</span></span><a class="headerlink" href="#acme.standalone.HTTP01RequestHandler.HTTP01Resource.response" title="Permalink to this definition">¶</a></dt>
+<dd><p>Alias for field number 1</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="acme.standalone.HTTP01RequestHandler.HTTP01Resource.validation">
+<span class="sig-name descname"><span class="pre">validation</span></span><a class="headerlink" href="#acme.standalone.HTTP01RequestHandler.HTTP01Resource.validation" title="Permalink to this definition">¶</a></dt>
+<dd><p>Alias for field number 2</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="acme.standalone.HTTP01RequestHandler.timeout">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">timeout</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><span class="pre">int</span></a></em><a class="headerlink" href="#acme.standalone.HTTP01RequestHandler.timeout" title="Permalink to this definition">¶</a></dt>
+<dd><p>The default timeout this server should apply to requests.
+:return: timeout to apply
+:rtype: int</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="acme.standalone.HTTP01RequestHandler.log_message">
+<span class="sig-name descname"><span class="pre">log_message</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">format</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.11)"><span class="pre">Any</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.11)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/acme/standalone.html#HTTP01RequestHandler.log_message"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#acme.standalone.HTTP01RequestHandler.log_message" title="Permalink to this definition">¶</a></dt>
+<dd><p>Log arbitrary message.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="acme.standalone.HTTP01RequestHandler.handle">
+<span class="sig-name descname"><span class="pre">handle</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.11)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/acme/standalone.html#HTTP01RequestHandler.handle"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#acme.standalone.HTTP01RequestHandler.handle" title="Permalink to this definition">¶</a></dt>
+<dd><p>Handle request.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="acme.standalone.HTTP01RequestHandler.handle_index">
+<span class="sig-name descname"><span class="pre">handle_index</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.11)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/acme/standalone.html#HTTP01RequestHandler.handle_index"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#acme.standalone.HTTP01RequestHandler.handle_index" title="Permalink to this definition">¶</a></dt>
+<dd><p>Handle index page.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="acme.standalone.HTTP01RequestHandler.handle_404">
+<span class="sig-name descname"><span class="pre">handle_404</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.11)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/acme/standalone.html#HTTP01RequestHandler.handle_404"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#acme.standalone.HTTP01RequestHandler.handle_404" title="Permalink to this definition">¶</a></dt>
+<dd><p>Handler 404 Not Found errors.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="acme.standalone.HTTP01RequestHandler.handle_simple_http_resource">
+<span class="sig-name descname"><span class="pre">handle_simple_http_resource</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.11)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/acme/standalone.html#HTTP01RequestHandler.handle_simple_http_resource"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#acme.standalone.HTTP01RequestHandler.handle_simple_http_resource" title="Permalink to this definition">¶</a></dt>
+<dd><p>Handle HTTP01 provisioned resources.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="acme.standalone.HTTP01RequestHandler.partial_init">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">partial_init</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">simple_http_resources</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Set" title="(in Python v3.11)"><span class="pre">Set</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="challenges.html#acme.challenges.HTTP01" title="acme.challenges.HTTP01"><span class="pre">HTTP01</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">timeout</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><span class="pre">int</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">functools.partial</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#acme.standalone.HTTP01RequestHandler" title="acme.standalone.HTTP01RequestHandler"><span class="pre">HTTP01RequestHandler</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/acme/standalone.html#HTTP01RequestHandler.partial_init"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#acme.standalone.HTTP01RequestHandler.partial_init" title="Permalink to this definition">¶</a></dt>
+<dd><p>Partially initialize this handler.</p>
+<p>This is useful because <a class="reference external" href="https://docs.python.org/3/library/socketserver.html#socketserver.BaseServer" title="(in Python v3.11)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">socketserver.BaseServer</span></code></a> takes
+uninitialized handler and initializes it with the current
+request.</p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="messages.html" class="btn btn-neutral float-left" title="Messages" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2015, Let&#39;s Encrypt Project.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
