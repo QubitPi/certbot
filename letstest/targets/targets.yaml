@@ -1,0 +1,43 @@
+# These images are located in us-east-1.
+#
+# All machines must currently use x86_64 since Pebble does not currently
+# publish images for other architectures.
+
+targets:
+  #-----------------------------------------------------------------------------
+  #Ubuntu
+  - ami: ami-051dcca84f1edfff1
+    name: ubuntu22.04
+    type: ubuntu
+    virt: hvm
+    user: ubuntu
+  - ami: ami-0758470213bdd23b1
+    name: ubuntu20.04
+    type: ubuntu
+    virt: hvm
+    user: ubuntu
+  #-----------------------------------------------------------------------------
+  # Debian
+  - ami: ami-0fec2c2e2017f4e7b
+    name: debian11
+    type: ubuntu
+    virt: hvm
+    user: admin
+  - ami: ami-02ff60b9d37a0a0be
+    name: debian12
+    type: ubuntu
+    virt: hvm
+    user: admin
+  #-----------------------------------------------------------------------------
+  # CentOS
+  # These AMI were found on https://wiki.centos.org/Cloud/AWS.
+  - ami: ami-00e87074e52e6c9f9
+    name: centos7
+    type: centos
+    virt: hvm
+    user: centos
+  - ami: ami-0c0e36522a91d66e1
+    name: centos9stream
+    type: centos
+    virt: hvm
+    user: ec2-user
